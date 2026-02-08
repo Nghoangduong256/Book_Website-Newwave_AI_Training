@@ -1,0 +1,304 @@
+Rất tốt 👍
+Đây là **file quan trọng nhất** để bạn hiểu “offline PDF hoạt động thế nào”.
+Mình sẽ **mổ xẻ từng khối**, đi từ **ý tưởng → code → tác dụng**, và chỉ ra **vì sao viết như vậy là đúng**.
+
+---
+
+# 0️⃣ Tổng quan: `pdfStore.ts` dùng để làm gì?
+
+👉 `pdfStore.ts` là **tầng lưu trữ PDF OFFLINE trong trình duyệt**, cụ thể là:
+
+* Lưu file PDF (Blob) vào **IndexedDB**
+* Lấy lại PDF để đọc offline
+* Xoá PDF khi xoá sách
+* Kiểm tra sách có PDF offline hay không
+
+📌 Nó **KHÔNG liên quan backend**, **KHÔNG gọi API**, **KHÔNG upload file**
+
+---
+
+# 1️⃣ `import { openDB } from "idb";`
+
+```ts
+import { openDB } from "idb";
+```
+
+### 🔹 Ý nghĩa
+
+* `idb` là **wrapper cho IndexedDB**
+* Giúp bạn dùng:
+
+  * `async / await`
+  * code gọn
+  * tránh callback hell
+
+📌 Nếu không dùng `idb`:
+
+* Code IndexedDB thuần dài gấp 5–10 lần
+* Khó đọc, khó debug
+
+👉 `openDB` = hàm mở (hoặc tạo) database trong browser
+
+---
+
+# 2️⃣ Khai báo tên Database và Store
+
+```ts
+const DB_NAME = "book_pdf_db";
+const STORE = "pdfs";
+```
+
+### 🔹 Database vs ObjectStore
+
+| Khái niệm   | So sánh        |
+| ----------- | -------------- |
+| Database    | MySQL Database |
+| ObjectStore | Table          |
+| Record      | Row            |
+
+📌 Ở đây:
+
+* DB tên: `book_pdf_db`
+* Table tên: `pdfs`
+
+---
+
+# 3️⃣ `PdfRecord` – Schema của dữ liệu lưu
+
+```ts
+type PdfRecord = {
+  bookId: number;
+  blob: Blob;
+  fileName: string;
+  updatedAt: number;
+};
+```
+
+👉 **Mỗi record tương ứng 1 cuốn sách**
+
+### 🔹 Ý nghĩa từng field
+
+| Field       | Ý nghĩa                             |
+| ----------- | ----------------------------------- |
+| `bookId`    | ID sách từ backend (PRIMARY KEY)    |
+| `blob`      | File PDF (dữ liệu nhị phân)         |
+| `fileName`  | Tên file gốc                        |
+| `updatedAt` | Thời điểm lưu (debug / mở rộng sau) |
+
+📌 **KHÔNG có title, author…**
+→ vì metadata đã nằm trong backend
+
+---
+
+# 4️⃣ `dbPromise` – mở / tạo IndexedDB
+
+```ts
+const dbPromise = openDB(DB_NAME, 1, {
+  upgrade(db) {
+    if (!db.objectStoreNames.contains(STORE)) {
+      db.createObjectStore(STORE, { keyPath: "bookId" });
+    }
+  },
+});
+```
+
+### 🔹 `openDB(DB_NAME, 1, …)`
+
+* `"book_pdf_db"` → tên DB
+* `1` → **version**
+
+📌 IndexedDB **bắt buộc có version**
+
+* Tăng version khi thay đổi schema
+
+---
+
+### 🔹 `upgrade(db)`
+
+👉 Chỉ chạy khi:
+
+* DB chưa tồn tại
+* Hoặc version tăng
+
+📌 Tương đương:
+
+```sql
+CREATE TABLE pdfs (...)
+```
+
+---
+
+### 🔹 `db.createObjectStore(STORE, { keyPath: "bookId" })`
+
+👉 Tạo bảng `pdfs`
+
+* `keyPath: "bookId"` nghĩa là:
+
+  * `bookId` là **PRIMARY KEY**
+  * Mỗi sách chỉ có **1 PDF offline**
+
+📌 Điều này cực kỳ quan trọng vì:
+
+* `bookId` trùng với `Book.id` từ backend
+* Không cần mapping phức tạp
+
+---
+
+# 5️⃣ `savePdf()` – Lưu PDF offline
+
+```ts
+export async function savePdf(bookId: number, blob: Blob, fileName: string) {
+  const db = await dbPromise;
+  const rec: PdfRecord = { bookId, blob, fileName, updatedAt: Date.now() };
+  await db.put(STORE, rec);
+}
+```
+
+### 🔹 Luồng hoạt động
+
+1. `await dbPromise`
+   → mở database (hoặc lấy instance đã mở)
+
+2. Tạo object:
+
+```ts
+{
+  bookId: 12,
+  blob: <PDF>,
+  fileName: "art_of_war.pdf",
+  updatedAt: 1700000000000
+}
+```
+
+3. `db.put(STORE, rec)`
+
+   * Nếu chưa có → INSERT
+   * Nếu đã có → UPDATE
+
+📌 `put` = upsert (rất hợp với Edit Book)
+
+---
+
+# 6️⃣ `getPdf()` – Lấy PDF để đọc
+
+```ts
+export async function getPdf(bookId: number): Promise<PdfRecord | undefined> {
+  const db = await dbPromise;
+  return db.get(STORE, bookId);
+}
+```
+
+### 🔹 Ý nghĩa
+
+* Truy vấn:
+
+```sql
+SELECT * FROM pdfs WHERE bookId = ?
+```
+
+* Trả về:
+
+  * `PdfRecord` nếu có
+  * `undefined` nếu chưa lưu offline
+
+📌 Dùng trong `ReaderPage`:
+
+```ts
+const local = await getPdf(bookId);
+if (local?.blob) {
+  readOffline(local.blob);
+}
+```
+
+---
+
+# 7️⃣ `deletePdf()` – Xoá PDF offline
+
+```ts
+export async function deletePdf(bookId: number) {
+  const db = await dbPromise;
+  await db.delete(STORE, bookId);
+}
+```
+
+👉 Dùng khi:
+
+* User xoá sách
+* User muốn xoá bản offline
+
+📌 Tránh rác storage
+
+---
+
+# 8️⃣ `hasPdf()` – Kiểm tra có PDF offline không
+
+```ts
+export async function hasPdf(bookId: number): Promise<boolean> {
+  const db = await dbPromise;
+  const rec = await db.get(STORE, bookId);
+  return !!rec?.blob;
+}
+```
+
+### 🔹 Ý nghĩa
+
+* Trả về:
+
+  * `true` → có PDF offline
+  * `false` → chưa có
+
+📌 Dùng cho:
+
+* Hiển thị icon ⬇
+* Sync `hasLocalFile`
+* Debug
+
+---
+
+# 9️⃣ Vì sao không lưu pdfUrl trong IndexedDB?
+
+👉 Vì:
+
+* `pdfUrl` là metadata
+* Backend đã quản lý
+* IndexedDB chỉ dành cho **file nhị phân lớn**
+
+📌 Phân vai rõ ràng = code sạch
+
+---
+
+# 🔟 Sơ đồ luồng (rất dễ nhớ)
+
+```
+User chọn PDF
+→ File (Blob)
+→ savePdf(bookId)
+→ IndexedDB
+
+ReaderPage
+→ getPdf(bookId)
+→ Blob
+→ react-pdf
+```
+
+---
+
+# ✅ Tổng kết “chốt hạ”
+
+* `pdfStore.ts` = **local PDF repository**
+* `bookId` = khóa nối frontend ↔ backend
+* IndexedDB = lưu bền vững, offline
+* Blob ≠ BLOB database
+* Không server, không upload
+
+---
+
+## 👉 Bước tiếp theo hợp lý
+
+Nếu bạn muốn, mình có thể:
+
+1️⃣ Vẽ **sequence diagram Add Book + Save PDF**
+2️⃣ Giải thích **IndexedDB versioning & migration**
+3️⃣ Viết **unit test đơn giản cho pdfStore**
+
+👉 Bạn muốn **đào sâu tiếp phần nào?**

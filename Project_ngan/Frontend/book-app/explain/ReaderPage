@@ -1,0 +1,330 @@
+Rất chuẩn 👍
+`ReaderPage.tsx` chính là **nơi ghép tất cả những mảnh bạn đã học lại với nhau**:
+
+* Router (`useParams`)
+* API backend (`booksApi`)
+* IndexedDB (`getPdf`)
+* PDF viewer (`PdfViewer`)
+* Tư duy **offline-first**
+
+Mình sẽ giải thích **từng khối – từng quyết định – vì sao code được viết như vậy**, không chỉ “dòng này làm gì”.
+
+---
+
+# 1️⃣ Mục tiêu của `ReaderPage`
+
+👉 `ReaderPage` chịu trách nhiệm:
+
+* Nhận **bookId từ URL**
+* Lấy **metadata sách** từ backend
+* Quyết định **đọc PDF offline hay online**
+* Truyền **nguồn PDF** cho `PdfViewer`
+
+📌 Nó **không render PDF trực tiếp**
+📌 Nó **không thao tác IndexedDB chi tiết**
+→ chỉ **điều phối (orchestrator)**
+
+---
+
+# 2️⃣ Import – mỗi thứ một vai trò
+
+```ts
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { booksApi } from "../api/booksApi";
+import type { Book } from "../types/book";
+import { getPdf } from "../storage/pdfStore";
+import PdfViewer from "../components/PdfViewer";
+```
+
+| Import      | Vai trò                  |
+| ----------- | ------------------------ |
+| `useParams` | Lấy `:id` từ URL         |
+| `booksApi`  | Gọi backend lấy metadata |
+| `Book`      | Kiểu dữ liệu chuẩn       |
+| `getPdf`    | Lấy PDF offline          |
+| `PdfViewer` | Component hiển thị PDF   |
+
+👉 Mỗi import **đúng 1 nhiệm vụ**, không chồng chéo
+
+---
+
+# 3️⃣ Lấy `bookId` từ URL
+
+```ts
+const { id } = useParams();
+const bookId = Number(id);
+```
+
+### 🔹 Vì sao cần `Number(id)`?
+
+* `useParams()` luôn trả về **string**
+* Backend API cần **number**
+
+📌 Nếu `id` không hợp lệ → `bookId = NaN`
+
+* Trong dự án thật nên check thêm
+* Với demo này là đủ
+
+---
+
+# 4️⃣ State trong ReaderPage
+
+```ts
+const [book, setBook] = useState<Book | null>(null);
+const [source, setSource] = useState<string | Blob | null>(null);
+const [fileName, setFileName] = useState<string>("book.pdf");
+const [loading, setLoading] = useState(true);
+const [err, setErr] = useState<string | null>(null);
+```
+
+### 🔹 Ý nghĩa từng state
+
+| State      | Dùng để                    |
+| ---------- | -------------------------- |
+| `book`     | Hiển thị metadata bên trái |
+| `source`   | Nguồn PDF cho `PdfViewer`  |
+| `fileName` | Tên file khi download      |
+| `loading`  | Hiển thị loading           |
+| `err`      | Thông báo lỗi              |
+
+📌 **Quan trọng:**
+`source` là **string | Blob | null**
+→ chính là điểm nối offline/online
+
+---
+
+# 5️⃣ `useEffect` – luồng đọc sách cốt lõi
+
+```ts
+useEffect(() => {
+  (async () => {
+    try {
+      ...
+    } catch ...
+  })();
+}, [bookId]);
+```
+
+👉 Khi:
+
+* Mở `/reader/12`
+* Hoặc chuyển sang `/reader/13`
+
+➡️ effect chạy lại
+
+---
+
+## 5.1️⃣ Reset trạng thái
+
+```ts
+setLoading(true);
+setErr(null);
+```
+
+📌 Tránh:
+
+* Hiển thị lỗi cũ
+* Hiển thị PDF cũ
+
+---
+
+## 5.2️⃣ Lấy metadata từ backend
+
+```ts
+const b = await booksApi.get(bookId);
+setBook(b);
+```
+
+👉 Backend trả về:
+
+```json
+{
+  "id": 12,
+  "title": "...",
+  "author": "...",
+  "pdfUrl": "...",
+  "hasLocalFile": true
+}
+```
+
+📌 **ReaderPage luôn tin backend là “nguồn sự thật” của metadata**
+
+---
+
+## 5.3️⃣ Ưu tiên PDF OFFLINE (IndexedDB)
+
+```ts
+const local = await getPdf(bookId);
+if (local?.blob) {
+  setSource(local.blob);
+  setFileName(local.fileName ?? `${b.title}.pdf`);
+  return;
+}
+```
+
+### 🔹 Đây là **triết lý offline-first**
+
+* Nếu có PDF offline:
+
+  * Không gọi mạng
+  * Không dùng URL
+  * Không phụ thuộc server
+
+📌 `return;` ở đây là **cố ý**
+
+* Không chạy tiếp logic online
+
+---
+
+## 5.4️⃣ Fallback sang PDF ONLINE
+
+```ts
+if (b.pdfUrl) {
+  setSource(b.pdfUrl);
+  setFileName(`${b.title}.pdf`);
+  return;
+}
+```
+
+👉 Chỉ dùng khi:
+
+* Không có offline
+* Có URL
+
+---
+
+## 5.5️⃣ Không có PDF nào cả
+
+```ts
+setErr("Sách này không có PDF offline và cũng không có URL PDF.");
+```
+
+📌 Trường hợp:
+
+* User tạo sách nhưng quên nhập PDF
+* Hoặc dữ liệu chưa đầy đủ
+
+---
+
+## 5.6️⃣ Bắt lỗi tổng
+
+```ts
+} catch (e: any) {
+  setErr(e?.message ?? "Load reader failed");
+} finally {
+  setLoading(false);
+}
+```
+
+👉 Bao trọn:
+
+* Lỗi API
+* Lỗi IndexedDB
+* Lỗi runtime
+
+---
+
+# 6️⃣ Render layout: 2 cột
+
+```ts
+<div style={{ display: "grid", gridTemplateColumns: "320px 1fr" }}>
+```
+
+👉 Layout:
+
+* Trái: thông tin sách
+* Phải: PDF viewer
+
+📌 Đúng như design bạn gửi ban đầu
+
+---
+
+# 7️⃣ Panel trái – metadata sách
+
+```tsx
+{book ? (
+  <>
+    <div>{book.title}</div>
+    <div>{book.author} • {book.publishYear}</div>
+  </>
+) : null}
+```
+
+👉 Chỉ hiển thị khi:
+
+* Backend load xong
+
+📌 Không phụ thuộc PDF load hay chưa
+
+---
+
+# 8️⃣ Panel phải – đọc PDF
+
+```tsx
+{source ? <PdfViewer source={source} fileName={fileName} /> : null}
+```
+
+### 🔹 Điểm thiết kế rất tốt
+
+* `ReaderPage` **không quan tâm PDF render thế nào**
+* Chỉ truyền:
+
+  * `source`
+  * `fileName`
+
+👉 `PdfViewer` xử lý tất cả phần nặng
+
+---
+
+# 9️⃣ Phân vai tổng thể (rất quan trọng)
+
+| Component    | Trách nhiệm       |
+| ------------ | ----------------- |
+| `ReaderPage` | Điều phối dữ liệu |
+| `PdfViewer`  | Render PDF        |
+| `pdfStore`   | Lưu/lấy offline   |
+| `booksApi`   | Backend metadata  |
+
+👉 Không component nào “ôm” quá nhiều việc
+
+---
+
+# 🔟 Luồng hoạt động đầy đủ
+
+```
+/reader/:id
+→ ReaderPage
+→ booksApi.get(id)
+→ getPdf(id)
+   ├─ có Blob → offline
+   └─ không → pdfUrl
+→ PdfViewer
+```
+
+---
+
+# 1️⃣1️⃣ Vì sao code này “đúng kiến trúc”?
+
+✔️ Offline-first
+✔️ Không phụ thuộc backend cho file
+✔️ Tách trách nhiệm rõ
+✔️ Dễ mở rộng (bookmark, sync, progress)
+
+---
+
+# 1️⃣2️⃣ Tóm tắt 1 câu
+
+> **ReaderPage không đọc PDF, nó chỉ quyết định đọc bằng cái gì.**
+
+---
+
+## 👉 Bước tiếp theo rất hợp lý
+
+Nếu bạn muốn, mình có thể:
+
+1️⃣ Thêm **ghi nhớ trang đọc cuối cho từng sách**
+2️⃣ Đồng bộ `hasLocalFile` frontend ↔ backend
+3️⃣ Thêm **nút “Tải PDF về offline” ngay trong ReaderPage**
+
+👉 Bạn muốn **nâng cấp ReaderPage theo hướng nào?**

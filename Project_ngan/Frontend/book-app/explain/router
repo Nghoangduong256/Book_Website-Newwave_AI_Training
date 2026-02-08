@@ -1,0 +1,271 @@
+Rất tốt 👍
+Đây là **React Router v6.4+ (Data Router)** – khác hẳn kiểu router cũ (`<BrowserRouter><Routes><Route/>`) nên việc bạn thấy lạ là **hoàn toàn bình thường**.
+
+Mình sẽ giải thích **từ gốc → từng dòng → so sánh với kiểu cũ**, để bạn *hiểu bản chất*, không chỉ “biết dùng”.
+
+---
+
+# 1️⃣ Tổng quan: bạn đang dùng router kiểu gì?
+
+👉 Đoạn code này dùng **React Router v6.4+ – Object-based Router**
+
+Thay vì:
+
+```tsx
+<Routes>
+  <Route path="/" element={<Home />} />
+</Routes>
+```
+
+Ta định nghĩa router **bằng object (JSON-like)**.
+
+📌 Ưu điểm:
+
+* Rõ ràng cấu trúc cha–con
+* Dễ mở rộng (loader, action, error)
+* Rất hợp với layout chung (App shell)
+
+---
+
+# 2️⃣ Nhìn tổng thể đoạn code
+
+```ts
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      { index: true, element: <LibraryPage /> },
+      { path: "manage", element: <ManageBooksPage /> },
+      { path: "reader/:id", element: <ReaderPage /> },
+    ],
+  },
+]);
+```
+
+👉 Nó mô tả **cây routing** như sau:
+
+```
+/
+├── (index)        → LibraryPage
+├── /manage        → ManageBooksPage
+└── /reader/:id    → ReaderPage
+```
+
+---
+
+# 3️⃣ `createBrowserRouter(...)` là gì?
+
+```ts
+createBrowserRouter([...])
+```
+
+👉 Tạo **browser-based router**:
+
+* Dùng HTML5 History API
+* URL đẹp, không có `#`
+
+📌 Tương đương:
+
+```tsx
+<BrowserRouter>...</BrowserRouter>
+```
+
+Nhưng **viết gọn + mạnh hơn**
+
+---
+
+# 4️⃣ Route gốc: `path: "/"`
+
+```ts
+{
+  path: "/",
+  element: <App />,
+  children: [...]
+}
+```
+
+👉 Ý nghĩa:
+
+* `/` là **route cha**
+* `<App />` là **layout chung**
+
+📌 `<App />` **không phải là page**, mà là **khung**:
+
+* Header
+* Navbar
+* `<Outlet />`
+
+📌 Bên trong `<App />` bạn có:
+
+```tsx
+<Outlet />
+```
+
+➡️ Mọi route con sẽ render **tại vị trí Outlet**
+
+---
+
+# 5️⃣ `children` – Routing lồng nhau (Nested Routes)
+
+```ts
+children: [
+  ...
+]
+```
+
+👉 Các route con **kế thừa layout của route cha**
+
+📌 Vì vậy:
+
+* LibraryPage
+* ManageBooksPage
+* ReaderPage
+
+👉 **Đều dùng chung Navbar + layout**
+
+---
+
+# 6️⃣ `{ index: true, element: <LibraryPage /> }`
+
+⚠️ Dòng này rất quan trọng và hay gây khó hiểu
+
+```ts
+{ index: true, element: <LibraryPage /> }
+```
+
+👉 Đây là **index route**
+
+📌 Nghĩa là:
+
+* Khi URL = `/`
+* Không có path con nào
+  ➡️ render `LibraryPage`
+
+📌 Tương đương với:
+
+```ts
+{ path: "", element: <LibraryPage /> }
+```
+
+📌 So với router cũ:
+
+```tsx
+<Route path="/" element={<LibraryPage />} />
+```
+
+---
+
+# 7️⃣ `{ path: "manage", element: <ManageBooksPage /> }`
+
+```ts
+{ path: "manage", element: <ManageBooksPage /> }
+```
+
+👉 Vì là **route con**, nên:
+
+* Path thật sự là: `/manage`
+* Không cần ghi `/manage`
+
+📌 Router sẽ tự ghép:
+
+```txt
+"/" + "manage" → "/manage"
+```
+
+---
+
+# 8️⃣ `{ path: "reader/:id", element: <ReaderPage /> }`
+
+```ts
+{ path: "reader/:id", element: <ReaderPage /> }
+```
+
+👉 Đây là **dynamic route**
+
+📌 URL ví dụ:
+
+```
+/reader/12
+/reader/99
+```
+
+👉 `:id` là **route param**
+
+Trong `ReaderPage`:
+
+```ts
+const { id } = useParams();
+```
+
+---
+
+# 9️⃣ So sánh với router kiểu cũ (để bạn dễ “À ha!”)
+
+### 🔹 Cách cũ (React Router ≤ v6.3)
+
+```tsx
+<BrowserRouter>
+  <Routes>
+    <Route path="/" element={<App />}>
+      <Route index element={<LibraryPage />} />
+      <Route path="manage" element={<ManageBooksPage />} />
+      <Route path="reader/:id" element={<ReaderPage />} />
+    </Route>
+  </Routes>
+</BrowserRouter>
+```
+
+### 🔹 Cách mới (bạn đang dùng)
+
+```ts
+createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [...]
+  }
+]);
+```
+
+👉 **Chỉ khác cú pháp, bản chất giống nhau**
+
+---
+
+# 🔟 Vì sao mình chọn kiểu router này cho dự án của bạn?
+
+✔️ Dễ hiểu layout cha–con
+✔️ Phù hợp SPA nhiều page
+✔️ Mở rộng được loader/action sau này
+✔️ Chuẩn React Router hiện đại
+
+👉 Nếu bạn học kiểu này, bạn **không bị lạc hậu**
+
+---
+
+# 1️⃣1️⃣ Những lỗi hay gặp (để bạn tránh)
+
+❌ Quên `<Outlet />` → không thấy page con
+❌ Ghi `/manage` thay vì `"manage"` trong child
+❌ Dùng `index: true` mà lại ghi thêm `path`
+❌ Không hiểu layout vs page
+
+---
+
+# 1️⃣2️⃣ Tóm tắt 1 câu (để nhớ)
+
+> **Route cha = layout**
+> **Route con = page**
+> **`index: true` = trang mặc định của route cha**
+
+---
+
+## 👉 Bước tiếp theo gợi ý
+
+Nếu bạn muốn, mình có thể:
+
+1️⃣ Vẽ **routing tree bằng hình**
+2️⃣ Giải thích **Outlet hoạt động thế nào khi chuyển trang**
+3️⃣ Giải thích **loader/action (data router)** và khi nào nên dùng
+
+👉 Bạn muốn **đào sâu tiếp phần nào?**

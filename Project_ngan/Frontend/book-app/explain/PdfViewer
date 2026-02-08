@@ -1,0 +1,351 @@
+Rất hay 👍
+`PdfViewer.tsx` là **trái tim của chức năng đọc PDF**, nên mình sẽ giải thích **rất kỹ – đúng bản chất – theo từng tầng**:
+
+* ❓ Vì sao phải có worker
+* ❓ `source: string | Blob` thực sự có ý nghĩa gì
+* ❓ State nào quản lý cái gì
+* ❓ Vì sao dùng `useMemo`, `useEffect` như vậy
+* ❓ Cách `react-pdf` + `PDF.js` render PDF
+
+Bạn đọc xong phần này là **có thể tự viết lại 1 PDF viewer khác**.
+
+---
+
+# 1️⃣ Tổng quan: `PdfViewer.tsx` làm nhiệm vụ gì?
+
+👉 Component này:
+
+* Nhận **nguồn PDF** (`URL` hoặc `Blob`)
+* Render **1 trang PDF tại 1 thời điểm**
+* Điều khiển:
+
+  * Trang trước / sau
+  * Zoom in / out
+  * Download
+* Hoạt động **offline & online**
+
+📌 Nó **không biết sách là gì**, **không biết backend**, **không biết IndexedDB**
+→ chỉ biết **“đây là PDF, hãy hiển thị”**
+
+---
+
+# 2️⃣ Import & PDF Worker (rất quan trọng)
+
+```ts
+import { useEffect, useMemo, useState } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
+```
+
+### 🔹 `Document`, `Page`
+
+* Component của `react-pdf`
+* Wrapper cho **PDF.js**
+
+---
+
+## ⚠️ PDF Worker là gì? Vì sao phải set?
+
+```ts
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url
+).toString();
+```
+
+### ❗ Bản chất
+
+* PDF.js **parse PDF rất nặng**
+* Nếu parse trên main thread → UI lag, freeze
+* Vì vậy PDF.js dùng **Web Worker**
+
+📌 Worker = JS chạy **song song**, không block UI
+
+---
+
+### ❗ Vì sao phải set thủ công?
+
+* Vite / ESModule **không tự biết worker ở đâu**
+* Nếu không set:
+
+  * PDF không load
+  * Console lỗi kiểu:
+
+    > `Failed to load PDF worker`
+
+👉 Dòng này là **bắt buộc** khi dùng Vite + react-pdf
+
+---
+
+# 3️⃣ Props: `source: string | Blob`
+
+```ts
+type Props = {
+  source: string | Blob;
+  fileName?: string;
+};
+```
+
+### 🔹 Đây là thiết kế rất “đắt”
+
+| Kiểu     | Ý nghĩa                 |
+| -------- | ----------------------- |
+| `string` | PDF online (URL)        |
+| `Blob`   | PDF offline (IndexedDB) |
+
+👉 **CÙNG 1 viewer**, không cần if/else 2 component
+
+📌 Đây chính là lý do kiến trúc offline/online của bạn gọn
+
+---
+
+# 4️⃣ State trong PdfViewer (rất quan trọng)
+
+```ts
+const [numPages, setNumPages] = useState<number>(0);
+const [page, setPage] = useState<number>(1);
+const [scale, setScale] = useState<number>(1.1);
+const [err, setErr] = useState<string | null>(null);
+```
+
+### 🔹 Ý nghĩa từng state
+
+| State      | Quản lý           |
+| ---------- | ----------------- |
+| `numPages` | Tổng số trang PDF |
+| `page`     | Trang đang xem    |
+| `scale`    | Mức zoom          |
+| `err`      | Lỗi load PDF      |
+
+📌 **Không lưu Blob trong state**
+→ Blob được truyền từ ngoài vào (`source`)
+
+---
+
+# 5️⃣ Reset state khi đổi PDF
+
+```ts
+useEffect(() => {
+  setPage(1);
+  setScale(1.1);
+  setErr(null);
+}, [source]);
+```
+
+### 🔹 Vì sao cần đoạn này?
+
+👉 Khi user:
+
+* Chuyển sang sách khác
+* Hoặc fallback từ URL → Blob
+
+📌 Nếu không reset:
+
+* Đang xem trang 10
+* PDF mới chỉ có 5 trang → lỗi
+
+👉 Đây là **UX detail rất quan trọng**
+
+---
+
+# 6️⃣ Điều kiện cho nút Prev / Next
+
+```ts
+const canPrev = page > 1;
+const canNext = numPages > 0 && page < numPages;
+```
+
+📌 Tránh:
+
+* Trang 0
+* Trang > tổng trang
+
+👉 Giúp disable nút hợp lý
+
+---
+
+# 7️⃣ `downloadUrl` & `useMemo`
+
+```ts
+const downloadUrl = useMemo(() => {
+  if (typeof source === "string") return source;
+  return URL.createObjectURL(source);
+}, [source]);
+```
+
+### 🔹 Đây là đoạn RẤT QUAN TRỌNG
+
+#### Nếu `source` là URL
+
+```ts
+<a href="https://example.com/book.pdf" download />
+```
+
+→ tải trực tiếp
+
+#### Nếu `source` là Blob
+
+```ts
+URL.createObjectURL(blob)
+```
+
+→ tạo **URL tạm trỏ tới dữ liệu trong máy**
+
+📌 Ví dụ:
+
+```
+blob:http://localhost:5173/8a9f...
+```
+
+---
+
+### 🔹 Vì sao dùng `useMemo`?
+
+* Tránh tạo lại object URL mỗi render
+* Chỉ tạo khi `source` đổi
+
+👉 Tối ưu hiệu năng + tránh leak
+
+---
+
+# 8️⃣ Cleanup: tránh memory leak
+
+```ts
+useEffect(() => {
+  return () => {
+    if (typeof source !== "string") {
+      URL.revokeObjectURL(downloadUrl);
+    }
+  };
+}, []);
+```
+
+### 🔹 Vì sao phải revoke?
+
+* `createObjectURL` **chiếm RAM**
+* Nếu không revoke:
+
+  * Memory leak
+  * Đọc nhiều sách → browser ăn RAM dần
+
+📌 Cleanup khi component unmount
+
+👉 Đây là **code rất “chuyên nghiệp”**, nhiều người bỏ sót
+
+---
+
+# 9️⃣ Toolbar: Prev / Next / Zoom / Download
+
+Ví dụ nút Prev:
+
+```ts
+onClick={() => setPage((p) => Math.max(1, p - 1))}
+```
+
+📌 Không cho page < 1
+
+Zoom:
+
+```ts
+setScale((s) => Math.min(2.2, s + 0.1))
+```
+
+📌 Giới hạn zoom:
+
+* Nhỏ nhất: `0.6`
+* Lớn nhất: `2.2`
+
+👉 Tránh render quá nặng
+
+---
+
+# 🔟 Hiển thị lỗi (Error boundary mini)
+
+```ts
+{err ? <div>{err}</div> : null}
+```
+
+📌 Lỗi thường gặp:
+
+* PDF hỏng
+* URL không hợp lệ
+* Blob bị xoá
+
+---
+
+# 1️⃣1️⃣ Render PDF bằng `react-pdf`
+
+```tsx
+<Document
+  file={source}
+  onLoadSuccess={(pdf) => {
+    setNumPages(pdf.numPages);
+    setPage(1);
+  }}
+  onLoadError={(e) => setErr(e?.message ?? "Cannot load PDF")}
+>
+  <Page pageNumber={page} scale={scale} />
+</Document>
+```
+
+### 🔹 `Document`
+
+* Load PDF
+* Parse PDF
+* Gọi callback
+
+### 🔹 `onLoadSuccess`
+
+```ts
+pdf.numPages
+```
+
+→ tổng số trang
+
+### 🔹 `Page`
+
+* Render **1 trang**
+* Dựa vào:
+
+  * `pageNumber`
+  * `scale`
+
+📌 Render từng trang → performance tốt
+
+---
+
+# 1️⃣2️⃣ Luồng hoạt động hoàn chỉnh
+
+```
+source (URL | Blob)
+→ Document load
+→ PDF.js parse (worker)
+→ numPages
+→ Page render
+→ Canvas
+```
+
+👉 Không cần server
+👉 Không cần internet (nếu Blob)
+
+---
+
+# 1️⃣3️⃣ Tóm tắt “đinh”
+
+* `PdfViewer` = **PDF renderer thuần**
+* `source` quyết định offline / online
+* Worker = bắt buộc
+* `createObjectURL` = cầu nối Blob → download
+* Cleanup = tránh memory leak
+* `react-pdf` = wrapper rất tốt cho PDF.js
+
+---
+
+## 👉 Bước tiếp theo rất hợp lý
+
+Nếu bạn muốn, mình có thể:
+
+1️⃣ Thêm **chế độ đọc toàn trang (fit width / fit page)**
+2️⃣ Render **thumbnail sidebar các trang**
+3️⃣ Thêm **bookmark / nhớ trang đọc cuối**
+
+👉 Bạn muốn **nâng cấp PdfViewer theo hướng nào?**

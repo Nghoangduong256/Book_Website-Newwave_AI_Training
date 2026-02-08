@@ -1,0 +1,219 @@
+Câu hỏi này **rất đúng trọng tâm** 👍
+Và câu trả lời là: **KHÔNG**, `BookUpsert` **không phải** object đại diện cho book card hiển thị ở thư viện.
+
+Mình sẽ **tách rõ khái niệm**, vì đây là nền tảng cực quan trọng khi bạn làm **React + Spring (DTO mindset)**.
+
+---
+
+# 1️⃣ `BookUpsert` là gì? (trả lời ngắn gọn trước)
+
+👉 **`BookUpsert` là object dùng để GỬI DỮ LIỆU LÊN BACKEND khi:**
+
+* Thêm sách (Create)
+* Sửa sách (Update)
+
+📌 “Upsert” = **Update + Insert**
+
+---
+
+# 2️⃣ Phân biệt 3 loại object (rất quan trọng)
+
+Trong dự án của bạn đang có **3 loại object khác nhau**, mỗi loại **một vai trò**:
+
+| Object       | Dùng khi nào          | Có `id` không | Lấy từ đâu      |
+| ------------ | --------------------- | ------------- | --------------- |
+| `Book`       | Hiển thị, đọc dữ liệu | ✅             | Backend trả về  |
+| `BookUpsert` | Gửi dữ liệu để lưu    | ❌             | Form người dùng |
+| `BookCard`   | UI component          | ❌             | Props từ `Book` |
+
+👉 **ĐỪNG trộn vai trò của chúng**
+
+---
+
+# 3️⃣ `Book` dùng cho cái gì?
+
+```ts
+export type Book = {
+  id: number;
+  title: string;
+  author: string;
+  publishYear?: number | null;
+  tags?: string | null;
+  pdfUrl?: string | null;
+  hasLocalFile: boolean;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+};
+```
+
+👉 `Book` là:
+
+* Dữ liệu **đã tồn tại**
+* Được backend trả về
+* Dùng để:
+
+  * Hiển thị **Book Card**
+  * Hiển thị **Bảng quản lý**
+  * Mở **ReaderPage**
+
+📌 Ví dụ:
+
+```ts
+const books: Book[] = await booksApi.list();
+```
+
+➡️ **Book Card hiển thị từ `Book`**, KHÔNG phải `BookUpsert`.
+
+---
+
+# 4️⃣ `BookUpsert` đại diện cho cái gì?
+
+```ts
+export type BookUpsert = {
+  title: string;
+  author: string;
+  publishYear?: number | null;
+  tags?: string | null;
+  pdfUrl?: string | null;
+  hasLocalFile: boolean;
+};
+```
+
+👉 `BookUpsert` đại diện cho:
+
+* **Dữ liệu người dùng nhập trong form**
+* Dữ liệu **CHƯA có ID**
+* Dữ liệu **chuẩn bị gửi lên backend**
+
+📌 Ví dụ khi bấm **Lưu**:
+
+```ts
+const payload: BookUpsert = {
+  title: "The Art of War",
+  author: "Sun Tzu",
+  publishYear: -500,
+  tags: "classic,strategy",
+  pdfUrl: null,
+  hasLocalFile: true
+};
+
+await booksApi.create(payload);
+```
+
+👉 Backend sẽ:
+
+* Tạo `Book`
+* Sinh `id`
+* Trả về object `Book` hoàn chỉnh
+
+---
+
+# 5️⃣ Vì sao `BookUpsert` KHÔNG có `id`?
+
+👉 Vì:
+
+* Khi **Create**: chưa có `id`
+* Khi **Update**: `id` nằm trên URL
+
+  ```http
+  PUT /api/books/{id}
+  ```
+
+📌 Đây là **RESTful design chuẩn**
+
+---
+
+# 6️⃣ Mapping đúng giữa UI – Object – API
+
+### 🧩 Form Thêm / Sửa sách
+
+👉 Làm việc với: **`BookUpsert`**
+
+```txt
+Input fields
+→ BookUpsert
+→ POST/PUT API
+```
+
+---
+
+### 🧩 Thư viện / Bảng sách
+
+👉 Làm việc với: **`Book`**
+
+```txt
+GET /api/books
+→ Book[]
+→ BookCard[]
+```
+
+---
+
+### 🧩 Reader Page
+
+👉 Làm việc với: **`Book`**
+
+```txt
+GET /api/books/{id}
+→ Book
+→ load PDF
+```
+
+---
+
+# 7️⃣ Ví dụ trực quan (rất dễ nhớ)
+
+### Khi thêm sách mới
+
+```txt
+Form (BookUpsert)
+↓ POST
+Backend
+↓
+Book (id = 12)
+↓
+UI hiển thị
+```
+
+---
+
+### Khi sửa sách
+
+```txt
+Book (id=12)
+↓ map sang BookUpsert
+↓ PUT /books/12
+Backend
+↓
+Book (updated)
+```
+
+---
+
+# 8️⃣ Sai lầm phổ biến cần tránh
+
+❌ Dùng `Book` cho form
+❌ Gửi `id` trong body khi create
+❌ Dùng `BookUpsert` để render UI
+❌ Dùng 1 object cho tất cả mọi việc
+
+👉 Những lỗi này **làm backend + frontend rối dần theo thời gian**
+
+---
+
+# 9️⃣ Tóm tắt 1 câu (đinh đóng cột)
+
+> **`Book` = dữ liệu đã lưu, dùng để hiển thị**
+> **`BookUpsert` = dữ liệu người dùng nhập, dùng để lưu**
+
+---
+
+## 👉 Bước tiếp theo rất hợp lý
+
+Nếu bạn muốn, mình có thể:
+
+1️⃣ Vẽ **sequence diagram Create / Update Book**
+2️⃣ Giải thích **DTO vs Entity vs Model** (chuẩn Spring + React)
+3️⃣ Refactor form để **map Book → BookUpsert cho Edit**
+
+👉 Bạn muốn **đào sâu tiếp phần nào?**

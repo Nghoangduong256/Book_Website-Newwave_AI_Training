@@ -1,0 +1,275 @@
+Câu này **rất căn bản nhưng cực kỳ quan trọng** 👍
+`main.tsx` chính là **điểm khởi động (entry point)** của toàn bộ ứng dụng React.
+Nếu ví project là một cơ thể thì **`main.tsx` = tim + hệ thần kinh trung ương**.
+
+Mình sẽ giải thích **từ trên xuống dưới**, và trả lời rõ:
+👉 **“File này dùng để làm gì, và nếu thiếu nó thì chuyện gì xảy ra?”**
+
+---
+
+# 1️⃣ `main.tsx` là gì trong dự án React (Vite)?
+
+👉 `main.tsx` là **file đầu tiên được trình duyệt chạy**.
+
+Vai trò chính:
+
+* Gắn React vào **DOM thật** (`index.html`)
+* Khởi tạo **React tree**
+* Khai báo **Router**
+* Load CSS global (PDF, reset, v.v.)
+
+📌 Không có `main.tsx` → **React không chạy**
+
+---
+
+# 2️⃣ Import từng dòng – không có dòng nào thừa
+
+```ts
+import React from "react";
+```
+
+### 🔹 Dòng này để làm gì?
+
+* Với React 17+, technically **không bắt buộc**
+* Nhưng:
+
+  * Giữ compatibility
+  * Tránh lỗi type / tooling
+  * Thói quen an toàn
+
+👉 Có thì tốt, không gây hại
+
+---
+
+```ts
+import ReactDOM from "react-dom/client";
+```
+
+### 🔹 `react-dom/client` là gì?
+
+* React 18 API mới
+* Cho phép:
+
+  * Concurrent rendering
+  * `createRoot`
+
+📌 Thay thế cách cũ:
+
+```ts
+ReactDOM.render(...)
+```
+
+---
+
+# 3️⃣ `RouterProvider` – trung tâm điều hướng
+
+```ts
+import { RouterProvider } from "react-router-dom";
+import { router } from "./app/router";
+```
+
+### 🔹 `router`
+
+* Là object router bạn đã định nghĩa:
+
+```ts
+createBrowserRouter([...])
+```
+
+### 🔹 `RouterProvider`
+
+👉 Là component **bọc toàn bộ app**, cung cấp:
+
+* Routing
+* URL state
+* `useParams`, `useNavigate`, `Link`, v.v.
+
+📌 Nếu bỏ `RouterProvider`:
+
+* `useParams()` lỗi
+* `<Link />` lỗi
+* Không chuyển trang được
+
+---
+
+# 4️⃣ Import CSS của `react-pdf` (rất quan trọng)
+
+```ts
+import "react-pdf/dist/Page/TextLayer.css";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+```
+
+### 🔹 Hai file này là gì?
+
+| File                  | Dùng để                     |
+| --------------------- | --------------------------- |
+| `TextLayer.css`       | Hiển thị text (copy/search) |
+| `AnnotationLayer.css` | Hiển thị link, annotation   |
+
+📌 Nếu **không import**:
+
+* PDF vẫn hiện
+* Nhưng:
+
+  * Không chọn được text
+  * Link trong PDF không click được
+  * Highlight bị lỗi
+
+👉 Đây là lỗi rất nhiều người mới gặp
+
+---
+
+# 5️⃣ Gắn React vào DOM thật
+
+```ts
+ReactDOM.createRoot(document.getElementById("root")!).render(
+```
+
+### 🔹 `document.getElementById("root")`
+
+* Trỏ tới:
+
+```html
+<div id="root"></div>
+```
+
+trong `index.html`
+
+👉 Đây là **điểm neo duy nhất** giữa:
+
+* HTML thuần
+* React virtual DOM
+
+---
+
+### 🔹 Dấu `!` là gì?
+
+```ts
+document.getElementById("root")!
+```
+
+👉 TypeScript assertion:
+
+* “Tôi đảm bảo phần tử này tồn tại”
+* Tránh lỗi:
+
+```ts
+Object is possibly 'null'
+```
+
+📌 Vì `index.html` luôn có `<div id="root">`
+
+---
+
+# 6️⃣ `.render(...)` – render React tree
+
+```tsx
+.render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
+);
+```
+
+---
+
+## 6.1️⃣ `React.StrictMode` là gì?
+
+👉 **Chế độ kiểm tra nghiêm ngặt trong dev**
+
+* Chạy một số lifecycle **2 lần**
+* Phát hiện:
+
+  * Side-effect nguy hiểm
+  * Code không an toàn
+  * Deprecated API
+
+📌 **CHỈ chạy trong development**
+📌 Production **không bị ảnh hưởng**
+
+👉 Rất tốt cho người học & dự án mới
+
+---
+
+## 6.2️⃣ `RouterProvider router={router}`
+
+👉 Đây là **root component thật sự của app**
+
+Bên trong nó:
+
+* Router quản lý URL
+* Render `<App />`
+* Render `<Outlet />`
+* Điều hướng giữa các page
+
+📌 Sơ đồ:
+
+```
+main.tsx
+ └─ RouterProvider
+     └─ App (layout)
+         └─ Outlet
+             ├─ LibraryPage
+             ├─ ManageBooksPage
+             └─ ReaderPage
+```
+
+---
+
+# 7️⃣ Vì sao `main.tsx` KHÔNG render `<App />` trực tiếp?
+
+### ❌ Cách cũ
+
+```tsx
+ReactDOM.render(<App />, root);
+```
+
+### ✅ Cách mới
+
+```tsx
+<RouterProvider router={router} />
+```
+
+👉 Vì:
+
+* Router mới quản lý **toàn bộ cây UI**
+* `<App />` chỉ là **layout**
+* Router quyết định render page nào
+
+📌 Đây là **tư duy đúng của React Router v6+**
+
+---
+
+# 8️⃣ Nếu thiếu `main.tsx` thì chuyện gì xảy ra?
+
+| Thiếu            | Hậu quả           |
+| ---------------- | ----------------- |
+| `createRoot`     | React không mount |
+| `RouterProvider` | Không routing     |
+| CSS pdf          | PDF lỗi           |
+| StrictMode       | Khó debug         |
+
+👉 App **không thể chạy**
+
+---
+
+# 9️⃣ Tóm tắt cực ngắn (đinh đóng cột)
+
+> **`main.tsx` = nơi React bắt đầu sống trong trình duyệt**
+
+* Gắn React vào HTML
+* Khởi tạo router
+* Load CSS toàn cục
+* Bật StrictMode
+
+---
+
+## 👉 Bước tiếp theo rất hợp lý
+
+Nếu bạn muốn, mình có thể:
+
+1️⃣ Giải thích **index.html & mối quan hệ với main.tsx**
+2️⃣ Giải thích **Vite build app thế nào từ main.tsx**
+3️⃣ Chỉ ra **chỗ nào nên thêm global CSS / theme**
+
+👉 Bạn muốn **đào sâu tiếp phần nào?**
