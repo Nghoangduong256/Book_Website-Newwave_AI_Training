@@ -88,7 +88,7 @@ export default function BookForm({ initial, onSubmit, onReset }: Props) {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         required
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
+                        style={{ width: "90%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
                     />
                 </div>
                 <div>
@@ -97,7 +97,7 @@ export default function BookForm({ initial, onSubmit, onReset }: Props) {
                         value={author}
                         onChange={(e) => setAuthor(e.target.value)}
                         required
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
+                        style={{ width: "90%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
                     />
                 </div>
 
@@ -108,7 +108,7 @@ export default function BookForm({ initial, onSubmit, onReset }: Props) {
                         onChange={(e) => setPublishYear(e.target.value)}
                         placeholder="2024 hoặc -500"
                         inputMode="numeric"
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
+                        style={{ width: "90%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
                     />
                 </div>
 
@@ -118,7 +118,7 @@ export default function BookForm({ initial, onSubmit, onReset }: Props) {
                         value={tags}
                         onChange={(e) => setTags(e.target.value)}
                         placeholder="khoa học, kỹ năng, tiểu thuyết"
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
+                        style={{ width: "90%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
                     />
                 </div>
 
@@ -140,7 +140,7 @@ export default function BookForm({ initial, onSubmit, onReset }: Props) {
                         value={pdfUrl}
                         onChange={(e) => setPdfUrl(e.target.value)}
                         placeholder="https://example.com/sample.pdf"
-                        style={{ width: "100%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
+                        style={{ width: "90%", padding: "10px 12px", borderRadius: 12, border: "1px solid #d6dbe6" }}
                     />
                 </div>
             </div>
