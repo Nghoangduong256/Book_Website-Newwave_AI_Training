@@ -3,6 +3,7 @@ package com.newwave.spring.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
 
@@ -16,14 +17,17 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Nationalized
     @Column(nullable = false)
     private String title;
 
+    @Nationalized
     @Column(nullable = false)
     private String author;
 
     private Integer publishYear;
 
+    @Nationalized
     @Column(length = 500)
     private String tags;
 
