@@ -1,0 +1,333 @@
+Kế hoạch 20 ngày — 1 người
+
+Ngày 1: Khởi động và xác định phạm vi
+Công việc:
+- Xác định mục tiêu hệ thống.
+- Xác định người dùng.
+- Phân tích hệ thống hiện tại.
+- Liệt kê chức năng làm và không làm.
+- Xác định điều kiện hoàn thành.
+- Lập kế hoạch và quản lý rủi ro.
+Tài liệu:
+- Project Overview
+- Scope Definition
+- Project Schedule
+- Risk List
+- Question List
+Kết quả cần review:
+- Phạm vi có phù hợp 20 ngày không?
+- Các chức năng có được mô tả rõ không?
+- Chức năng nào là bắt buộc, chức năng nào là tùy chọn?
+
+Ngày 2: Định nghĩa yêu cầu
+Viết tài liệu Requirement Definition.
+Nội dung:
+Yêu cầu chức năng.
+Yêu cầu phi chức năng.
+Business rules.
+Use case.
+Acceptance criteria.
+Giới hạn file upload.
+Quy tắc xử lý URL.
+Quy tắc đọc offline.
+Các trường hợp lỗi.
+Ví dụ yêu cầu:
+FR-01: Người dùng có thể upload một file PDF.
+FR-02: Hệ thống lưu PDF trong thư mục backend.
+FR-03: Người dùng có thể đọc PDF đã upload.
+FR-04: Người dùng có thể thêm PDF bằng URL.
+FR-05: Hệ thống ghi nhớ trang đọc gần nhất.
+FR-06: Người dùng có thể tải PDF về để đọc offline.
+Tài liệu:
+Requirement Specification
+Use Case List
+Acceptance Criteria
+Requirements Traceability Matrix bản đầu tiên
+Ngày 3: Phân tích nghiệp vụ và thiết kế màn hình
+Công việc:
+Vẽ luồng sử dụng.
+Vẽ sitemap.
+Thiết kế wireframe.
+Xác định input, output và validation.
+Xác định thông báo thành công và lỗi.
+Các màn hình:
+Thư viện.
+Thêm/sửa sách.
+Chi tiết sách.
+Trình đọc PDF.
+Xác nhận xóa.
+Tài liệu:
+Screen Flow
+Wireframe
+Screen List
+Message List
+Validation Rules
+Wireframe chỉ cần đơn giản, có thể làm bằng draw.io, Figma miễn phí hoặc PowerPoint.
+Ngày 4: Basic Design — kiến trúc và database
+Basic Design mô tả hệ thống sẽ hoạt động như thế nào ở mức tổng quan.
+Công việc:
+Thiết kế kiến trúc.
+Xác định trách nhiệm frontend, backend và database.
+Thiết kế cách lưu file.
+Thiết kế database.
+Xác định API.
+Thiết kế xử lý online/offline.
+Tài liệu:
+System Architecture
+Module List
+ER Diagram
+Table Definition
+API List
+File Storage Design
+Basic Design Document
+Kiến trúc:
+React
+   │
+REST API
+   │
+Spring Boot ─── uploads/
+   │
+SQL Server
+
+IndexedDB: bản PDF offline trên từng thiết bị
+Ngày 5: Basic Design — xử lý chức năng
+Mô tả luồng xử lý cho từng chức năng:
+Upload PDF.
+Thêm URL.
+Đọc PDF.
+Tải offline.
+Lưu tiến độ đọc.
+Xóa sách.
+Xóa file.
+Xử lý lỗi.
+Tài liệu:
+Sequence Diagrams
+API Definition
+Error Handling Design
+Basic Design Review Checklist
+Cuối ngày thực hiện review Basic Design. Mọi thay đổi yêu cầu sau ngày này phải được ghi vào Change Log.
+Ngày 6: Detail Design — backend
+Detail Design mô tả cụ thể cách triển khai code.
+Nội dung:
+Class diagram.
+Entity và DTO.
+Controller, Service, Repository.
+Tên method và kiểu dữ liệu.
+API request/response.
+Validation.
+Exception handling.
+Quy tắc đặt tên file UUID.
+Cách xóa file.
+Transaction.
+HTTP status code.
+Tài liệu:
+Backend Detail Design
+Class Diagram
+API Request Response Definition
+Exception List
+Unit Test Specification bản đầu tiên
+Ngày 7: Detail Design — frontend
+Nội dung:
+Component tree.
+Page và route.
+State của từng màn hình.
+Cấu trúc API client.
+Luồng upload.
+Luồng đọc offline.
+Cấu trúc IndexedDB.
+Responsive layout.
+Validation trên frontend.
+Tài liệu:
+Frontend Detail Design
+Component Design
+State and Data Flow
+IndexedDB Design
+Frontend Unit Test Specification
+Cuối ngày review toàn bộ Detail Design trước khi coding.
+Ngày 8: Coding backend
+Ưu tiên:
+Cập nhật database.
+API CRUD sách.
+Upload PDF.
+API đọc/download PDF.
+Xóa file khi xóa sách.
+Validation file.
+Global exception handler.
+Kết quả:
+Backend build thành công.
+API được kiểm tra bằng Postman hoặc Bruno.
+Unit test cho Service bắt đầu được viết.
+Ngày 9: Coding frontend — quản lý sách
+Công việc:
+Form thêm/sửa sách.
+Upload PDF.
+Nhập URL.
+Danh sách sách.
+Tìm kiếm, lọc và sắp xếp.
+Yêu thích và trạng thái đọc.
+Xử lý loading và lỗi.
+Kết quả:
+Hoàn thành luồng CRUD.
+Frontend kết nối thành công với backend.
+Ngày 10: Coding frontend — đọc PDF
+Công việc:
+Đọc PDF từ backend.
+Đọc PDF từ URL.
+Chuyển trang.
+Zoom.
+Nhảy đến trang.
+Lưu trang gần nhất.
+Giao diện responsive.
+Kết quả:
+Luồng đọc online hoạt động trên máy tính và điện thoại.
+Ngày 11: Coding offline và hoàn thiện
+Công việc:
+Tải PDF vào IndexedDB.
+Ưu tiên đọc bản offline.
+Xóa bản offline.
+Hiển thị trạng thái đã tải.
+Kiểm tra mất mạng.
+Hoàn thiện thông báo lỗi.
+Cuối ngày thực hiện code review:
+So sánh code với Detail Design.
+Kiểm tra coding convention.
+Kiểm tra các chức năng còn thiếu.
+Cập nhật tài liệu nếu thiết kế thay đổi.
+Ngày 12: Unit Test
+Backend:
+Test Service.
+Test validation.
+Test trường hợp không tìm thấy sách.
+Test upload sai định dạng.
+Test xóa sách và file.
+Frontend:
+Test hàm tìm kiếm và sắp xếp.
+Test validation.
+Test trạng thái đọc.
+Test IndexedDB nếu đủ thời gian.
+Tài liệu:
+Unit Test Cases
+Unit Test Result
+Bug List
+Code Coverage Report nếu có
+Mục tiêu hợp lý:
+Business logic backend đạt khoảng 70% coverage.
+Tất cả test case quan trọng đều pass.
+Ngày 13: Integration Test
+Kiểm tra tích hợp:
+React gọi Spring Boot.
+Spring Boot thao tác SQL Server.
+Spring Boot lưu và đọc file.
+Frontend lưu IndexedDB.
+Đọc URL bên ngoài.
+Xử lý mất kết nối.
+Test luồng chính:
+Upload → Lưu database → Lưu file → Mở sách → Đọc PDF
+Tải offline → Mất mạng → Mở lại → Tiếp tục đọc
+Tài liệu:
+Integration Test Specification
+Integration Test Result
+Bug List
+Evidence bằng ảnh chụp màn hình hoặc log
+Ngày 14: System Test và Regression Test
+System Test kiểm tra toàn hệ thống theo Requirement Specification.
+Các nhóm test:
+Functional test.
+Validation test.
+Error test.
+UI test.
+Responsive test.
+Compatibility test.
+Performance test đơn giản.
+Security test cơ bản.
+Regression test.
+Thiết bị kiểm tra tối thiểu:
+Chrome trên máy tính.
+Edge hoặc Firefox.
+Chrome trên điện thoại hoặc chế độ mobile.
+Mất mạng và kết nối lại.
+Tài liệu:
+System Test Specification
+System Test Result
+Regression Test Result
+Defect Report
+Requirements Traceability Matrix cập nhật
+Ngày 15: UAT, đóng dự án và bàn giao
+UAT mô phỏng người dùng nghiệm thu theo yêu cầu ban đầu.
+Công việc:
+Chạy toàn bộ acceptance criteria.
+Sửa lỗi nghiêm trọng.
+Kiểm tra cài đặt từ đầu.
+Chuẩn hóa database script.
+Viết README.
+Chuẩn bị dữ liệu demo.
+Tổng kết bài học.
+Tài liệu:
+UAT Test Cases
+UAT Result
+Release Note
+Installation Guide
+User Manual
+Known Issues
+Project Closure Report
+Definition of Done:
+Tất cả yêu cầu bắt buộc đã hoàn thành.
+Không còn lỗi Critical hoặc High.
+Build frontend và backend thành công.
+Có script khởi tạo database.
+Có hướng dẫn chạy hệ thống.
+Traceability Matrix liên kết được yêu cầu, thiết kế, code và test case.
+-------
+
+Bộ tài liệu tối thiểu
+Không nên viết quá nhiều tài liệu riêng lẻ. Có thể tổ chức thành:
+docs/
+├── 01_Project_Plan
+│   ├── Project_Overview.md
+│   ├── Scope.md
+│   ├── Schedule.xlsx
+│   └── Risk_List.xlsx
+├── 02_Requirement
+│   ├── Requirement_Specification.docx
+│   ├── Use_Cases.xlsx
+│   └── Traceability_Matrix.xlsx
+├── 03_Basic_Design
+│   ├── Basic_Design.docx
+│   ├── Screen_Design.xlsx
+│   ├── ER_Diagram.png
+│   └── API_List.xlsx
+├── 04_Detail_Design
+│   ├── Backend_Detail_Design.docx
+│   ├── Frontend_Detail_Design.docx
+│   └── API_Definition.xlsx
+├── 05_Test
+│   ├── Unit_Test.xlsx
+│   ├── Integration_Test.xlsx
+│   ├── System_Test.xlsx
+│   ├── UAT.xlsx
+│   └── Bug_List.xlsx
+└── 06_Release
+    ├── Installation_Guide.md
+    ├── User_Manual.md
+    └── Release_Note.md
+
+------
+Phương án khuyến nghị: 20 ngày, 1 người
+Nếu mục tiêu chính là học quy trình thay vì chỉ hoàn thành code, nên nới lên 20 ngày:
+Giai đoạn	Số ngày
+Lập kế hoạch và yêu cầu	3
+Basic Design	3
+Detail Design	3
+Coding	5
+Unit và Integration Test	2
+System Test và sửa lỗi	2
+UAT, tài liệu và bàn giao	2
+Tổng cộng	20
+
+Năm ngày bổ sung nên dùng cho:
+Một ngày review Requirement.
+Một ngày review Basic Design.
+Một ngày review Detail Design.
+Một ngày sửa lỗi sau Integration Test.
+Một ngày sửa lỗi sau System Test.
+Đây là lịch cân bằng nhất cho một người.

@@ -1,0 +1,482 @@
+Hôm nay, ngày **15/07/2026**, là ngày đầu tiên của dự án 20 ngày. Mục tiêu hôm nay chưa phải viết code mà là trả lời rõ:
+
+> Xây dựng sản phẩm gì, dành cho ai, làm đến đâu, không làm gì và khi nào được coi là hoàn thành?
+
+Ngày đầu tiên nên tạo một bộ tài liệu khởi động dự án nhỏ, gồm 5 tài liệu:
+
+```text
+docs/
+└── 01_Project_Management/
+    ├── 01_Project_Overview.md
+    ├── 02_Project_Scope.md
+    ├── 03_Project_Schedule.xlsx
+    ├── 04_Risk_Issue_List.xlsx
+    └── 05_QA_List.xlsx
+```
+
+Bạn có thể dùng Word/Excel hoặc Markdown. Với project học tập, Markdown và Excel là đủ.
+
+# 1. Lịch làm việc ngày đầu tiên
+
+| Thời gian | Công việc | Kết quả |
+|---|---|---|
+| 08:30–09:00 | Xác định mục tiêu ngày 1 | Checklist công việc |
+| 09:00–10:30 | Viết Project Overview | Mục tiêu và bối cảnh rõ ràng |
+| 10:30–12:00 | Xác định phạm vi | In Scope và Out of Scope |
+| 13:30–14:30 | Liệt kê chức năng sơ bộ | Feature List |
+| 14:30–15:30 | Lập lịch 20 ngày | Project Schedule |
+| 15:30–16:30 | Phân tích rủi ro | Risk List |
+| 16:30–17:00 | Tổng hợp câu hỏi còn mở | Q&A List |
+| 17:00–17:30 | Tự review và chốt tài liệu | Baseline phiên bản 1.0 |
+
+# 2. Quy tắc chung của tài liệu
+
+Mỗi tài liệu nên có phần quản lý phiên bản:
+
+| Trường | Ý nghĩa |
+|---|---|
+| Document Name | Tên tài liệu |
+| Project Name | Tên dự án |
+| Version | Phiên bản hiện tại |
+| Status | Draft, Reviewing hoặc Approved |
+| Created By | Người tạo |
+| Created Date | Ngày tạo |
+| Updated Date | Ngày cập nhật |
+| Reviewer | Người review |
+
+Quy ước phiên bản:
+
+- `0.1`: bản nháp đầu tiên.
+- `0.2`, `0.3`: các lần chỉnh sửa.
+- `1.0`: đã review và chốt.
+- `1.1`: thay đổi nhỏ sau khi đã chốt.
+- `2.0`: thay đổi lớn về phạm vi hoặc thiết kế.
+
+Vì bạn làm một mình, bạn có thể vừa là tác giả vừa là reviewer, nhưng nên review vào cuối ngày như một vai trò khác.
+
+# 3. Tài liệu Project Overview
+
+Đây là tài liệu giới thiệu tổng quan dự án. Nó giải thích tại sao dự án tồn tại và sản phẩm cuối cùng là gì.
+
+Bạn có thể sử dụng mẫu đã điền sẵn dưới đây.
+
+:::writing{variant="document" id="46281"}
+# PROJECT OVERVIEW
+
+## 1. Document Information
+
+| Item | Value |
+|---|---|
+| Project Name | Ứng dụng quản lý và đọc PDF |
+| Document Name | Project Overview |
+| Version | 1.0 |
+| Status | Approved |
+| Created By | [Tên người thực hiện] |
+| Created Date | 15/07/2026 |
+| Updated Date | 15/07/2026 |
+| Reviewer | Self-review |
+
+## 2. Project Background
+
+Hệ thống hiện tại là một ứng dụng quản lý sách cơ bản, cho phép người dùng lưu thông tin sách và đọc PDF từ file trên thiết bị hoặc từ URL.
+
+Tuy nhiên, PDF cục bộ hiện đang được lưu trong IndexedDB của trình duyệt. Dữ liệu này phụ thuộc vào từng trình duyệt, có thể bị mất khi xóa dữ liệu trình duyệt và không thuận tiện khi truy cập từ thiết bị khác.
+
+Dự án này được thực hiện nhằm nâng cấp hệ thống thành một ứng dụng quản lý và đọc PDF cá nhân hoàn chỉnh ở mức cơ bản.
+
+## 3. Project Objectives
+
+Dự án có các mục tiêu:
+
+1. Cho phép người dùng upload PDF từ máy tính hoặc điện thoại.
+2. Lưu PDF trong thư mục của backend.
+3. Cho phép thêm và đọc PDF từ URL Internet.
+4. Quản lý thông tin của tài liệu PDF.
+5. Cung cấp trình đọc PDF trên trình duyệt.
+6. Ghi nhớ trang đọc gần nhất.
+7. Cho phép tải PDF xuống trình duyệt để đọc offline.
+8. Cung cấp giao diện responsive cho máy tính và điện thoại.
+9. Thực hành quy trình phát triển phần mềm từ yêu cầu đến kiểm thử.
+
+## 4. Target Users
+
+Người sử dụng là một cá nhân có nhu cầu:
+
+- Lưu trữ tài liệu PDF cá nhân.
+- Tổ chức PDF theo tên, tác giả và tag.
+- Đọc PDF trên máy tính hoặc điện thoại.
+- Đọc lại tài liệu khi không có kết nối với backend.
+
+Hệ thống không hướng tới nhiều người dùng và không yêu cầu tài khoản đăng nhập.
+
+## 5. Expected Product
+
+Sản phẩm cuối cùng là một web application chạy trong môi trường local, bao gồm:
+
+- Frontend React.
+- Backend Spring Boot.
+- SQL Server.
+- Thư mục lưu file PDF trên máy chạy backend.
+- IndexedDB để lưu bản PDF offline trên trình duyệt.
+
+## 6. Main Functions
+
+| ID | Function |
+|---|---|
+| F-01 | Hiển thị thư viện PDF |
+| F-02 | Thêm tài liệu bằng cách upload PDF |
+| F-03 | Thêm tài liệu bằng URL PDF |
+| F-04 | Sửa thông tin tài liệu |
+| F-05 | Xóa tài liệu |
+| F-06 | Tìm kiếm, lọc và sắp xếp |
+| F-07 | Đọc PDF trên trình duyệt |
+| F-08 | Ghi nhớ trang đọc gần nhất |
+| F-09 | Đánh dấu yêu thích |
+| F-10 | Quản lý trạng thái đọc |
+| F-11 | Tải PDF để đọc offline |
+| F-12 | Xóa bản PDF offline |
+
+## 7. Technology
+
+| Layer | Technology |
+|---|---|
+| Frontend | React, TypeScript, Vite |
+| Backend | Java 17, Spring Boot |
+| ORM | Hibernate, Spring Data JPA |
+| Database | Microsoft SQL Server |
+| PDF Viewer | react-pdf |
+| Offline Storage | IndexedDB |
+| API | REST API |
+| Source Control | Git |
+
+## 8. Project Duration
+
+- Start date: 15/07/2026
+- Planned duration: 20 working days
+- Resource: 1 developer
+- Development model: Mini V-Model
+- Estimated end date: phụ thuộc việc có tính cuối tuần là ngày làm việc hay không.
+
+## 9. Success Criteria
+
+Dự án được coi là thành công khi:
+
+1. Người dùng upload và đọc được PDF.
+2. PDF được lưu ổn định trong thư mục backend.
+3. Người dùng thêm và đọc được PDF từ URL hợp lệ.
+4. Hệ thống ghi nhớ được trang đọc gần nhất.
+5. Người dùng có thể tải PDF để đọc offline.
+6. Giao diện hoạt động trên máy tính và điện thoại.
+7. Không còn lỗi Critical hoặc High tại thời điểm kết thúc.
+8. Có đầy đủ tài liệu yêu cầu, thiết kế, kiểm thử và hướng dẫn cài đặt.
+
+## 10. Constraints
+
+- Một người thực hiện toàn bộ dự án.
+- Thời gian giới hạn trong 20 ngày.
+- Chỉ sử dụng công nghệ miễn phí.
+- Không sử dụng cloud.
+- Không phát triển mobile app native.
+- Backend phải chạy thì thiết bị khác mới đọc được file chưa tải offline.
+- Phạm vi phải được giữ ổn định sau khi hoàn thành Requirement Definition.
+:::
+
+# 4. Tài liệu Project Scope
+
+Project Scope đặc biệt quan trọng vì nó ngăn việc bổ sung chức năng không kiểm soát trong lúc coding.
+
+:::writing{variant="document" id="73504"}
+# PROJECT SCOPE
+
+## 1. Document Information
+
+| Item | Value |
+|---|---|
+| Project Name | Ứng dụng quản lý và đọc PDF |
+| Document Name | Project Scope |
+| Version | 1.0 |
+| Status | Approved |
+| Created Date | 15/07/2026 |
+| Reviewer | Self-review |
+
+## 2. In Scope
+
+### 2.1 Quản lý tài liệu
+
+- Hiển thị danh sách tài liệu.
+- Thêm tài liệu bằng cách upload một file PDF.
+- Thêm tài liệu bằng URL PDF.
+- Sửa metadata của tài liệu.
+- Xóa tài liệu.
+- Xóa file vật lý khi xóa tài liệu upload.
+- Tìm kiếm theo tên, tác giả và tag.
+- Lọc theo trạng thái đọc và yêu thích.
+- Sắp xếp theo tên, năm xuất bản và ngày thêm.
+
+### 2.2 Thông tin tài liệu
+
+Mỗi tài liệu gồm:
+
+- Tiêu đề.
+- Tác giả.
+- Năm xuất bản.
+- Tag.
+- Loại nguồn.
+- URL hoặc đường dẫn file.
+- Tên file gốc.
+- Kích thước file.
+- Trang đọc gần nhất.
+- Tổng số trang.
+- Trạng thái yêu thích.
+- Trạng thái đọc.
+- Ngày tạo và ngày cập nhật.
+
+### 2.3 Upload PDF
+
+- Chỉ chấp nhận file PDF.
+- Lưu PDF trong thư mục backend.
+- Tạo tên file duy nhất bằng UUID.
+- Giữ lại tên file gốc trong database.
+- Hiển thị lỗi khi file không hợp lệ.
+- Giới hạn dung lượng dự kiến: 100 MB mỗi file.
+
+### 2.4 Đọc PDF
+
+- Đọc PDF upload từ backend.
+- Đọc PDF từ URL hợp lệ.
+- Chuyển trang trước và sau.
+- Nhảy tới số trang.
+- Zoom in và zoom out.
+- Tải file về thiết bị.
+- Ghi nhớ trang đọc gần nhất.
+
+### 2.5 Offline
+
+- Tải PDF vào IndexedDB.
+- Đọc PDF đã tải khi mất kết nối.
+- Hiển thị trạng thái đã tải offline.
+- Xóa bản PDF offline.
+- Bản offline chỉ tồn tại trên trình duyệt đã tải file.
+
+### 2.6 Giao diện
+
+- Hỗ trợ màn hình máy tính.
+- Hỗ trợ trình duyệt trên điện thoại.
+- Có trạng thái loading.
+- Có thông báo thành công và lỗi.
+- Có xác nhận trước khi xóa.
+
+## 3. Out of Scope
+
+Các chức năng sau không thuộc phạm vi dự án:
+
+- Đăng ký và đăng nhập.
+- Quản lý nhiều người dùng.
+- Phân quyền.
+- Cloud Storage.
+- Đồng bộ file qua Internet.
+- Mobile app Android hoặc iOS native.
+- Hỗ trợ EPUB, MOBI hoặc Word.
+- OCR.
+- Text-to-Speech.
+- AI tóm tắt hoặc hỏi đáp.
+- Highlight nội dung.
+- Ghi chú theo đoạn văn.
+- Chia sẻ tài liệu.
+- Bình luận.
+- Thanh toán.
+- Cửa hàng sách.
+- Quản lý bản quyền.
+- Tự động tải PDF từ mọi website.
+- Chỉnh sửa nội dung PDF.
+
+## 4. Assumptions
+
+- SQL Server đã được cài đặt và đang hoạt động.
+- Java, Node.js và npm đã được cài đặt.
+- Thiết bị truy cập backend nằm trong cùng mạng nội bộ.
+- URL được nhập trỏ trực tiếp tới một file PDF.
+- Người dùng tự chịu trách nhiệm về tính hợp lệ của URL.
+- Trình duyệt hỗ trợ IndexedDB.
+- Ứng dụng chủ yếu được kiểm thử bằng Chrome và Edge.
+
+## 5. Dependencies
+
+- SQL Server.
+- Microsoft JDBC Driver.
+- Spring Boot.
+- React và Vite.
+- react-pdf.
+- pdf.js.
+- IndexedDB.
+- Trình duyệt web.
+
+## 6. Acceptance Boundary
+
+Một chức năng chỉ được tính là hoàn thành khi:
+
+1. Code đã được triển khai.
+2. Build không có lỗi.
+3. Luồng bình thường hoạt động.
+4. Các trường hợp lỗi chính đã được xử lý.
+5. Unit Test liên quan đã pass.
+6. Integration hoặc System Test liên quan đã pass.
+7. Tài liệu thiết kế được cập nhật nếu code thay đổi.
+
+## 7. Change Control
+
+Sau khi tài liệu Requirement Specification đạt phiên bản 1.0:
+
+- Mọi chức năng mới phải được ghi vào Change Request.
+- Change Request phải ghi rõ lý do, ảnh hưởng và thời gian bổ sung.
+- Chức năng mới chỉ được thêm nếu không ảnh hưởng các chức năng bắt buộc.
+- Chức năng tùy chọn sẽ bị loại bỏ đầu tiên khi dự án chậm tiến độ.
+:::
+
+# 5. Project Schedule
+
+Bạn nên tạo file Excel với các cột:
+
+| ID | Phase | Task | Start | End | Effort | Deliverable | Status | Note |
+|---|---|---|---|---|---:|---|---|---|
+
+Dữ liệu ban đầu:
+
+| Ngày | Giai đoạn | Công việc chính | Deliverable |
+|---:|---|---|---|
+| 1 | Initiation | Mục tiêu, phạm vi, lịch và rủi ro | Project Overview, Scope |
+| 2 | Requirement | Functional Requirement | Requirement Specification |
+| 3 | Requirement | Non-functional, use case, acceptance | Use Case, RTM |
+| 4 | Basic Design | Kiến trúc, database, file storage | Basic Design phần 1 |
+| 5 | Basic Design | Màn hình, API và luồng xử lý | Basic Design phần 2 |
+| 6 | Review | Review và sửa Basic Design | BD Review Record |
+| 7 | Detail Design | Backend Detail Design | Class/API Design |
+| 8 | Detail Design | Frontend Detail Design | Component/State Design |
+| 9 | Review | Review và sửa Detail Design | DD Review Record |
+| 10–12 | Implementation | Backend | Backend source, Unit Test |
+| 13–15 | Implementation | Frontend và offline | Frontend source, Unit Test |
+| 16 | Integration Test | Kiểm tra tích hợp | IT Result |
+| 17 | Bug Fix | Sửa lỗi Integration Test | Bug List |
+| 18 | System Test | Kiểm thử toàn hệ thống | ST Result |
+| 19 | Regression/UAT | Regression và nghiệm thu | UAT Result |
+| 20 | Release | Hướng dẫn và tổng kết | Release Package |
+
+Các giá trị `Status`:
+
+```text
+Not Started
+In Progress
+Reviewing
+Completed
+Blocked
+```
+
+# 6. Risk & Issue List
+
+Risk là vấn đề **có thể xảy ra**. Issue là vấn đề **đã xảy ra**.
+
+Tạo Excel với format:
+
+| ID | Type | Description | Probability | Impact | Priority | Prevention | Contingency | Status |
+|---|---|---|---|---|---|---|---|---|
+
+Ví dụ:
+
+| ID | Type | Description | Probability | Impact | Priority | Prevention | Contingency | Status |
+|---|---|---|---|---|---|---|---|---|
+| R-01 | Risk | Không đủ thời gian trong 20 ngày | Medium | High | High | Không thêm chức năng ngoài scope | Bỏ tính năng tùy chọn | Open |
+| R-02 | Risk | PDF từ URL bị chặn CORS | High | Medium | High | Kiểm tra sớm bằng prototype | Mở URL ở tab mới | Open |
+| R-03 | Risk | File PDF lớn làm upload chậm | Medium | Medium | Medium | Giới hạn file 100 MB | Giảm giới hạn còn 50 MB | Open |
+| R-04 | Risk | IndexedDB bị xóa | Medium | Medium | Medium | Thông báo đây chỉ là cache offline | Cho tải lại từ backend | Open |
+| R-05 | Risk | Design tốn quá nhiều thời gian | Medium | High | High | Dùng template và giới hạn nội dung | Viết design theo chức năng chính | Open |
+| I-01 | Issue | Maven Wrapper hiện không chạy được | — | High | High | — | Sửa wrapper hoặc cài Maven | Open |
+
+Thang đánh giá:
+
+```text
+Probability: Low / Medium / High
+Impact: Low / Medium / High
+Priority: Low / Medium / High
+```
+
+# 7. Q&A List
+
+Q&A List chứa những câu hỏi chưa có quyết định cuối cùng.
+
+Format:
+
+| ID | Category | Question | Proposed Answer | Final Answer | Owner | Due Date | Status |
+|---|---|---|---|---|---|---|---|
+
+Các câu hỏi cần chốt hôm nay:
+
+| ID | Category | Question | Proposed Answer |
+|---|---|---|---|
+| Q-01 | Schedule | Có tính thứ Bảy và Chủ nhật là ngày làm việc không? | Chỉ tính ngày thực tế có thể làm |
+| Q-02 | Upload | Dung lượng PDF tối đa là bao nhiêu? | 100 MB |
+| Q-03 | Storage | File được lưu ở đâu? | `Backend/uploads` |
+| Q-04 | URL | Có tải URL về backend không? | Không, chỉ lưu URL |
+| Q-05 | Delete | Xóa sách có xóa file không? | Có |
+| Q-06 | Offline | Offline có đồng bộ tiến độ không? | Không cần trong phiên bản này |
+| Q-07 | Browser | Hỗ trợ trình duyệt nào? | Chrome và Edge |
+| Q-08 | Mobile | Có làm native app không? | Không, chỉ responsive web |
+| Q-09 | File type | Có hỗ trợ EPUB không? | Không |
+| Q-10 | Database | Hibernate hay migration quản lý schema? | Tạm dùng Hibernate trong development |
+
+Khi có câu trả lời cuối cùng:
+
+- Điền vào `Final Answer`.
+- Đổi trạng thái thành `Closed`.
+- Cập nhật câu trả lời vào tài liệu Requirement hoặc Design liên quan.
+
+# 8. Feature Priority List
+
+Bạn nên phân loại chức năng bằng MoSCoW:
+
+- **Must Have:** bắt buộc.
+- **Should Have:** quan trọng nhưng có thể lùi.
+- **Could Have:** chỉ làm nếu còn thời gian.
+- **Won’t Have:** không làm trong phiên bản này.
+
+| Chức năng | Priority |
+|---|---|
+| Upload PDF | Must |
+| Lưu PDF trên backend | Must |
+| Đọc PDF | Must |
+| CRUD metadata | Must |
+| Tìm kiếm | Must |
+| Đọc từ URL | Must |
+| Lưu trang gần nhất | Must |
+| Giao diện responsive | Must |
+| Tải offline | Should |
+| Trạng thái đọc | Should |
+| Yêu thích | Should |
+| Sắp xếp nâng cao | Could |
+| Trang thống kê | Could |
+| PWA cài lên màn hình chính | Could |
+| OCR và AI | Won’t |
+
+Nếu dự án trễ, cắt `Could Have` trước, sau đó mới cân nhắc `Should Have`.
+
+# 9. Checklist kết thúc ngày 1
+
+Ngày đầu tiên hoàn thành khi:
+
+- [ ] Có Project Overview phiên bản 1.0.
+- [ ] Có Project Scope phiên bản 1.0.
+- [ ] Chốt In Scope và Out of Scope.
+- [ ] Có danh sách chức năng và mức ưu tiên.
+- [ ] Có lịch 20 ngày.
+- [ ] Có ít nhất 5 rủi ro.
+- [ ] Có Q&A List và các quyết định quan trọng.
+- [ ] Tất cả tài liệu đã được tự review.
+- [ ] Commit tài liệu lên Git.
+- [ ] Chưa bắt đầu thêm chức năng mới vào code.
+
+Commit có thể đặt tên:
+
+```text
+docs: add project initiation documents
+```
+
+Sang ngày thứ hai, bạn sẽ dựa trên `Project Overview` và `Project Scope` để viết **Requirement Specification**, bao gồm Functional Requirement, Non-functional Requirement, Business Rule và Acceptance Criteria.
