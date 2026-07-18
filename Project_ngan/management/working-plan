@@ -20,17 +20,17 @@ Kết quả cần review:
 - Chức năng nào là bắt buộc, chức năng nào là tùy chọn?
 
 Ngày 2: Định nghĩa yêu cầu
-Viết tài liệu Requirement Definition.
+- Viết tài liệu Requirement Definition.
 Nội dung:
-Yêu cầu chức năng.
-Yêu cầu phi chức năng.
-Business rules.
-Use case.
-Acceptance criteria.
-Giới hạn file upload.
-Quy tắc xử lý URL.
-Quy tắc đọc offline.
-Các trường hợp lỗi.
+- Yêu cầu chức năng.
+- Yêu cầu phi chức năng.
+- Business rules.
+- Use case.
+- Acceptance criteria.
+- Giới hạn file upload.
+- Quy tắc xử lý URL.
+- Quy tắc đọc offline.
+- Các trường hợp lỗi.
 Ví dụ yêu cầu:
 FR-01: Người dùng có thể upload một file PDF.
 FR-02: Hệ thống lưu PDF trong thư mục backend.
@@ -39,10 +39,11 @@ FR-04: Người dùng có thể thêm PDF bằng URL.
 FR-05: Hệ thống ghi nhớ trang đọc gần nhất.
 FR-06: Người dùng có thể tải PDF về để đọc offline.
 Tài liệu:
-Requirement Specification
-Use Case List
-Acceptance Criteria
-Requirements Traceability Matrix bản đầu tiên
+- Requirement Specification
+- Use Case List
+- Acceptance Criteria
+- Requirements Traceability Matrix bản đầu tiên
+
 Ngày 3: Phân tích nghiệp vụ và thiết kế màn hình
 Công việc:
 Vẽ luồng sử dụng.
@@ -63,6 +64,7 @@ Screen List
 Message List
 Validation Rules
 Wireframe chỉ cần đơn giản, có thể làm bằng draw.io, Figma miễn phí hoặc PowerPoint.
+
 Ngày 4: Basic Design — kiến trúc và database
 Basic Design mô tả hệ thống sẽ hoạt động như thế nào ở mức tổng quan.
 Công việc:
@@ -90,6 +92,7 @@ Spring Boot ─── uploads/
 SQL Server
 
 IndexedDB: bản PDF offline trên từng thiết bị
+
 Ngày 5: Basic Design — xử lý chức năng
 Mô tả luồng xử lý cho từng chức năng:
 Upload PDF.
@@ -106,6 +109,7 @@ API Definition
 Error Handling Design
 Basic Design Review Checklist
 Cuối ngày thực hiện review Basic Design. Mọi thay đổi yêu cầu sau ngày này phải được ghi vào Change Log.
+
 Ngày 6: Detail Design — backend
 Detail Design mô tả cụ thể cách triển khai code.
 Nội dung:
@@ -126,6 +130,7 @@ Class Diagram
 API Request Response Definition
 Exception List
 Unit Test Specification bản đầu tiên
+
 Ngày 7: Detail Design — frontend
 Nội dung:
 Component tree.
@@ -144,6 +149,7 @@ State and Data Flow
 IndexedDB Design
 Frontend Unit Test Specification
 Cuối ngày review toàn bộ Detail Design trước khi coding.
+
 Ngày 8: Coding backend
 Ưu tiên:
 Cập nhật database.
@@ -157,6 +163,7 @@ Kết quả:
 Backend build thành công.
 API được kiểm tra bằng Postman hoặc Bruno.
 Unit test cho Service bắt đầu được viết.
+
 Ngày 9: Coding frontend — quản lý sách
 Công việc:
 Form thêm/sửa sách.
@@ -169,6 +176,7 @@ Xử lý loading và lỗi.
 Kết quả:
 Hoàn thành luồng CRUD.
 Frontend kết nối thành công với backend.
+
 Ngày 10: Coding frontend — đọc PDF
 Công việc:
 Đọc PDF từ backend.
@@ -180,6 +188,7 @@ Lưu trang gần nhất.
 Giao diện responsive.
 Kết quả:
 Luồng đọc online hoạt động trên máy tính và điện thoại.
+
 Ngày 11: Coding offline và hoàn thiện
 Công việc:
 Tải PDF vào IndexedDB.
