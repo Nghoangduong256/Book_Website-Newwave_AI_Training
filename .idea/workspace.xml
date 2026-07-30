@@ -7,7 +7,82 @@
     <option name="selectedModelId" value="auto" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="43935271-b718-427a-a7fb-637cd3b42c42" name="Changes" comment="" />
+    <list default="true" id="43935271-b718-427a-a7fb-637cd3b42c42" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/BM18_NWS_P001_Basic Design_JP_v1.0.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/BM20_NWS_P001_DB Design_v1.0.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/BM21_NWS_P001_API Design_v1.0.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Add Book_SCR-06.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Add to favorite failure Dialog.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Dashboard_SCR-01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Delete confirmation Dialog.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Delete failure Dialog.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Edit Book__SCR-07.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Empty-Library-Container-component.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Empty-Recent-Container-component.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Favourite_SCR-04.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Library - Book's Details_MD-01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Library_SCR-02.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Library_SCR-02_components.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Load-failure-Dialog.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Read PDF__SCR-05.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Recent_SCR-03.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/Remove from favorite Dialog.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/BM13_NWS_P001_MD-01_BookDetail_FSD_v1.0_EN.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/BM13_NWS_P001_SCR-01_Dashboard_FSD_v1.0_EN.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/BM13_NWS_P001_SCR-02_Library_FSD_v1.0_EN.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/BM13_NWS_P001_SCR-03_Recent_FSD_v1.0_EN.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/BM13_NWS_P001_SCR-04_Favorite_FSD_v1.0_EN.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App.zip" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/Truyenthieu - Book Management App/9.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/dashboard-diagram-full-flow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/favorite-diagram-full-flow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/library-diagram-full-flow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-main/fsd/screen-flow-diagram/recent-diagram-full-flow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-sample/Add Book.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-sample/BM13_NWS_P001_SCR-01_FSD_v1.0.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-sample/Edit Book.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-sample/Library - Book's Details.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-sample/Library.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/design-sample/Read PDF.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/book-open-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/book-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/check-circle-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/check-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/chevron-left-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/chevron-right-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/circle-regular.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/ellipsis-v-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/exchange-alt-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/file-download-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/folder-open-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/list-alt-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/newspaper-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/pencil-alt-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/plus-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/save-solid.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project_ngan/02_Design/icon/trash-alt-solid.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2026-07-13_10_01_PM_[Changes]1/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2026-07-13_10_01_PM__Changes_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_ngan/.idea/Project_ngan.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Project_ngan/.idea/Project_ngan.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_ngan/01_Project_Management/BM01_NWS_P001_Project Open_v2.0.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_ngan/01_Project_Management/BM03_NWS_P001_Project Management Plan_v2.0.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_ngan/01_Project_Management/BM04_NWS_P001_Risk Management_v1.0.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_ngan/01_Project_Management/BM05_NWS_P001_Project Schedule_v1.0_EN.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_ngan/01_Project_Management/Reqiurement_Define.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_ngan/01_Project_Management/Scope_Definement.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project_ngan/management/daily-report" beforeDir="false" afterPath="$PROJECT_DIR$/Project_ngan/management/daily-report" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,7 +133,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "copilot.chat.legacySessionMetadata.migrated": "true",
-    "git-widget-placeholder": "codex/renew-app-20260713",
+    "git-widget-placeholder": "update/renew-app-20260713",
     "ignore.virus.scanning.warn.message": "true",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
@@ -85,7 +160,7 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="998f3495-0899-4dec-81cf-71432fbe66aa" name="Changes" comment="" />
+      <changelist id="43935271-b718-427a-a7fb-637cd3b42c42" name="Changes" comment="" />
       <created>1783695078427</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />

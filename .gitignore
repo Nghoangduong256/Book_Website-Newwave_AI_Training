@@ -1,0 +1,53 @@
+# Codex temporary/generated files
+/.codex_spreadsheet_work/
+/outputs/
+/.codex/
+
+#Management folder/files
+/Project_ngan/01_Project_Management
+/Project_ngan/02_Design
+/Project_ngan/management
+
+# IntelliJ IDEA
+.idea/
+**/.idea/
+*.iml
+*.iws
+*.ipr
+
+# Visual Studio Code
+.vscode/
+**/.vscode/
+
+# Operating system
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary Microsoft Office files
+~$*.xlsx
+~$*.docx
+~$*.pptx
+
+# Logs
+*.log
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Application-managed PDF storage
+uploads/
+**/uploads/
+storage/
+**/storage/
+
+# Frontend generated files
+**/node_modules/
+**/dist/
+**/coverage/
+
+# Backend generated files
+**/target/
+**/build/
