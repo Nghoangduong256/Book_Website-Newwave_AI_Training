@@ -7,7 +7,9 @@
     <option name="selectedModelId" value="auto" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="43935271-b718-427a-a7fb-637cd3b42c42" name="Changes" comment="" />
+    <list default="true" id="43935271-b718-427a-a7fb-637cd3b42c42" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,7 +60,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "copilot.chat.legacySessionMetadata.migrated": "true",
-    "git-widget-placeholder": "codex/renew-app-20260713",
+    "git-widget-placeholder": "update/renew-app-20260713",
     "ignore.virus.scanning.warn.message": "true",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
