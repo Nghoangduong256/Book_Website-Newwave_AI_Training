@@ -1,0 +1,57 @@
+# Codex local configuration and generated working files
+/.codex/
+/.codex_*/
+
+# Codex-generated output artifacts
+/outputs/
+
+# Project documents and design artifacts
+/Project_ngan/01_Project_Management/
+/Project_ngan/02_Design/
+/Project_ngan/management/
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.pdf
+
+# Design images and packaged source snapshots
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.zip
+
+# IDE and editor metadata
+.idea/
+**/.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+**/.vscode/
+
+# Dependencies and generated build files
+**/node_modules/
+**/dist/
+**/coverage/
+**/target/
+**/build/
+
+# Logs, temporary files, and OS metadata
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+~$*
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
