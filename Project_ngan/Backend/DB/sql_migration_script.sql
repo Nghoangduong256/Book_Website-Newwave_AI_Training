@@ -15,7 +15,7 @@ BEGIN TRY
         ALTER COLUMN author NVARCHAR(255) NOT NULL;
 
     ALTER TABLE dbo.books
-        ALTER COLUMN publishYear NVARCHAR(10) NULL;
+        ALTER COLUMN publishYear INT NULL;
 
     ALTER TABLE dbo.books
         ALTER COLUMN tags NVARCHAR(500) NULL;
@@ -116,9 +116,6 @@ BEGIN TRY
         END
     WHERE sourceType IS NULL;
 
-    ALTER TABLE dbo.books
-        ALTER COLUMN sourceType VARCHAR(20) NOT NULL;
-
 
     /* =========================================================
        4. Thêm các CHECK constraint
@@ -154,14 +151,6 @@ BEGIN TRY
             totalPages IS NULL
             OR lastReadPage <= totalPages
         );
-
-    ALTER TABLE dbo.books
-        ADD CONSTRAINT CK_books_publishYearLength
-        CHECK (
-            publishYear IS NULL
-            OR LEN(LTRIM(RTRIM(publishYear))) <= 10
-        );
-
 
     /* =========================================================
        5. Tạo index phục vụ tìm kiếm và lọc

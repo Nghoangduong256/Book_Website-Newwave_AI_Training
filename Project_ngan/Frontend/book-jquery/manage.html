@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý sách | My Library</title>
+
+    <link rel="stylesheet" href="./css/variables.css" />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/layout.css" />
+    <link rel="stylesheet" href="./css/components.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <a href="./index.html" class="brand">
+          <span class="brand__icon" aria-hidden="true">▣</span>
+          <span class="brand__name">My Library</span>
+        </a>
+
+        <nav class="sidebar-nav" aria-label="Điều hướng chính">
+          <a class="sidebar-nav__item" href="./index.html">
+            <span aria-hidden="true">▤</span>
+            <span>Thư viện</span>
+          </a>
+
+          <a
+            class="sidebar-nav__item sidebar-nav__item--active"
+            href="./manage.html"
+          >
+            <span aria-hidden="true">⚙</span>
+            <span>Quản lý sách</span>
+          </a>
+        </nav>
+
+        <div class="sidebar__footer">
+          <div class="sidebar__book-count">
+            <strong id="sidebarBookCount">0</strong>
+            <span>cuốn sách</span>
+          </div>
+
+          <div class="text-secondary">Frontend jQuery</div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="page-header">
+          <div>
+            <h1 class="page-title">Quản lý sách</h1>
+
+            <p class="page-description">
+              Thêm, chỉnh sửa và quản lý thư viện của bạn.
+            </p>
+          </div>
+
+          <button
+            id="openCreateBookButton"
+            class="button button--primary"
+            type="button"
+          >
+            <span aria-hidden="true">＋</span>
+            Thêm sách
+          </button>
+        </header>
+
+        <section class="page-body">
+          <div class="manage-toolbar">
+            <label class="search-field" for="manageBookSearch">
+              <span class="search-field__icon" aria-hidden="true">⌕</span>
+
+              <input
+                id="manageBookSearch"
+                class="form-control search-field__input"
+                type="search"
+                placeholder="Tìm sách cần chỉnh sửa ..."
+                autocomplete="off"
+              />
+            </label>
+
+            <label for="pdfFilter">
+              <span class="visually-hidden">Lọc trạng thái PDF</span>
+
+              <select class="form-select" id="pdfFilter">
+                <option value="ALL">Tất cả trạng thái</option>
+                <option value="OFFLINE">PDF offline</option>
+                <option value="URL">PDF từ URL</option>
+                <option value="NONE">Chưa có PDF</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="manageState" class="library-state" aria-live="polite">
+            <div id="manageLoadingState" class="library-state__content">
+              <span class="loading-spinner" aria-hidden="true"></span>
+              <span>Đang tải danh sách sách ...</span>
+            </div>
+
+            <div id="manageErrorState" class="library-state__content is-hidden">
+              <p id="manageErrorMessage">Không thể tải danh sách sách</p>
+              <button id="manageRetryButton" class="button" type="button">
+                Thử lại
+              </button>
+            </div>
+
+            <div id="manageEmptyState" class="library-state__content is-hidden">
+              <strong id="manageEmptyTitle">Chưa có sách</strong>
+
+              <p id="manageEmptyMessage" class="text-secondary">
+                Hãy thêm cuốn sách đầu tiên
+              </p>
+            </div>
+          </div>
+
+          <div id="bookTablePanel" class="table-panel is-hidden">
+            <table class="book-table">
+              <thead>
+                <tr>
+                  <th scope="col">Sách</th>
+                  <th scope="col">Tác giả</th>
+                  <th scope="col">Năm</th>
+                  <th scope="col">PDF</th>
+                  <th scope="col">Hành động</th>
+                </tr>
+              </thead>
+
+              <tbody id="bookTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="bookModal" class="modal is-hidden" aria-hidden="true">
+      <div
+        class="modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="bookModalTitle"
+      >
+        <header class="modal__header">
+          <div>
+            <h2 id="bookModalTitle" class="modal__title">Thêm sách</h2>
+
+            <p class="modal__description">Nhập thông tin sách bên dưới.</p>
+          </div>
+
+          <button
+            class="modal__close"
+            data-close-modal
+            type="button"
+            aria-label="Đóng"
+          >
+            ×
+          </button>
+        </header>
+
+        <form id="bookForm" novalidate>
+          <div class="modal__body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="bookTitle">
+                  Tiêu đề <span class="required-mark">*</span>
+                </label>
+
+                <input
+                  id="bookTitle"
+                  class="form-control"
+                  name="title"
+                  type="text"
+                  maxlength="255"
+                />
+
+                <p id="bookTitleError" class="form-error is-hidden"></p>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="bookAuthor">
+                  Tác giả <span class="required-mark">*</span>
+                </label>
+
+                <input
+                  id="bookAuthor"
+                  class="form-control"
+                  name="author"
+                  type="text"
+                  maxlength="255"
+                />
+
+                <p id="bookAuthorError" class="form-error is-hidden"></p>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="bookYear"> Năm xuất bản </label>
+
+                <input
+                  id="bookYear"
+                  class="form-control"
+                  name="publishYear"
+                  type="text"
+                  inputmode="numeric"
+                  placeholder="Ví dụ: 2024 hoặc -500"
+                />
+
+                <p id="bookYearError" class="form-error is-hidden"></p>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="bookTags"> Tags </label>
+
+                <input
+                  id="bookTags"
+                  class="form-control"
+                  name="tags"
+                  type="text"
+                  maxlength="500"
+                  placeholder="Lập trình, JavaScript, UI/UX"
+                />
+              </div>
+
+              <div class="form-group form-group--full">
+                <label class="form-label" for="bookPdfUrl"> URL PDF </label>
+
+                <input
+                  id="bookPdfUrl"
+                  class="form-control"
+                  name="pdfUrl"
+                  type="url"
+                  placeholder="https://example.com/book.pdf"
+                />
+
+                <p id="bookPdfUrlError" class="form-error is-hidden"></p>
+              </div>
+
+              <div class="form-group form-group--full">
+                <label class="form-label" for="bookPdfFile">
+                  PDF offline
+                </label>
+
+                <input
+                  id="bookPdfFile"
+                  class="form-control"
+                  name="pdfFile"
+                  type="file"
+                  accept="application/pdf,.pdf"
+                />
+
+                <p class="form-hint">
+                  File PDF được lưu trong trình duyệt này bằng IndexedDB. Chọn
+                  file mới khi muốn thêm hoặc thay thế bản offline.
+                </p>
+
+                <p id="bookPdfFileError" class="form-error is-hidden"></p>
+              </div>
+            </div>
+          </div>
+
+          <footer class="modal__footer">
+            <span id="formStatus" class="form-status" aria-live="polite"></span>
+
+            <button class="button" data-close-modal type="button">Hủy</button>
+
+            <button
+              id="saveBookButton"
+              class="button button--primary"
+              type="submit"
+            >
+              Thêm sách
+            </button>
+          </footer>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="appToast"
+      class="toast is-hidden"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+
+    <dialog
+      id="deleteDialog"
+      class="confirm-dialog"
+      aria-labelledby="deleteDialogTitle"
+      aria-describedby="deleteDialogDescription"
+    >
+      <div class="modal__body">
+        <h2 id="deleteDialogTitle">Xóa sách?</h2>
+
+        <p id="deleteDialogDescription">
+          Bạn có muốn xóa sách
+          <strong id="deleteBookName"></strong>? Thao tác này không có nút hoàn
+          tác.
+        </p>
+
+        <p id="deleteError" class="form-error is-hidden" role="alert"></p>
+      </div>
+
+      <div class="modal__footer">
+        <button id="cancelDeleteButton" class="button" type="button">
+          Hủy
+        </button>
+
+        <button
+          id="confirmDeleteButton"
+          class="button button--danger"
+          type="button"
+        >
+          Xóa sách
+        </button>
+      </div>
+    </dialog>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/pdf-store.js"></script>
+    <script src="./js/manage.js"></script>
+  </body>
+</html>

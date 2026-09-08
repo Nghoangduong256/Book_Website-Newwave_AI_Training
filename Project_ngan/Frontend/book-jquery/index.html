@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thư viện | My Library</title>
+
+    <link rel="stylesheet" href="./css/variables.css" />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/layout.css" />
+    <link rel="stylesheet" href="./css/components.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <a href="./index.html" class="brand">
+          <span class="brand__icon" aria-hidden="true">▣</span>
+          <span class="brand__name">My Library</span>
+        </a>
+
+        <nav class="sidebar-nav" aria-label="Điều hướng chính">
+          <a
+            href="./index.html"
+            class="sidebar-nav__item sidebar-nav__item--active"
+          >
+            <span aria-hidden="true">▤</span>
+            <span>Thư viện</span>
+          </a>
+
+          <a class="sidebar-nav__item" href="./manage.html">
+            <span aria-hidden="true">⚙</span>
+            <span>Quản lý sách</span>
+          </a>
+        </nav>
+
+        <div class="sidebar__footer">
+          <div class="sidebar__book-count">
+            <strong id="sidebarBookCount">6</strong>
+            <span>cuốn sách</span>
+          </div>
+
+          <div class="text-secondary">Frontend jQuery</div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="page-header">
+          <div>
+            <h1 class="page-title">Thư viện của tôi</h1>
+
+            <p class="page-description">
+              Khám phá và tiếp tục những cuốn sách bạn yêu thích.
+            </p>
+          </div>
+
+          <a class="button button--primary" href="./manage.html">
+            <span aria-hidden="true">＋</span>
+            Thêm sách
+          </a>
+        </header>
+
+        <section class="page-body">
+          <div class="library-toolbar">
+            <label class="search-field" for="bookSearch">
+              <span class="search-field__icon" aria-hidden="true">⌕</span>
+
+              <input
+                id="bookSearch"
+                class="form-control search-field__input"
+                type="search"
+                placeholder="Tìm theo tên sách, tác giả, tag..."
+                autocomplete="off"
+              />
+            </label>
+
+            <label class="sort-field" for="bookSort">
+              <span class="visually-hidden">Sắp xếp sách</span>
+
+              <select id="bookSort" class="form-select">
+                <option value="TITLE_ASC">Tiêu đề A–Z</option>
+                <option value="TITLE_DESC">Tiêu đề Z–A</option>
+                <option value="YEAR_DESC">Năm mới nhất</option>
+                <option value="YEAR_ASC">Năm cũ nhất</option>
+                <option value="CREATED_DESC">Thêm gần đây</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="libraryState" class="library-state" aria-live="polite">
+            <div id="loadingState" class="library-state__content">
+              <span class="loading-spinner" aria-hidden="true"></span>
+              <span>Đang tải thư viện...</span>
+            </div>
+
+            <div id="errorState" class="library-state__content is-hidden">
+              <p id="errorMessage">Không thể tải danh sách sách.</p>
+
+              <button id="retryLoadButton" class="button" type="button">
+                Thử lại
+              </button>
+            </div>
+
+            <div id="emptyState" class="library-state__content is-hidden">
+              <strong id="emptyStateTitle">Thư viện chưa có sách</strong>
+
+              <p id="emptyStateMessage" class="text-secondary">
+                Hãy thêm cuốn sách đầu tiên vào thư viện.
+              </p>
+            </div>
+          </div>
+
+          <div id="bookGrid" class="book-grid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="./js/config.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/library.js"></script>
+  </body>
+</html>

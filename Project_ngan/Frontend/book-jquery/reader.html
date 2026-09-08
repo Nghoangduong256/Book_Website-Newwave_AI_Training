@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý sách | My Library</title>
+
+    <link rel="stylesheet" href="./css/variables.css" />
+    <link rel="stylesheet" href="./css/base.css" />
+    <link rel="stylesheet" href="./css/layout.css" />
+    <link rel="stylesheet" href="./css/components.css" />
+  </head>
+  <body>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <a href="./index.html" class="brand">
+          <span class="brand__icon" aria-hidden="true">▣</span>
+          <span class="brand__name">My Library</span>
+        </a>
+
+        <nav class="sidebar-nav" aria-label="Điều hướng chính">
+          <a class="sidebar-nav__item" href="./index.html">
+            <span aria-hidden="true">▤</span>
+            <span>Thư viện</span>
+          </a>
+
+          <a class="sidebar-nav__item" href="./manage.html">
+            <span aria-hidden="true">⚙</span>
+            <span>Quản lý sách</span>
+          </a>
+        </nav>
+
+        <div class="sidebar__footer">
+          <div class="sidebar__book-count">
+            <strong id="sidebarBookCount">0</strong>
+            <span>cuốn sách</span>
+          </div>
+
+          <div class="text-secondary">Frontend jQuery</div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="page-header">
+          <div>
+            <a class="button" href="./index.html"> ← Quay lại thư viện </a>
+
+            <h1 class="page-title">Đọc sách</h1>
+
+            <p class="page-description">
+              Thông tin sách sẽ được tải dựa trên ID.
+            </p>
+          </div>
+        </header>
+
+        <section class="page-body">
+          <div class="placeholder">
+            Trình đọc PDF sẽ được xây dựng vào ngày 6.
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/reader.js"></script>
+  </body>
+</html>

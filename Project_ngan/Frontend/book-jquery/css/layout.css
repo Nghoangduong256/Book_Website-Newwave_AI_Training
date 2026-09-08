@@ -1,0 +1,138 @@
+.app-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+
+  height: 100vh;
+  padding: var(--space-6) var(--space-4);
+
+  display: flex;
+  flex-direction: column;
+
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  margin-bottom: var(--space-8);
+  padding: 0 var(--space-2);
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.brand__icon {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+  place-items: center;
+
+  color: white;
+  background: var(--color-primary);
+  border-radius: var(--radius-medium);
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sidebar-nav__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  padding: 11px 12px;
+
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-medium);
+}
+
+.sidebar-nav__item:hover {
+  color: var(--color-primary);
+  background: #f5f7ff;
+}
+
+.sidebar-nav__item--active {
+  color: var(--color-primary);
+  background: #eef2ff;
+  font-weight: 600;
+}
+
+.sidebar__footer {
+  margin-top: auto;
+  padding: var(--space-4) var(--space-2) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.sidebar__book-count {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-1);
+}
+
+.main-content {
+  min-width: 0;
+  padding: var(--space-8);
+}
+
+.page-header,
+.page-body {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+
+  margin-bottom: var(--space-6);
+}
+
+.page-title {
+  margin-bottom: var(--space-1);
+  font-size: 28px;
+  line-height: 1.25;
+}
+
+.page-description {
+  margin-bottom: 0;
+  color: var(--color-text-secondary);
+}
+
+.library-toolbar {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) 220px;
+  gap: var(--space-3);
+
+  margin-bottom: var(--space-5);
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.manage-toolbar {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) 220px;
+  gap: var(--space-3);
+
+  margin-bottom: var(--space-5);
+}
