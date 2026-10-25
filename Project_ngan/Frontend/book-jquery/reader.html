@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quản lý sách | My Library</title>
+    <title>Đọc sách | My Library</title>
 
     <link rel="stylesheet" href="./css/variables.css" />
     <link rel="stylesheet" href="./css/base.css" />
@@ -45,17 +45,99 @@
           <div>
             <a class="button" href="./index.html"> ← Quay lại thư viện </a>
 
-            <h1 class="page-title">Đọc sách</h1>
+            <h1 class="readerPageTitle" class="page-title reader-page-title">
+              Đọc sách
+            </h1>
 
-            <p class="page-description">
-              Thông tin sách sẽ được tải dựa trên ID.
+            <p id="readerPageDescription" class="page-description">
+              Đang tải thông tin sách...
             </p>
           </div>
         </header>
 
         <section class="page-body">
-          <div class="placeholder">
-            Trình đọc PDF sẽ được xây dựng vào ngày 6.
+          <div id="readerLoading" class="library-state">
+            <div class="library-state__content">
+              <span class="loading-spinner" aria-hidden="true"></span>
+              <span>Đang tải sách và PDF...</span>
+            </div>
+          </div>
+
+          <div id="readerError" class="library-state is-hidden" role="alert">
+            <div class="library-state__content">
+              <strong>Không thể mở sách</strong>
+              <p id="readerErrorMessage"></p>
+
+              <a class="button" href="./index.html"> Quay lại thư viện </a>
+            </div>
+          </div>
+
+          <div id="readerLayout" class="reader-layout is-hidden">
+            <aside class="reader-book-panel">
+              <div class="reader-cover">
+                <span id="readerBookInitials">BK</span>
+              </div>
+
+              <h2 id="readerBookTitle"></h2>
+
+              <p id="readerBookMeta" class="text-secondary"></p>
+
+              <div id="readerBookTags" class="tag-list"></div>
+
+              <span id="readerSourceBadge" class="status-badge"></span>
+            </aside>
+
+            <div class="pdf-viewer">
+              <div class="pdf-toolbar">
+                <button
+                  id="previousPageButton"
+                  class="button button--small"
+                  type="button"
+                >
+                  ← Trang trước
+                </button>
+
+                <span id="pageIndicator">Trang — / —</span>
+
+                <button
+                  id="nextPageButton"
+                  class="button button--small"
+                  type="button"
+                >
+                  Trang sau →
+                </button>
+
+                <button
+                  id="zoomOutButton"
+                  class="button button--small"
+                  type="button"
+                >
+                  −
+                </button>
+
+                <span id="zoomIndicator">110%</span>
+
+                <button
+                  id="zoomInButton"
+                  class="button button--small"
+                  type="button"
+                >
+                  +
+                </button>
+
+                <a
+                  id="downloadPdfButton"
+                  class="button button--primary pdf-download"
+                  href="#"
+                >
+                  Tải PDF
+                </a>
+              </div>
+
+              <div id="pdfCanvasArea" class="pdf-canvas-area">
+                <canvas id="pdfCanvas"></canvas>
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -64,6 +146,9 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="./js/config.js"></script>
     <script src="./js/common.js"></script>
-    <script src="./js/reader.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/pdf-store.js"></script>
+
+    <script type="module" src="./js/reader.js"></script>
   </body>
 </html>

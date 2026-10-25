@@ -297,3 +297,31 @@ Bạn nên tự trả lời:
 [V] Refresh trang vẫn thấy kết quả đúng
 [V] Chỉ thử xóa sách test không có PDF offline
 ```
+
+## Checklist hoàn thành ngày 7
+
+```
+[V] Thêm, sửa và xóa sách hoạt động
+[V] Sách có PDF offline hiển thị badge Offline
+[V] Sách có URL hiển thị badge URL
+[V] Reader đọc được PDF offline
+[V] Reader xử lý sách không có PDF
+[V] Xóa sách dọn cả PDF trong IndexedDB
+[V] Tìm kiếm và sắp xếp hoạt động
+[V] Loading, empty và error state hoạt động
+[V] Có thể thao tác các chức năng chính bằng bàn phím
+[V] Không có lỗi đỏ ngoài dự kiến trong Console
+[V] Không có request thất bại ngoài các test lỗi chủ động
+[V] JavaScript vượt qua node --check
+[V] README có hướng dẫn chạy dự án
+[V] Refresh trang không làm mất metadata
+```
+
+Bài tự đánh giá cuối khóa
+Hãy tự trả lời năm câu:
+
+1. Vì sao PDF offline được lưu trong IndexedDB thay vì backend?
+2. hasLocalFile ở backend và file trong IndexedDB có thể lệch nhau trong trường hợp nào?
+3. Vì sao phải dùng event delegation với những hàng/card được render động?
+4. Khác nhau giữa contentType và dataType trong $.ajax() là gì?
+5. Nếu làm lại dự án, bạn sẽ tách manage.js thành những module nào?

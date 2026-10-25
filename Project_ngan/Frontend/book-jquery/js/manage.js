@@ -485,7 +485,7 @@ $(function () {
         }
     }
 
-    function handleFormSubmit(event) {
+    async function handleFormSubmit(event) {
         event.preventDefault();
 
         if (isSaving) {
@@ -502,37 +502,43 @@ $(function () {
         const payload = createPayload();
         const isEditing = editingBookId !== null;
         const bookId = editingBookId;
+        const pdfFile = $("#bookPdfFile")[0].files[0] ?? null;
 
         setSaving(true);
 
-        const request = isEditing
-            ? BookApi.update(bookId, payload)
-            : BookApi.create(payload);
+        try {
+            await saveBookWithOptionalPdf(
+                isEditing,
+                bookId,
+                payload,
+                pdfFile
+            );
 
-        request
-            .done(function () {
-                setSaving(false);
-                closeModal();
+            setSaving(false);
+            closeModal();
 
-                showToast(
-                    isEditing
-                        ? "Đã cập nhật sách."
-                        : "Đã thêm sách mới."
-                );
+            showToast(
+                isEditing
+                    ? "Đã cập nhật sách."
+                    : "Đã thêm sách mới."
+            );
 
-                loadBooks();
+            loadBooks();
+            $("#openCreateBookButton").trigger("focus");
+        } catch (error) {
+            setSaving(false);
 
-                $("#openCreateBookButton").trigger("focus");
-            })
-            .fail(function (xhr, textStatus) {
-                setSaving(false);
+            console.error("Save book failed:", error);
 
-                console.error("Save book failed:", xhr);
-
-                $("#formStatus")
-                    .text(getRequestError(xhr, textStatus))
-                    .addClass("form-status--error");
-            });
+            $("#formStatus")
+                .text(
+                    getRequestError(
+                        error,
+                        error.statusText
+                    )
+                )
+                .addClass("form-status--error");
+        }
     }
 
     function showToast(message, type = "success") {
@@ -598,15 +604,6 @@ $(function () {
             return;
         }
 
-        // Chặn tạm để tránh bỏ lại PDF trong trình duyệt.
-        // Ngày 6 sẽ thay guard này bằng bước xóa IndexedDB.
-        if (book.hasLocalFile) {
-            showToast(
-                "Sách này có PDF offline. Ngày 6 sẽ hoàn thiện xóa kèm file.",
-                "error"
-            );
-            return;
-        }
 
         pendingDeleteId = bookId;
 
@@ -629,34 +626,57 @@ $(function () {
         $("#deleteDialog").attr("aria-busy", String(value))
     }
 
-    function confirmDelete() {
+    async function confirmDelete() {
         if (isDeleting || pendingDeleteId === null) {
-            return
+            return;
         }
 
         const bookId = pendingDeleteId;
 
         setDeleting(true);
 
-        BookApi.remove(bookId)
-            .done(function () {
-                setDeleting(false)
-                $("#deleteDialog")[0].close()
+        try {
+            // Xóa metadata trước.
+            await BookApi.remove(bookId);
 
-                showToast("Đã xóa sách.")
-                loadBooks();
+            let localCleanupFailed = false;
 
-                $("#openCreateBookButton").trigger("focus")
-            })
-            .fail(function (xhr, textStatus) {
-                setDeleting(false)
+            try {
+                await PdfStore.remove(bookId);
+            } catch (storageError) {
+                localCleanupFailed = true;
+                console.error(
+                    "Delete offline PDF failed:",
+                    storageError
+                );
+            }
 
-                console.error("Delete book failed:", xhr)
+            setDeleting(false);
+            $("#deleteDialog")[0].close();
 
-                $("#deleteError")
-                    .text(getRequestError(xhr, textStatus))
-                    .removeClass("is-hidden")
-            })
+            showToast(
+                localCleanupFailed
+                    ? "Đã xóa sách, nhưng không dọn được PDF offline."
+                    : "Đã xóa sách.",
+                localCleanupFailed ? "error" : "success"
+            );
+
+            loadBooks();
+            $("#openCreateBookButton").trigger("focus");
+        } catch (error) {
+            setDeleting(false);
+
+            console.error("Delete book failed:", error);
+
+            $("#deleteError")
+                .text(
+                    getRequestError(
+                        error,
+                        error.statusText
+                    )
+                )
+                .removeClass("is-hidden");
+        }
     }
 
     async function saveBookWithOptionalPdf(
