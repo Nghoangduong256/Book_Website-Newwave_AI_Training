@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Open Assistant ｜ FDE から実プロダクトへ ｜ Rikkeisoft</title>
+<style>
+  /* ============================================================
+     Open Assistant — BOD Deck ｜ Rikkeisoft
+     Theme: Light / Material-Flat (no gradient) ｜ Brand: #B71C1C
+     Bilingual: JA / EN
+     ============================================================ */
+  :root{
+    --brand:#B71C1C;--brand-dark:#7f1010;--brand-light:#e5534b;--brand-tint:#fdecec;--brand-tint2:#f8dcdc;
+    --ink:#1a1a1a;--ink-2:#4a4a4a;--ink-3:#7a7a7a;--ink-4:#a5a5a5;--line:#e6e6e6;
+    --bg:#ffffff;--bg-soft:#f6f7f9;--bg-soft2:#eef0f3;--paper:#ffffff;
+    --ok:#2e7d32;--ok-tint:#e8f5e9;--amber:#ef6c00;--amber-tint:#fff3e6;
+    --blue:#1565c0;--blue-tint:#e6effa;--purple:#5b2a86;--purple-tint:#f0e9f7;--teal:#00796b;--teal-tint:#e0f2f0;
+    --shadow-1:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+    --shadow-2:0 4px 12px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
+    --shadow-3:0 12px 32px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.06);
+    --shadow-4:0 24px 64px rgba(0,0,0,.22),0 8px 16px rgba(0,0,0,.10);
+    --r:14px;
+    --font:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",Meiryo,-apple-system,"Segoe UI",system-ui,sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:#e9eaec}
+  body{font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+  .deck{position:fixed;inset:0;width:100%;height:100%;overflow:hidden;background:#fff}
+  .slide{position:absolute;inset:0;width:100%;height:100%;background:var(--bg);overflow:hidden;
+    display:flex;flex-direction:column;padding:min(8.4vh,86px) min(6.4vw,88px) min(6vh,56px);
+    opacity:0;visibility:hidden;transform:scale(1.05);filter:blur(7px);
+    transition:opacity .65s ease,transform .8s cubic-bezier(.2,.7,.2,1),filter .65s ease,visibility .65s;pointer-events:none}
+  .slide.active{opacity:1;visibility:visible;transform:none;filter:none;pointer-events:auto}
+
+  .brandbar{position:absolute;top:0;left:0;height:6px;width:100%;background:var(--brand);z-index:5}
+  .slide-tag{display:inline-flex;align-items:center;gap:10px;font-size:13.5px;font-weight:700;letter-spacing:.12em;color:var(--brand);text-transform:uppercase;margin-bottom:14px}
+  .slide-tag::before{content:"";width:32px;height:3px;background:var(--brand);border-radius:2px}
+  .slide-tag .part{background:var(--brand);color:#fff;padding:3px 10px;border-radius:100px;font-size:11px;letter-spacing:.08em;margin-right:2px}
+  h2.slide-title{font-size:clamp(28px,3.3vw,47px);font-weight:800;letter-spacing:-.01em;line-height:1.16;color:var(--ink)}
+  h2.slide-title .accent{color:var(--brand)}
+  .subline{font-size:clamp(14px,1.28vw,19px);color:var(--ink-2);margin-top:11px;font-weight:500;line-height:1.6}
+  .content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;min-height:0}
+
+  .deck-logo{position:fixed;top:18px;left:24px;z-index:66;background:#fff;border-radius:12px;padding:9px 15px;box-shadow:var(--shadow-2);display:flex;align-items:center;gap:11px}
+  .deck-logo img{height:28px;width:auto;display:block}
+  .deck-logo .dl-div{width:1px;height:21px;background:var(--line)}
+  .deck-logo .dl-txt{font-size:12px;color:var(--brand);font-weight:800;letter-spacing:.03em}
+
+  /* ============ SECTION COVER (共通) ============ */
+  .sec{padding:0;justify-content:center;align-items:center;background:var(--bg-soft)}
+  .sec-fx{position:absolute;inset:0;z-index:0;overflow:hidden}
+  .sec-fx .sq{position:absolute;background:var(--brand-tint);border-radius:26px}
+  .sec-fx .sq.a{width:300px;height:300px;top:-90px;right:8%;animation:drift1 13s ease-in-out infinite}
+  .sec-fx .sq.b{width:150px;height:150px;bottom:12%;right:20%;border-radius:50%;background:var(--bg-soft2);animation:drift2 10s ease-in-out infinite}
+  .sec-fx .sq.c{width:220px;height:220px;bottom:-70px;left:6%;background:var(--brand-tint);animation:drift1 16s ease-in-out infinite reverse}
+  .sec-fx .sq.d{width:96px;height:96px;top:20%;left:18%;border-radius:50%;background:var(--bg-soft2);animation:drift2 8s ease-in-out infinite}
+  @keyframes drift1{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-30px) rotate(9deg)}}
+  @keyframes drift2{0%,100%{transform:translateY(0)}50%{transform:translateY(26px)}}
+  .sec-grid{position:absolute;inset:0;z-index:0;
+    background-image:linear-gradient(rgba(0,0,0,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.035) 1px,transparent 1px);
+    background-size:52px 52px;animation:gridpan 30s linear infinite}
+  @keyframes gridpan{from{background-position:0 0}to{background-position:52px 52px}}
+  .sec-wrap{position:relative;z-index:3;width:min(1180px,88vw);display:grid;grid-template-columns:auto 1fr;gap:min(5vw,64px);align-items:center}
+  .sec-no{font-size:clamp(110px,15vw,210px);font-weight:900;color:var(--brand);line-height:.82;letter-spacing:-.05em;opacity:.16}
+  .sec-txt .sec-kicker{display:inline-flex;align-items:center;gap:9px;background:var(--brand);color:#fff;font-weight:800;font-size:12.5px;letter-spacing:.12em;padding:7px 17px;border-radius:100px;margin-bottom:18px;text-transform:uppercase}
+  .sec-txt .sec-kicker .dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.6)}}
+  .sec-txt h2{font-size:clamp(26px,3.5vw,48px);font-weight:900;line-height:1.14;letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+  .sec-txt h2 .accent{color:var(--brand)}
+  .sec-txt .sec-en{margin-top:14px;font-size:clamp(13px,1.2vw,17px);font-weight:700;letter-spacing:.2em;color:var(--ink-3);text-transform:uppercase}
+  .sec-txt .sec-rule{width:82px;height:5px;background:var(--brand);border-radius:3px;margin-top:22px}
+  .sec-art{position:absolute;right:min(5vw,70px);bottom:min(6vh,60px);width:min(300px,26vw);z-index:2;opacity:.95}
+  #s07 .sec-art{width:min(250px,20vw)}
+  .sec-art svg{width:100%;height:auto;display:block}
+
+  /* ---------------- COVER ---------------- */
+  #s01{padding:0;justify-content:center;align-items:center;background:var(--bg)}
+  .cover-grid{position:absolute;inset:0;background-image:linear-gradient(var(--bg-soft) 1px,transparent 1px),linear-gradient(90deg,var(--bg-soft) 1px,transparent 1px);background-size:46px 46px;opacity:.85;z-index:0}
+  .cover-blob{position:absolute;border-radius:50%;z-index:0}
+  .cover-blob.b1{width:520px;height:520px;background:var(--brand-tint);top:-190px;right:-130px;opacity:.6}
+  .cover-blob.b2{width:360px;height:360px;background:var(--bg-soft);bottom:-150px;left:-110px}
+  .cover-wrap{position:relative;z-index:2;width:100%;max-width:1220px;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 40px}
+  .cover-kicker{display:inline-flex;align-items:center;gap:10px;background:var(--brand);color:#fff;font-weight:700;font-size:13.5px;letter-spacing:.09em;padding:9px 20px;border-radius:100px;margin-bottom:24px;box-shadow:var(--shadow-2)}
+  .cover-kicker .dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1.8s infinite}
+  .cover-title{font-size:clamp(34px,4.9vw,70px);font-weight:900;line-height:1.12;letter-spacing:-.025em;color:var(--ink)}
+  .cover-title .hl{color:var(--brand)}
+  .cover-sub{margin-top:16px;font-size:clamp(14px,1.35vw,19px);color:var(--ink-3);font-weight:700;letter-spacing:.2em}
+  .cv-band{margin-top:30px;width:100%;max-width:1080px}
+  .cv-band svg{width:100%;height:auto;display:block}
+  .cover-meta{margin-top:26px;display:flex;gap:30px;flex-wrap:wrap;justify-content:center;font-size:13px;font-weight:700;color:var(--ink-3)}
+  .cover-meta span{display:flex;align-items:center;gap:8px}
+  .cover-meta span::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--brand)}
+
+  /* ---------------- AGENDA ---------------- */
+  #s02{background:var(--bg-soft)}
+  .toc-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;margin-top:2px}
+  .toc-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px 24px}
+  .toc-col{display:flex;flex-direction:column;gap:11px}
+  .toc-part{font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--brand);text-transform:uppercase;display:flex;align-items:center;gap:9px;margin-bottom:1px}
+  .toc-part .pb{background:var(--brand);color:#fff;padding:4px 11px;border-radius:100px;font-size:10.5px;letter-spacing:.04em}
+  .toc-item{display:flex;align-items:center;gap:14px;background:var(--paper);border-radius:13px;padding:14px 17px;box-shadow:var(--shadow-1);border-left:4px solid transparent;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;cursor:pointer}
+  .toc-item:hover{transform:translateX(5px);box-shadow:var(--shadow-2);border-left-color:var(--brand)}
+  .toc-item .ti-no{font-size:22px;font-weight:900;color:var(--brand);opacity:.3;min-width:30px;line-height:1;text-align:center}
+  .toc-item h4{font-size:15.5px;font-weight:800;color:var(--ink);line-height:1.3}
+  .toc-item p{font-size:11.5px;color:var(--ink-3);font-weight:500;margin-top:3px;line-height:1.45}
+  .toc-item .ti-go{margin-left:auto;color:var(--brand);opacity:0;transform:translateX(-6px);transition:opacity .25s,transform .25s}
+  .toc-item:hover .ti-go{opacity:1;transform:none}
+  .toc-item .ti-go svg{width:18px;height:18px}
+  .toc-item.hero{border-left-color:var(--brand);background:var(--brand-tint)}
+  .toc-item.fin{border-left-color:var(--ok)}
+  .toc-item.fin .ti-no,.toc-item.fin .ti-go{color:var(--ok)}
+
+  /* ---------------- FDE LEARNING ---------------- */
+  #s04{background:var(--bg)}
+  .fde-stage{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;margin-top:10px;min-height:0}
+  .fde-svg{width:100%;height:auto;max-height:40vh;display:block}
+  .fde-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .fcard{background:var(--paper);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow-1);border-top:5px solid var(--brand);display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s}
+  .fcard:hover{transform:translateY(-5px);box-shadow:var(--shadow-3)}
+  .fcard.k2{border-top-color:var(--blue)}
+  .fcard.k3{border-top-color:var(--ok)}
+  .fcard .fh{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .fcard .fic{width:44px;height:44px;border-radius:12px;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .fcard .fic svg{width:24px;height:24px;stroke:var(--brand);fill:none;stroke-width:2}
+  .fcard.k2 .fic{background:var(--blue-tint)}.fcard.k2 .fic svg{stroke:var(--blue)}
+  .fcard.k3 .fic{background:var(--ok-tint)}.fcard.k3 .fic svg{stroke:var(--ok)}
+  .fcard .flbl{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--ink-4);text-transform:uppercase}
+  .fcard h4{font-size:17.5px;font-weight:800;color:var(--ink);margin-top:2px;line-height:1.3}
+  .fcard p{font-size:13px;color:var(--ink-2);line-height:1.7;font-weight:500}
+  .fcard ul{margin-top:2px}
+  .fcard ul{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:7px}
+  .fcard li{font-size:13.5px;color:var(--ink-2);font-weight:600;line-height:1.5;padding-left:18px;position:relative}
+  .fcard li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:2px;background:var(--brand)}
+  .fcard.k2 li::before{background:var(--blue)}.fcard.k3 li::before{background:var(--ok)}
+
+  /* ---------------- APPLY (approach) ---------------- */
+  #s06{background:var(--bg-soft)}
+  .ap-stage{flex:1;display:grid;grid-template-columns:1.02fr .98fr;gap:28px;margin-top:16px;min-height:0;align-items:center}
+  .ap-svg{width:100%;height:auto;max-height:56vh;display:block}
+  .ap-list{display:flex;flex-direction:column;gap:14px}
+  .ap-item{display:flex;gap:16px;background:var(--paper);border-radius:15px;padding:18px 22px;box-shadow:var(--shadow-1);border-left:5px solid var(--brand);transition:transform .28s,box-shadow .28s}
+  .ap-item:hover{transform:translateX(5px);box-shadow:var(--shadow-2)}
+  .ap-item .an{width:38px;height:38px;border-radius:10px;background:var(--brand);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ap-item h4{font-size:16.5px;font-weight:800;color:var(--ink);line-height:1.3}
+  .ap-item p{font-size:12.8px;color:var(--ink-2);line-height:1.65;margin-top:5px;font-weight:500}
+  .ap-note{display:flex;align-items:center;gap:13px;background:var(--brand-tint);border-radius:14px;padding:15px 20px;border-left:5px solid var(--brand)}
+  .ap-note svg{width:24px;height:24px;stroke:var(--brand);fill:none;stroke-width:2;flex-shrink:0}
+  .ap-note p{font-size:13.5px;color:var(--brand-dark);font-weight:700;line-height:1.6}
+
+  /* ---------------- LIFECYCLE WHEEL ---------------- */
+  #s08{background:var(--bg-soft)}
+  .lc-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
+  .lc-hint{display:inline-flex;align-items:center;gap:9px;background:var(--brand);color:#fff;font-size:12.5px;font-weight:800;padding:9px 17px;border-radius:100px;box-shadow:var(--shadow-2);animation:nudge 2.4s ease-in-out infinite}
+  @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .lc-hint svg{width:16px;height:16px;fill:#fff}
+  .lc-stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;margin-top:2px}
+  .lc-svg{width:100%;height:100%;max-height:60vh}
+  .lc-node{cursor:pointer}
+  .lc-node .np{transition:transform .22s cubic-bezier(.2,1.4,.4,1);transform-box:fill-box;transform-origin:center}
+  .lc-node:hover .np{transform:scale(1.11)}
+  .lc-node:hover .nring{opacity:1}
+  .lc-node .nring{opacity:0;transition:opacity .22s;pointer-events:all}
+  .lc-node .nhit{fill:transparent;cursor:pointer}
+  .lc-node .nlab{font-weight:800;pointer-events:none}
+  .lc-node .nsub{font-weight:600;pointer-events:none}
+
+  /* ---------------- MODAL ---------------- */
+  .modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:4vh 4vw;background:rgba(20,20,20,.5)}
+  .modal.on{display:flex;animation:fadein .26s ease both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .mbox{background:#fff;border-radius:20px;width:min(1080px,94vw);max-height:92vh;overflow:hidden;box-shadow:var(--shadow-4);display:flex;flex-direction:column;animation:popin .32s cubic-bezier(.2,1.2,.4,1) both}
+  @keyframes popin{from{transform:translateY(24px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+  .mhead{display:flex;align-items:center;gap:18px;padding:24px 30px;border-bottom:1px solid var(--line);flex-shrink:0}
+  .mhead .mstep{width:54px;height:54px;border-radius:14px;background:var(--brand);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
+  .mhead .mstep .s1{font-size:9px;font-weight:800;letter-spacing:.1em;opacity:.85}
+  .mhead .mstep .s2{font-size:22px;font-weight:900;margin-top:2px}
+  .mhead .mt h3{font-size:24px;font-weight:900;color:var(--ink);line-height:1.2}
+  .mhead .mt .men{font-size:11.5px;font-weight:800;letter-spacing:.16em;color:var(--brand);text-transform:uppercase;margin-top:5px}
+  .mhead .mnav{margin-left:auto;display:flex;align-items:center;gap:9px;flex-shrink:0}
+  .mhead .mnav button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--brand);transition:all .22s;padding:0}
+  .mhead .mnav button:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .mhead .mnav button svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.6}
+  .mhead .mpos{font-size:12.5px;font-weight:800;color:var(--ink-3);letter-spacing:.06em;min-width:54px;text-align:center}
+  .mhead .mclose{margin-left:14px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-3);transition:all .22s;flex-shrink:0}
+  .mhead .mclose:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .mhead .mclose svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.4}
+  .mbody{padding:24px 30px 30px;overflow-y:auto;display:grid;grid-template-columns:.86fr 1.14fr;gap:28px}
+  .mbody::-webkit-scrollbar{width:9px}.mbody::-webkit-scrollbar-thumb{background:#d6d6d6;border-radius:6px}
+  .mvis{display:flex;flex-direction:column;gap:14px}
+  .mvis .mv-card{background:var(--bg-soft);border-radius:15px;padding:18px;display:flex;align-items:center;justify-content:center}
+  .mvis .mv-card svg{width:100%;height:auto;display:block}
+  .mvis .mpurpose{background:var(--brand-tint);border-radius:13px;padding:15px 18px;border-left:5px solid var(--brand)}
+  .mvis .mpurpose .pl{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--brand);text-transform:uppercase}
+  .mvis .mpurpose p{font-size:13.2px;color:var(--brand-dark);font-weight:700;line-height:1.65;margin-top:5px}
+  .mai .mai-h{display:flex;align-items:center;gap:10px;font-size:11.5px;font-weight:800;letter-spacing:.12em;color:var(--brand);text-transform:uppercase;margin-bottom:14px}
+  .mai .mai-h::before{content:"";width:26px;height:3px;background:var(--brand);border-radius:2px}
+  .mai ul{list-style:none;display:flex;flex-direction:column;gap:11px}
+  .mai li{display:flex;gap:13px;background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:14px 16px}
+  .mai li .lic{width:34px;height:34px;border-radius:9px;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:900;color:var(--brand)}
+  .mai li h5{font-size:14.5px;font-weight:800;color:var(--ink);line-height:1.35}
+  .mai li p{font-size:12.2px;color:var(--ink-2);line-height:1.6;margin-top:4px;font-weight:500}
+  .mai li code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;background:var(--bg-soft2);color:var(--ink-2);padding:1.5px 6px;border-radius:5px;font-weight:600}
+  .mfoot{margin-top:16px;display:flex;align-items:center;gap:12px;background:var(--ok-tint);border-radius:12px;padding:13px 17px;border-left:5px solid var(--ok)}
+  .mfoot svg{width:21px;height:21px;stroke:var(--ok);fill:none;stroke-width:2.2;flex-shrink:0}
+  .mfoot p{font-size:12.8px;color:#1e5c22;font-weight:700;line-height:1.55}
+
+  /* ---------------- FEATURES & SCALE ---------------- */
+  #s09{background:var(--bg)}
+  .ft-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:26px;margin-top:22px;flex:1;min-height:0;align-items:center}
+  .ft-h{font-size:11.5px;font-weight:800;letter-spacing:.12em;color:var(--brand);text-transform:uppercase;display:flex;align-items:center;gap:9px;margin-bottom:13px}
+  .ft-h::before{content:"";width:26px;height:3px;background:var(--brand);border-radius:2px}
+  .ft-h.b{color:var(--blue)}.ft-h.b::before{background:var(--blue)}
+  .ft-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .ft{background:var(--paper);border-radius:15px;padding:22px 22px 24px;box-shadow:var(--shadow-1);border-bottom:5px solid var(--brand);transition:transform .28s,box-shadow .28s;display:flex;flex-direction:column}
+  .ft:hover{transform:translateY(-4px);box-shadow:var(--shadow-2)}
+  .ft-top{display:flex;align-items:center;gap:9px;margin-bottom:15px}
+  .ft .fi{width:46px;height:46px;border-radius:12px;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .bdg{margin-left:auto;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:5px 11px;border-radius:100px;background:var(--blue-tint);color:var(--blue);white-space:nowrap}
+  .bdg.multi{background:var(--purple-tint);color:var(--purple)}
+  .ft .fi svg{width:25px;height:25px;stroke:var(--brand);fill:none;stroke-width:2}
+  .ft h4{font-size:17.5px;font-weight:800;color:var(--ink);line-height:1.32}
+  .ft p{font-size:13px;color:var(--ink-3);line-height:1.6;margin-top:8px;font-weight:500}
+  .ai-list{display:flex;flex-direction:column;gap:14px}
+  .ai-row{display:flex;gap:14px;align-items:flex-start;background:var(--paper);border-radius:14px;padding:17px 19px;box-shadow:var(--shadow-1);border-left:5px solid var(--blue)}
+  .ai-row .ai-ic{width:36px;height:36px;border-radius:10px;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .ai-row .ai-ic svg{width:20px;height:20px;stroke:var(--blue);fill:none;stroke-width:2}
+  .ai-row h4{font-size:16px;font-weight:800;color:var(--ink);line-height:1.3}
+  .ai-row p{font-size:12.6px;color:var(--ink-3);line-height:1.55;margin-top:5px;font-weight:500}
+  .ft-note{margin-top:14px;display:flex;align-items:center;gap:12px;background:var(--bg-soft);border-radius:12px;padding:13px 18px;border-left:5px solid var(--ink-4)}
+  .ft-note svg{width:21px;height:21px;stroke:var(--ink-3);fill:none;stroke-width:2;flex-shrink:0}
+  .ft-note p{font-size:12.5px;color:var(--ink-2);font-weight:600;line-height:1.55}
+
+  /* ---------------- HOW IT WORKS — four intelligences ---------------- */
+  #s11{background:var(--bg-soft)}
+  .iq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin:auto 0 0}
+  .iq{background:var(--paper);border-radius:17px;padding:20px 22px 22px;box-shadow:var(--shadow-1);display:flex;flex-direction:column;border-top:5px solid var(--brand);transition:transform .3s,box-shadow .3s}
+  .iq:hover{transform:translateY(-6px);box-shadow:var(--shadow-3)}
+  .iq:nth-child(2){border-top-color:var(--blue)}
+  .iq:nth-child(3){border-top-color:var(--teal)}
+  .iq:nth-child(4){border-top-color:var(--purple)}
+  .iq-art{background:var(--bg-soft);border-radius:12px;padding:12px 10px;margin-bottom:15px}
+  .iq-art svg{width:100%;height:auto;display:block}
+  .iq h4{font-size:19px;font-weight:900;color:var(--ink);line-height:1.25}
+  .iq .iq-q{font-size:13.5px;font-weight:700;color:var(--ink-3);line-height:1.5;margin-top:6px}
+  .iq .iq-win{margin-top:14px;font-size:13px;font-weight:800;color:var(--brand);background:var(--brand-tint);border-radius:9px;padding:9px 13px;line-height:1.4}
+  .iq .iq-win.b{color:var(--blue);background:var(--blue-tint)}
+  .iq .iq-win.t{color:var(--teal);background:var(--teal-tint)}
+  .iq .iq-win.p{color:var(--purple);background:var(--purple-tint)}
+  .iq-foot{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:20px 0 auto}
+  .iqf{display:flex;align-items:center;justify-content:center;gap:13px;background:var(--paper);border-radius:13px;padding:16px 18px;box-shadow:var(--shadow-1)}
+  .iqf .from{font-size:14px;font-weight:700;color:var(--ink-4)}
+  .iqf .arw{width:20px;height:20px;stroke:var(--brand);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .iqf .to{font-size:15.5px;font-weight:900;color:var(--brand)}
+
+  /* ---------------- PROCESS COMPARISON ---------------- */
+  #s13{background:var(--bg)}
+  .pc-stage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;margin-top:4px}
+  .pc-svg{width:100%;height:100%;max-height:62vh}
+  .pc-foot{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .pcf{display:flex;gap:13px;align-items:center;background:var(--bg-soft);border-radius:13px;padding:14px 18px;border-left:5px solid var(--brand)}
+  .pcf .pci{width:36px;height:36px;border-radius:10px;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .pcf .pci svg{width:20px;height:20px;stroke:var(--brand);fill:none;stroke-width:2}
+  .pcf h5{font-size:13.5px;font-weight:800;color:var(--ink)}
+  .pcf p{font-size:11.4px;color:var(--ink-3);font-weight:500;margin-top:2px;line-height:1.5}
+
+  /* ---------------- LESSONS ---------------- */
+  #s14{background:var(--bg-soft)}
+
+  .ls-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;flex:0 0 auto;margin:auto 0}
+  .ls{background:var(--paper);border-radius:17px;padding:24px 24px;box-shadow:var(--shadow-1);position:relative;overflow:hidden;display:flex;flex-direction:column;transition:transform .32s,box-shadow .32s}
+  .ls:hover{transform:translateY(-6px);box-shadow:var(--shadow-3)}
+  .ls .lnum{position:absolute;top:14px;right:18px;font-size:34px;font-weight:900;color:var(--bg-soft2);line-height:1}
+  .ls .lic{width:50px;height:50px;border-radius:13px;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .ls .lic svg{width:27px;height:27px;stroke:var(--brand);fill:none;stroke-width:2}
+  .ls h4{font-size:17px;font-weight:800;color:var(--ink);line-height:1.35}
+  .ls p{font-size:12.8px;color:var(--ink-2);line-height:1.7;margin-top:9px;font-weight:500}
+  .ls.c2 .lic{background:var(--blue-tint)}.ls.c2 .lic svg{stroke:var(--blue)}
+  .ls.c3 .lic{background:var(--ok-tint)}.ls.c3 .lic svg{stroke:var(--ok)}
+  .ls.c4 .lic{background:var(--purple-tint)}.ls.c4 .lic svg{stroke:var(--purple)}
+  .ls.c5 .lic{background:var(--teal-tint)}.ls.c5 .lic svg{stroke:var(--teal)}
+  .ls.c6 .lic{background:var(--amber-tint)}.ls.c6 .lic svg{stroke:var(--amber)}
+
+  /* ---------------- DEMO ---------------- */
+  #s15{background:var(--bg);justify-content:center;align-items:center;text-align:center;padding:0}
+  .dm-fx{position:absolute;inset:0;z-index:0;overflow:hidden}
+  .dm-ring{position:absolute;border:2px solid var(--brand-tint2);border-radius:50%}
+  .dm-ring.r1{width:560px;height:560px;top:50%;left:50%;margin:-280px 0 0 -280px;animation:spin 30s linear infinite}
+  .dm-ring.r2{width:760px;height:760px;top:50%;left:50%;margin:-380px 0 0 -380px;border-style:dashed;animation:spin 46s linear infinite reverse}
+  .dm-ring.r3{width:980px;height:980px;top:50%;left:50%;margin:-490px 0 0 -490px;border-color:var(--bg-soft2);animation:spin 60s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .dm-wrap{position:relative;z-index:3;width:min(1100px,90vw)}
+  .dm-play{width:104px;height:104px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;position:relative;box-shadow:var(--shadow-3)}
+  .dm-play::before,.dm-play::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--brand);animation:ripple 2.6s ease-out infinite}
+  .dm-play::after{animation-delay:1.3s}
+  @keyframes ripple{0%{transform:scale(1);opacity:.7}100%{transform:scale(2);opacity:0}}
+  .dm-play svg{width:38px;height:38px;fill:#fff;margin-left:6px}
+  .dm-kicker{font-size:13px;letter-spacing:.32em;font-weight:800;color:var(--brand);text-transform:uppercase;margin-bottom:12px}
+  .dm-title{font-size:clamp(34px,5.1vw,70px);font-weight:900;line-height:1.05;letter-spacing:-.025em;color:var(--ink)}
+  .dm-sub{font-size:clamp(14px,1.4vw,19px);font-weight:600;margin-top:13px;color:var(--ink-2)}
+  .dm-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:32px auto 0;width:min(1060px,88vw)}
+  .dc{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:20px 18px;text-align:left;box-shadow:var(--shadow-1);transition:transform .3s,box-shadow .3s}
+  .dc:hover{transform:translateY(-6px);box-shadow:var(--shadow-3)}
+  .dc .dn{position:absolute;top:12px;right:15px;font-size:24px;font-weight:900;color:var(--bg-soft2);line-height:1}
+  .dc .di{width:44px;height:44px;border-radius:12px;background:var(--brand-tint);display:flex;align-items:center;justify-content:center;margin-bottom:13px}
+  .dc .di svg{width:23px;height:23px;stroke:var(--brand);fill:none;stroke-width:2}
+  .dc h4{font-size:15px;font-weight:800;color:var(--ink);line-height:1.35}
+  .dc p{font-size:11.4px;color:var(--ink-3);line-height:1.6;margin-top:7px;font-weight:500}
+
+  /* ---------------- NEXT STEP ---------------- */
+  #s16{background:var(--bg-soft)}
+  .ns-stage{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0;margin-top:10px}
+  .ns-svg{width:100%;height:auto;max-height:36vh;display:block}
+  .ns-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:22px}
+  .nsc{background:var(--paper);border-radius:16px;padding:20px 20px;box-shadow:var(--shadow-1);border-top:5px solid var(--brand);display:flex;flex-direction:column;transition:transform .3s,box-shadow .3s}
+  .nsc:hover{transform:translateY(-5px);box-shadow:var(--shadow-3)}
+  .nsc.q2{border-top-color:var(--blue)}.nsc.q3{border-top-color:var(--purple)}.nsc.q4{border-top-color:var(--ok)}
+  .nsc .nph{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--brand);text-transform:uppercase}
+  .nsc.q2 .nph{color:var(--blue)}.nsc.q3 .nph{color:var(--purple)}.nsc.q4 .nph{color:var(--ok)}
+  .nsc h4{font-size:16px;font-weight:800;color:var(--ink);margin-top:5px;line-height:1.35}
+  .nsc ul{list-style:none;margin-top:11px;display:flex;flex-direction:column;gap:7px}
+  .nsc li{font-size:12px;color:var(--ink-2);font-weight:600;line-height:1.5;padding-left:17px;position:relative}
+  .nsc li::before{content:"";position:absolute;left:0;top:6px;width:7px;height:7px;border-radius:2px;background:var(--brand)}
+  .nsc.q2 li::before{background:var(--blue)}.nsc.q3 li::before{background:var(--purple)}.nsc.q4 li::before{background:var(--ok)}
+
+  /* ---------------- LOOK BACK ---------------- */
+  #s17{background:var(--bg)}
+
+  .lb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;flex:0 0 auto;margin:auto 0 0}
+  .lb{background:var(--bg-soft);border-radius:17px;padding:26px 24px;display:flex;flex-direction:column;border-left:6px solid var(--brand);transition:transform .3s}
+  .lb:hover{transform:translateY(-5px)}
+  .lb .lbn{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--brand);text-transform:uppercase;margin-bottom:9px}
+  .lb h4{font-size:18px;font-weight:900;color:var(--ink);line-height:1.35}
+  .lb p{font-size:13px;color:var(--ink-2);line-height:1.75;margin-top:10px;font-weight:500}
+  .lb.c2{border-left-color:var(--blue)}.lb.c2 .lbn{color:var(--blue)}
+  .lb.c3{border-left-color:var(--ok)}.lb.c3 .lbn{color:var(--ok)}
+  .lb-foot{margin:20px 0 auto;display:flex;align-items:center;gap:16px;background:var(--brand-tint);border-radius:15px;padding:20px 26px;border-left:6px solid var(--brand)}
+  .lb-foot .lfi{width:46px;height:46px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .lb-foot .lfi svg{width:25px;height:25px;stroke:var(--brand);fill:none;stroke-width:2.2}
+  .lb-foot p{font-size:15.5px;color:var(--brand-dark);font-weight:800;line-height:1.6}
+
+  /* ---------------- THANK YOU ---------------- */
+  #s18{background:var(--bg);justify-content:center;align-items:center;text-align:center;padding:0}
+  .ty-fx{position:absolute;inset:0;z-index:0;overflow:hidden}
+  .ty-ring{position:absolute;border:2px solid var(--brand-tint2);border-radius:50%}
+  .ty-ring.r1{width:500px;height:500px;top:-150px;right:-110px;animation:spin 28s linear infinite}
+  .ty-ring.r2{width:340px;height:340px;top:-70px;right:-30px;border-style:dashed;animation:spin 19s linear infinite reverse}
+  .ty-ring.r3{width:620px;height:620px;bottom:-310px;left:-150px;animation:spin 34s linear infinite}
+  .ty-float{position:absolute;background:var(--brand-tint);border-radius:20px}
+  .ty-float.f1{width:66px;height:66px;top:20%;left:12%;animation:drift1 9s ease-in-out infinite}
+  .ty-float.f2{width:42px;height:42px;top:66%;left:22%;border-radius:50%;background:var(--bg-soft2);animation:drift2 7s ease-in-out infinite}
+  .ty-float.f3{width:84px;height:84px;top:26%;right:16%;animation:drift1 12s ease-in-out infinite}
+  .ty-float.f4{width:32px;height:32px;bottom:18%;right:26%;border-radius:50%;background:var(--bg-soft2);animation:drift2 8s ease-in-out infinite}
+  .ty-wrap{position:relative;z-index:3;width:min(900px,88vw)}
+  .ty-kicker{font-size:13px;letter-spacing:.3em;font-weight:800;color:var(--brand);text-transform:uppercase;margin-bottom:20px}
+  .ty-title{font-size:clamp(48px,7.4vw,112px);font-weight:900;line-height:.98;letter-spacing:-.03em;color:var(--ink)}
+  .ty-sub{font-size:clamp(15px,1.6vw,23px);font-weight:600;margin-top:22px;line-height:1.75;color:var(--ink-2)}
+  .ty-cta{display:flex;gap:13px;margin-top:34px;flex-wrap:wrap;justify-content:center}
+  .ty-btn{display:inline-flex;align-items:center;gap:10px;background:var(--brand);color:#fff;font-weight:800;font-size:15px;padding:14px 26px;border-radius:100px;box-shadow:var(--shadow-2)}
+  .ty-btn svg{stroke:#fff;fill:none;stroke-width:2}
+  .ty-btn.ghost{background:#fff;color:var(--brand);border:2px solid var(--brand-tint2)}
+
+  /* ---------------- NAV ---------------- */
+  .nav-dots{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;gap:9px;z-index:60;align-items:center}
+  .nav-dots button{width:10px;height:10px;border-radius:50%;border:none;background:rgba(0,0,0,.15);cursor:pointer;padding:0;transition:all .3s}
+  .nav-dots button.on{width:30px;border-radius:5px;background:var(--brand)}
+  .nav-dots button.sec{background:rgba(183,28,28,.3)}
+  .nav-arrows{position:fixed;bottom:20px;right:26px;display:flex;gap:10px;z-index:60}
+  .nav-arrows button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--brand);cursor:pointer;box-shadow:var(--shadow-1);display:flex;align-items:center;justify-content:center;transition:all .25s}
+  .nav-arrows button:hover:not(:disabled){background:var(--brand);color:#fff;transform:translateY(-2px)}
+  .nav-arrows button:disabled{opacity:.3;cursor:default}
+  .nav-arrows button svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.5}
+  .progress{position:fixed;top:0;left:0;height:6px;background:var(--brand-dark);z-index:70;transition:width .7s cubic-bezier(.76,0,.24,1);width:6%}
+  .topright{position:fixed;top:18px;right:26px;z-index:66;display:flex;align-items:center;gap:14px}
+  .slide-count{font-size:13.5px;font-weight:800;color:var(--ink-3);letter-spacing:.05em}
+  .slide-count b{color:var(--brand);font-size:17px}
+  .lang{display:flex;background:#fff;border:1px solid var(--line);border-radius:100px;padding:3px;box-shadow:var(--shadow-1);overflow:hidden}
+  .lang button{border:none;background:transparent;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--ink-3);padding:6px 15px;border-radius:100px;transition:all .22s}
+  .lang button.on{background:var(--brand);color:#fff}
+  .hint{position:fixed;bottom:22px;left:26px;z-index:60;font-size:12px;color:var(--ink-3);font-weight:600;display:flex;align-items:center;gap:7px;opacity:.9}
+  .hint kbd{font-family:var(--font);background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:2px 7px;font-size:11.5px;font-weight:700;color:var(--ink-2)}
+
+  [data-anim]{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.7,.2,1)}
+  .slide.active [data-anim]{opacity:1;transform:none}
+  .slide.active [data-anim="1"]{transition-delay:.12s}
+  .slide.active [data-anim="2"]{transition-delay:.24s}
+  .slide.active [data-anim="3"]{transition-delay:.36s}
+  .slide.active [data-anim="4"]{transition-delay:.48s}
+  .slide.active [data-anim="5"]{transition-delay:.60s}
+  .slide.active [data-anim="6"]{transition-delay:.72s}
+  .slide.active [data-anim="7"]{transition-delay:.84s}
+  .slide.active [data-anim="8"]{transition-delay:.96s}
+  .slide.active .flow-path{animation:dash 2.4s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-44}}
+  .glyph-float{animation:gfloat 3.4s ease-in-out infinite}
+  @keyframes gfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+  /* short screens (1366x768 / 1280x720 projectors): the dense slides tighten up */
+  @media (max-height:830px){
+    .iq{padding:16px 17px 18px}
+    .iq-art{padding:9px 8px;margin-bottom:12px}
+    .iq h4{font-size:16.5px}
+    .iq .iq-q{font-size:12.2px;margin-top:5px}
+    .iq .iq-win{font-size:11.8px;padding:8px 11px;margin-top:11px}
+    .iq-grid{gap:15px}
+    .iq-foot{gap:14px;margin-top:15px}
+    .iqf{padding:12px 13px;gap:10px}
+    .iqf .from{font-size:12.5px}
+    .iqf .to{font-size:14px}
+    .ap-item{padding:14px 18px;gap:13px}
+    .ap-item h4{font-size:15px}
+    .ap-item p{font-size:11.8px;margin-top:4px}
+    .ap-list{gap:11px}
+    .ap-note{padding:12px 17px}
+    .ap-note p{font-size:12.2px}
+    .fcard{padding:17px 19px}
+    .fcard p{font-size:12px;line-height:1.6}
+    .fcard li{font-size:11.6px}
+    .ls{padding:19px 20px}
+    .ls p{font-size:12px;line-height:1.6}
+    .nsc{padding:16px 17px}
+    .nsc li{font-size:11.2px}
+    .lb{padding:21px 21px}
+    .lb p{font-size:12.2px}
+  }
+
+  @media (max-width:1180px){
+    .ft-cards{grid-template-columns:repeat(2,1fr)}.ls-grid{grid-template-columns:repeat(2,1fr)}
+    .iq-grid{grid-template-columns:repeat(2,1fr)}.ap-stage,.ft-grid{grid-template-columns:1fr}.dm-cards{grid-template-columns:repeat(2,1fr)}
+    .ns-cards{grid-template-columns:repeat(2,1fr)}.lb-grid{grid-template-columns:1fr}
+    .mbody{grid-template-columns:1fr}.toc-grid{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+  <div class="progress" id="progress"></div>
+
+  <div class="deck-logo">
+    <img src="../logo.svg" alt="Rikkeisoft" onerror="this.onerror=null;this.src='https://rikkeisoft.com/wp-content/themes/main/assets/images/home/logo.svg'" />
+    <div class="dl-div"></div>
+    <span class="dl-txt">Open Assistant</span>
+  </div>
+
+  <div class="topright">
+    <div class="lang">
+      <button id="lgJA" class="on">日本語</button>
+      <button id="lgEN">EN</button>
+    </div>
+    <div class="slide-count" id="count"><b>01</b> / 18</div>
+  </div>
+
+  <!-- ============ 01 : COVER ============ -->
+  <section class="slide active" id="s01">
+    <div class="brandbar"></div>
+    <div class="cover-grid"></div>
+    <div class="cover-blob b1"></div>
+    <div class="cover-blob b2"></div>
+    <div class="cover-wrap">
+      <div class="cover-kicker" data-anim="1"><span class="dot"></span><span data-i18n data-ja="FDE プログラム × 実プロダクト開発" data-en="FDE Program × Real Product Build"></span></div>
+      <h1 class="cover-title" data-anim="2" data-i18n
+          data-ja="デリバリー全工程を、<br><span class='hl'>AIで一本の流れに</span>。"
+          data-en="One AI-native flow for the<br><span class='hl'>entire delivery lifecycle</span>."></h1>
+      <p class="cover-sub" data-anim="3">OPEN&nbsp;ASSISTANT&nbsp;&nbsp;·&nbsp;&nbsp;AI-NATIVE&nbsp;DELIVERY&nbsp;PLATFORM</p>
+
+      <div class="cv-band" data-anim="4">
+        <svg viewBox="0 0 1080 228" preserveAspectRatio="xMidYMid meet">
+          <line x1="64" y1="58" x2="1016" y2="58" stroke="#f0dede" stroke-width="3"/>
+          <line class="flow-path" x1="64" y1="58" x2="1016" y2="58" stroke="#B71C1C" stroke-width="3" stroke-dasharray="10 12"/>
+          <circle r="6" fill="#B71C1C"><animateMotion path="M64,58 H1016" dur="5.2s" repeatCount="indefinite"/></circle>
+          <g>
+            <g transform="translate(64,58)"><circle r="21" fill="#B71C1C"/><path d="M-7,-2 a7,7 0 1,1 14,0 a7,7 0 1,1 -14,0 M-10,9 a10,7 0 0,1 20,0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+            <g transform="translate(200,58)"><circle r="21" fill="#e5534b"/><path d="M-7,-9 h14 v18 h-14 z M-3,-4 h8 M-3,1 h8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+            <g transform="translate(336,58)"><circle r="21" fill="#e5534b"/><path d="M-7,-9 h14 v18 h-14 z M-3,-4 h8 M-3,2 h5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+            <g transform="translate(472,58)"><circle r="21" fill="#B71C1C"/><path d="M-8,-8 h16 v16 h-16 z M-4,-3 h8 M-4,2 h8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+            <g transform="translate(608,58)"><circle r="21" fill="#B71C1C"/><path d="M-7,-9 h11 l4,4 v14 h-15 z M-3,0 h8 M-3,5 h8" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></g>
+            <g transform="translate(744,58)"><circle r="21" fill="#7f1010"/><path d="M-9,7 v-9 M-3,7 v-14 M3,7 v-6 M9,7 v-11" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></g>
+            <g transform="translate(880,58)"><circle r="21" fill="#7f1010"/><path d="M-9,0 l6,6 l12,-12" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+            <g transform="translate(1016,58)"><circle r="21" fill="#B71C1C"/><path d="M-8,-8 h16 v16 h-16 z M-8,-3 h16 M-8,2 h16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+          </g>
+          <g font-size="12.5" font-weight="800" fill="#4a4a4a" text-anchor="middle">
+            <text x="64"   y="98" data-i18n-t data-ja="顧客・CRM" data-en="CRM"></text>
+            <text x="200"  y="98" data-i18n-t data-ja="RFI" data-en="RFI"></text>
+            <text x="336"  y="98" data-i18n-t data-ja="RFP" data-en="RFP"></text>
+            <text x="472"  y="98" data-i18n-t data-ja="見積" data-en="Estimate"></text>
+            <text x="608"  y="98" data-i18n-t data-ja="提案" data-en="Proposal"></text>
+            <text x="744"  y="98" data-i18n-t data-ja="プロジェクト" data-en="Project"></text>
+            <text x="880"  y="98" data-i18n-t data-ja="デリバリー" data-en="Delivery"></text>
+            <text x="1016" y="98" data-i18n-t data-ja="ナレッジ" data-en="Knowledge"></text>
+          </g>
+          <g stroke="#e0c4c4" stroke-width="1.6" stroke-dasharray="4 5">
+            <line x1="64" y1="112" x2="64" y2="152"/><line x1="200" y1="112" x2="200" y2="152"/>
+            <line x1="336" y1="112" x2="336" y2="152"/><line x1="472" y1="112" x2="472" y2="152"/>
+            <line x1="608" y1="112" x2="608" y2="152"/><line x1="744" y1="112" x2="744" y2="152"/>
+            <line x1="880" y1="112" x2="880" y2="152"/><line x1="1016" y1="112" x2="1016" y2="152"/>
+          </g>
+          <rect x="36" y="152" width="1008" height="54" rx="14" fill="#fdecec"/>
+          <rect x="36" y="152" width="1008" height="54" rx="14" fill="none" stroke="#f3caca" stroke-width="2"/>
+          <g transform="translate(96,179)">
+            <rect x="-22" y="-16" width="44" height="32" rx="9" fill="#B71C1C"/>
+            <g fill="#fff"><circle cx="-9" cy="-6" r="2.6"/><circle cx="9" cy="-6" r="2.6"/><circle cx="0" cy="5" r="3"/></g>
+            <g stroke="#fff" stroke-width="1.2" opacity=".65"><line x1="-9" y1="-6" x2="0" y2="5"/><line x1="9" y1="-6" x2="0" y2="5"/></g>
+          </g>
+          <text x="140" y="184" font-size="15" font-weight="900" fill="#B71C1C" data-i18n-t
+                data-ja="AIレイヤー ｜ 49 のプロンプトパック・RAG ナレッジ・マルチエージェント — 人が決める設計"
+                data-en="AI LAYER ｜ 49 prompt packs · RAG knowledge · multi-agent — designed so a human decides"></text>
+        </svg>
+      </div>
+
+      <div class="cover-meta" data-anim="5">
+        <span data-i18n data-ja="報告者：Kien Phan" data-en="Presenter: Kien Phan"></span>
+        <span data-i18n data-ja="対象：経営層（BOD）" data-en="Audience: Board of Directors"></span>
+        <span data-i18n data-ja="2026年10月1日" data-en="1 October 2026"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 : AGENDA ============ -->
+  <section class="slide" id="s02">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="slide-tag" data-anim="1" data-i18n data-ja="Agenda ｜ 目次" data-en="Agenda"></div>
+      <h2 class="slide-title" data-anim="2" data-i18n data-ja="本日の<span class='accent'>内容</span>" data-en="Today's <span class='accent'>agenda</span>"></h2>
+
+      <div class="toc-wrap">
+        <div class="toc-grid">
+          <div class="toc-col">
+            <div class="toc-part" data-anim="3"><span class="pb">Part 1</span><span data-i18n data-ja="学びと適用" data-en="Learning &amp; Application"></span></div>
+            <div class="toc-item" data-goto="4" data-anim="3">
+              <span class="ti-no">01</span>
+              <div><h4 data-i18n data-ja="FDE研修で得たもの" data-en="What I learned from FDE"></h4><p data-i18n data-ja="AIエージェント／RAG と、コンサル型ヒアリング" data-en="AI agents / RAG, and consultative listening"></p></div>
+              <span class="ti-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="toc-item" data-goto="6" data-anim="4">
+              <span class="ti-no">02</span>
+              <div><h4 data-i18n data-ja="Open Assistant への適用" data-en="Applying it to Open Assistant"></h4><p data-i18n data-ja="実運用に耐える規模で、学びを検証する" data-en="Validating the learning at production scale"></p></div>
+              <span class="ti-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+          <div class="toc-col">
+            <div class="toc-part" data-anim="4"><span class="pb">Part 2</span><span data-i18n data-ja="システム紹介" data-en="The System"></span></div>
+            <div class="toc-item hero" data-goto="8" data-anim="4">
+              <span class="ti-no">03</span>
+              <div><h4 data-i18n data-ja="Open Assistant とは" data-en="What is Open Assistant"></h4><p data-i18n data-ja="デリバリー全工程の循環図 — 各工程をクリック" data-en="The full delivery cycle — click any stage"></p></div>
+              <span class="ti-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="toc-item" data-goto="9" data-anim="5">
+              <span class="ti-no">04</span>
+              <div><h4 data-i18n data-ja="主要機能と規模" data-en="Main features &amp; scale"></h4><p data-i18n data-ja="25モジュール／AI適用ポイント／実装規模" data-en="25 modules, AI touchpoints, build scale"></p></div>
+              <span class="ti-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="toc-item" data-goto="11" data-anim="5">
+              <span class="ti-no">05</span>
+              <div><h4 data-i18n data-ja="どう効くのか" data-en="How it works"></h4><p data-i18n data-ja="課題 → 解決 → 時間・コスト・品質の効果" data-en="Pain → solution → time, cost, quality"></p></div>
+              <span class="ti-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+          <div class="toc-col">
+            <div class="toc-part" data-anim="5"><span class="pb">Part 3</span><span data-i18n data-ja="学びと次の一手" data-en="Lessons &amp; Next"></span></div>
+            <div class="toc-item" data-goto="13" data-anim="5">
+              <span class="ti-no">06</span>
+              <div><h4 data-i18n data-ja="プロジェクトから得た学び" data-en="What I learned building it"></h4><p data-i18n data-ja="従来型 vs AIネイティブ開発プロセス" data-en="Traditional vs AI-native process"></p></div>
+              <span class="ti-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="toc-item" data-goto="15" data-anim="6">
+              <span class="ti-no">07</span>
+              <div><h4 data-i18n data-ja="ライブデモ" data-en="Live demo"></h4><p data-i18n data-ja="実際の画面で、実際の流れを" data-en="The real screens, the real flow"></p></div>
+              <span class="ti-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+            <div class="toc-item fin" data-goto="16" data-anim="6">
+              <span class="ti-no">08</span>
+              <div><h4 data-i18n data-ja="次のステップ・まとめ" data-en="Next steps &amp; wrap-up"></h4><p data-i18n data-ja="未完了機能の仕上げと本番化" data-en="Finishing the open features, then go-live"></p></div>
+              <span class="ti-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"/></svg></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 : SECTION COVER 1 ============ -->
+  <section class="slide sec" id="s03">
+    <div class="brandbar"></div>
+    <div class="sec-grid"></div>
+    <div class="sec-fx"><div class="sq a"></div><div class="sq b"></div><div class="sq c"></div><div class="sq d"></div></div>
+    <div class="sec-wrap">
+      <div class="sec-no" data-anim="1">01</div>
+      <div class="sec-txt">
+        <div class="sec-kicker" data-anim="2"><span class="dot"></span>Section 01</div>
+        <h2 data-anim="3" data-i18n data-ja="FDE研修から、<span class='accent'>何を持ち帰ったか</span>" data-en="What I brought back <span class='accent'>from FDE</span>"></h2>
+        <div class="sec-en" data-anim="4">Learning from the FDE Program</div>
+        <div class="sec-rule" data-anim="4"></div>
+      </div>
+    </div>
+    <div class="sec-art" data-anim="5">
+      <svg viewBox="0 0 240 180">
+        <g class="glyph-float">
+          <circle cx="120" cy="84" r="58" fill="none" stroke="#f3caca" stroke-width="2" stroke-dasharray="5 8"/>
+          <circle cx="120" cy="84" r="58" fill="none" stroke="#B71C1C" stroke-width="3" stroke-dasharray="46 320" stroke-linecap="round">
+            <animateTransform attributeName="transform" type="rotate" from="0 120 84" to="360 120 84" dur="9s" repeatCount="indefinite"/></circle>
+          <rect x="88" y="52" width="64" height="64" rx="18" fill="#B71C1C"/>
+          <g fill="#fff"><circle cx="106" cy="70" r="4"/><circle cx="134" cy="70" r="4"/><circle cx="106" cy="98" r="4"/><circle cx="134" cy="98" r="4"/><circle cx="120" cy="84" r="5.5"/></g>
+          <g stroke="#fff" stroke-width="1.6" opacity=".6"><line x1="106" y1="70" x2="120" y2="84"/><line x1="134" y1="70" x2="120" y2="84"/><line x1="106" y1="98" x2="120" y2="84"/><line x1="134" y1="98" x2="120" y2="84"/></g>
+          <circle cx="120" cy="26" r="6" fill="#e5534b"/><circle cx="178" cy="84" r="5" fill="#e5534b"/><circle cx="62" cy="84" r="5" fill="#e5534b"/><circle cx="120" cy="142" r="6" fill="#e5534b"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ 04 : FDE LEARNING ============ -->
+  <section class="slide" id="s04">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="slide-tag" data-anim="1"><span class="part">01</span><span data-i18n data-ja="FDE研修 ｜ 得たスキル" data-en="FDE Program ｜ Skills gained"></span></div>
+      <h2 class="slide-title" data-anim="2" data-i18n
+          data-ja="2つのスキルが、<span class='accent'>開発手法の土台</span>になった。"
+          data-en="Two skills became <span class='accent'>the foundation of a method</span>."></h2>
+
+      <div class="fde-stage">
+        <div data-anim="3">
+          <svg class="fde-svg" viewBox="0 0 1160 272" preserveAspectRatio="xMidYMid meet">
+            <!-- skill 1 -->
+            <g transform="translate(150,104)">
+              <circle r="70" fill="#fdecec"/>
+              <circle r="70" fill="none" stroke="#B71C1C" stroke-width="2.5" stroke-dasharray="56 384" stroke-linecap="round">
+                <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite"/></circle>
+              <rect x="-28" y="-28" width="56" height="56" rx="15" fill="#B71C1C"/>
+              <g fill="#fff"><circle cx="-11" cy="-11" r="3.4"/><circle cx="11" cy="-11" r="3.4"/><circle cx="-11" cy="11" r="3.4"/><circle cx="11" cy="11" r="3.4"/><circle cx="0" cy="0" r="4.6"/></g>
+              <g stroke="#fff" stroke-width="1.5" opacity=".6"><line x1="-11" y1="-11" x2="0" y2="0"/><line x1="11" y1="-11" x2="0" y2="0"/><line x1="-11" y1="11" x2="0" y2="0"/><line x1="11" y1="11" x2="0" y2="0"/></g>
+              <text y="104" text-anchor="middle" font-size="17" font-weight="900" fill="#B71C1C" data-i18n-t data-ja="AIエージェント / RAG" data-en="AI agents / RAG"></text>
+              <text y="128" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7a7a7a" data-i18n-t data-ja="根拠のある答えを、機械に出させる" data-en="Make the machine answer with evidence"></text>
+            </g>
+
+            <!-- plus -->
+            <g transform="translate(310,104)" stroke="#e0c4c4" stroke-width="5" stroke-linecap="round"><line x1="-13" y1="0" x2="13" y2="0"/><line x1="0" y1="-13" x2="0" y2="13"/></g>
+
+            <!-- skill 2 : consultative listening (two voices) -->
+            <g transform="translate(470,104)">
+              <circle r="70" fill="#e6effa"/>
+              <circle r="70" fill="none" stroke="#1565c0" stroke-width="2.5" stroke-dasharray="56 384" stroke-linecap="round">
+                <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="12s" repeatCount="indefinite"/></circle>
+              <path d="M-30,-22 h36 a7,7 0 0 1 7,7 v16 a7,7 0 0 1 -7,7 h-22 l-11,9 v-9 a7,7 0 0 1 -7,-7 v-16 a7,7 0 0 1 4,-7 z" fill="#1565c0"/>
+              <path d="M30,24 h-28 a7,7 0 0 1 -7,-7 v-14 a7,7 0 0 1 7,-7 h28 a7,7 0 0 1 7,7 v14 a7,7 0 0 1 -4,7 l0,9 z" fill="#fff" stroke="#1565c0" stroke-width="2.5" stroke-linejoin="round"/>
+              <g fill="#1565c0"><circle cx="8" cy="10" r="2.6"/><circle cx="18" cy="10" r="2.6"/><circle cx="28" cy="10" r="2.6"/></g>
+              <text y="104" text-anchor="middle" font-size="17" font-weight="900" fill="#1565c0" data-i18n-t data-ja="コンサル型ヒアリング" data-en="Consultative listening"></text>
+              <text y="128" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7a7a7a" data-i18n-t data-ja="言葉の裏の「本当の課題」を取りにいく" data-en="Get to the real need behind the words"></text>
+            </g>
+
+            <!-- equals -->
+            <g transform="translate(630,104)" stroke="#e0c4c4" stroke-width="5" stroke-linecap="round"><line x1="-13" y1="-7" x2="13" y2="-7"/><line x1="-13" y1="7" x2="13" y2="7"/></g>
+
+            <!-- outcome -->
+            <g transform="translate(690,48)">
+              <rect x="0" y="0" width="470" height="112" rx="20" fill="#B71C1C"/>
+              <text x="235" y="40" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffd9d9" letter-spacing="2" data-i18n-t data-ja="= 得られた土台" data-en="= THE FOUNDATION"></text>
+              <text x="235" y="78" text-anchor="middle" font-size="25" font-weight="900" fill="#fff" data-i18n-t data-ja="AI駆動 開発手法" data-en="An AI-driven method"></text>
+            </g>
+            <text x="925" y="206" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7a7a7a" data-i18n-t
+                  data-ja="聞く → 設計する → AIに作らせる → 人が決める"
+                  data-en="Listen → design → let AI build → a human decides"></text>
+          </svg>
+        </div>
+
+        <div class="fde-cards">
+          <div class="fcard" data-anim="4">
+            <div class="fh"><div class="fic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="10" r="1.3" fill="currentColor"/><circle cx="15" cy="10" r="1.3" fill="currentColor"/><path d="M9 15h6"/></svg></div>
+              <div><div class="flbl">Skill 01</div><h4 data-i18n data-ja="AIエージェント構築・RAG" data-en="Building AI agents &amp; RAG"></h4></div></div>
+            <ul>
+              <li data-i18n data-ja="ベクトル検索 ＋ 出典付き回答" data-en="Vector retrieval, cited answers"></li>
+              <li data-i18n data-ja="権限つきの「道具」を持つエージェント" data-en="Agents with tools, under permissions"></li>
+              <li data-i18n data-ja="出力を型で縛る" data-en="Output bound by a schema"></li>
+            </ul>
+          </div>
+          <div class="fcard k2" data-anim="5">
+            <div class="fh"><div class="fic"><svg viewBox="0 0 24 24"><path d="M3 8a3 3 0 0 1 3-3h7a3 3 0 0 1 0 6H9l-4 3v-3.2A3 3 0 0 1 3 8z"/><path d="M13 15a3 3 0 0 0 3 3h2l3 2v-2.3A3 3 0 0 0 20 12"/></svg></div>
+              <div><div class="flbl">Skill 02</div><h4 data-i18n data-ja="課題を引き出すヒアリング" data-en="Active listening in presales"></h4></div></div>
+            <ul>
+              <li data-i18n data-ja="「要望」と「課題」を切り分ける" data-en="Separate the want from the need"></li>
+              <li data-i18n data-ja="合意のための見える化" data-en="Make it visible, then agree"></li>
+              <li data-i18n data-ja="決める人の論点で話す" data-en="Speak in the decider's terms"></li>
+            </ul>
+          </div>
+          <div class="fcard k3" data-anim="6">
+            <div class="fh"><div class="fic"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.4.8-4.7 4.3 1.2 6.3L12 17l-5.5 3 1.2-6.3L3 9.4l6.4-.8z"/></svg></div>
+              <div><div class="flbl">Outcome</div><h4 data-i18n data-ja="2つが噛み合って、手法になる" data-en="The two together become a method"></h4></div></div>
+            <ul>
+              <li data-i18n data-ja="正しい課題 × 正しいAI適用" data-en="Right problem × right AI placement"></li>
+              <li data-i18n data-ja="片方だけでは、速いだけ" data-en="One without the other is just speed"></li>
+              <li data-i18n data-ja="実物で検証する必要があった" data-en="It had to be tested on something real"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 : SECTION COVER 2 ============ -->
+  <section class="slide sec" id="s05">
+    <div class="brandbar"></div>
+    <div class="sec-grid"></div>
+    <div class="sec-fx"><div class="sq a"></div><div class="sq b"></div><div class="sq c"></div><div class="sq d"></div></div>
+    <div class="sec-wrap">
+      <div class="sec-no" data-anim="1">02</div>
+      <div class="sec-txt">
+        <div class="sec-kicker" data-anim="2"><span class="dot"></span>Section 02</div>
+        <h2 data-anim="3" data-i18n data-ja="学びを、<span class='accent'>実物で検証する</span>" data-en="Testing the learning <span class='accent'>on something real</span>"></h2>
+        <div class="sec-en" data-anim="4">Applying AI to the Open Assistant Project</div>
+        <div class="sec-rule" data-anim="4"></div>
+      </div>
+    </div>
+    <div class="sec-art" data-anim="5">
+      <svg viewBox="0 0 240 180">
+        <g class="glyph-float">
+          <rect x="52" y="44" width="136" height="92" rx="16" fill="#fff" stroke="#f3caca" stroke-width="2.5"/>
+          <rect x="52" y="44" width="136" height="24" rx="16" fill="#B71C1C"/><rect x="52" y="56" width="136" height="12" fill="#B71C1C"/>
+          <g fill="#fff" opacity=".8"><circle cx="66" cy="56" r="3"/><circle cx="78" cy="56" r="3"/><circle cx="90" cy="56" r="3"/></g>
+          <rect x="66" y="82" width="52" height="8" rx="4" fill="#f3caca"/>
+          <rect x="66" y="98" width="82" height="8" rx="4" fill="#eef0f3"/>
+          <rect x="66" y="114" width="64" height="8" rx="4" fill="#eef0f3"/>
+          <circle cx="182" cy="128" r="26" fill="#B71C1C"/>
+          <path d="M172,128 l6,7 l12,-14" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ 06 : APPROACH ============ -->
+  <section class="slide" id="s06">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="slide-tag" data-anim="1"><span class="part">02</span><span data-i18n data-ja="適用 ｜ Open Assistant" data-en="Application ｜ Open Assistant"></span></div>
+      <h2 class="slide-title" data-anim="2" data-i18n
+          data-ja="小さな実験ではなく、<span class='accent'>本物の規模</span>で試した。"
+          data-en="Not a toy experiment — <span class='accent'>a real-scale build</span>."></h2>
+      <p class="subline" data-anim="2" data-i18n
+         data-ja="お客様に価値を届けるには、強い開発プロセスが要る。その仮説を確かめるには、十分に大きな題材が必要だった。"
+         data-en="Delivering real customer value needs a strong development process. To test that, the subject had to be big enough to hurt."></p>
+
+      <div class="ap-stage">
+        <div data-anim="3">
+          <svg class="ap-svg" viewBox="0 0 620 470" preserveAspectRatio="xMidYMid meet">
+            <text x="310" y="22" text-anchor="middle" font-size="12" font-weight="800" fill="#7a7a7a" letter-spacing="1.6" data-i18n-t
+                  data-ja="AIを置く場所と、置かない場所" data-en="WHERE AI GOES — AND WHERE IT DOES NOT"></text>
+
+            <!-- LEFT: the system computes -->
+            <rect x="18" y="44" width="278" height="250" rx="18" fill="#fff" stroke="#e6e6e6" stroke-width="2"/>
+            <rect x="18" y="44" width="278" height="46" rx="18" fill="#4a4a4a"/><rect x="18" y="72" width="278" height="18" fill="#4a4a4a"/>
+            <text x="157" y="74" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" data-i18n-t
+                  data-ja="システムが計算する" data-en="THE SYSTEM COMPUTES"></text>
+            <g font-size="11.8" font-weight="700" fill="#4a4a4a">
+              <rect x="40" y="108" width="234" height="36" rx="9" fill="#f6f7f9"/><text x="60" y="131" data-i18n-t data-ja="見積の工数・規模" data-en="Effort and size"></text>
+              <rect x="40" y="152" width="234" height="36" rx="9" fill="#f6f7f9"/><text x="60" y="175" data-i18n-t data-ja="受注確度スコア" data-en="Win-probability score"></text>
+              <rect x="40" y="196" width="234" height="36" rx="9" fill="#f6f7f9"/><text x="60" y="219" data-i18n-t data-ja="要員マッチ度" data-en="Resource match score"></text>
+              <rect x="40" y="240" width="234" height="36" rx="9" fill="#f6f7f9"/><text x="60" y="263" data-i18n-t data-ja="EVM・進捗・リスク値" data-en="EVM, progress, risk"></text>
+            </g>
+
+            <!-- RIGHT: the model drafts -->
+            <rect x="324" y="44" width="278" height="250" rx="18" fill="#fff" stroke="#f3caca" stroke-width="2"/>
+            <rect x="324" y="44" width="278" height="46" rx="18" fill="#B71C1C"/><rect x="324" y="72" width="278" height="18" fill="#B71C1C"/>
+            <text x="463" y="74" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" data-i18n-t
+                  data-ja="AIが下書きする" data-en="THE MODEL DRAFTS"></text>
+            <g font-size="11.8" font-weight="700" fill="#7f1010">
+              <rect x="346" y="108" width="234" height="36" rx="9" fill="#fdecec"/><text x="366" y="131" data-i18n-t data-ja="数字の説明・所見" data-en="Explaining the numbers"></text>
+              <rect x="346" y="152" width="234" height="36" rx="9" fill="#fdecec"/><text x="366" y="175" data-i18n-t data-ja="提案書・報告書の初稿" data-en="First drafts &amp; reports"></text>
+              <rect x="346" y="196" width="234" height="36" rx="9" fill="#fdecec"/><text x="366" y="219" data-i18n-t data-ja="仕様からの抽出・分類" data-en="Extract &amp; classify"></text>
+              <rect x="346" y="240" width="234" height="36" rx="9" fill="#fdecec"/><text x="366" y="263" data-i18n-t data-ja="決定への推奨と代替案" data-en="Recommendations + options"></text>
+            </g>
+
+            <!-- both flow into the human -->
+            <g stroke="#c9c9c9" stroke-width="2.5" stroke-dasharray="6 7" fill="none"><path d="M157,294 V352"/></g>
+            <g stroke="#B71C1C" stroke-width="2.5" stroke-dasharray="6 7" fill="none" class="flow-path"><path d="M463,294 V352"/></g>
+            <circle r="5" fill="#B71C1C"><animateMotion path="M463,294 V352" dur="1.8s" repeatCount="indefinite"/></circle>
+
+            <rect x="18" y="356" width="584" height="82" rx="18" fill="#fdecec" stroke="#f3caca" stroke-width="2"/>
+            <g transform="translate(70,397)"><circle cx="0" cy="-8" r="10" fill="#B71C1C"/><path d="M-15,16 a15,13 0 0,1 30,0" fill="#B71C1C"/></g>
+            <text x="108" y="392" font-size="16.5" font-weight="900" fill="#B71C1C" data-i18n-t
+                  data-ja="人が決める" data-en="A HUMAN DECIDES"></text>
+            <text x="108" y="414" font-size="11.5" font-weight="700" fill="#8a4141" data-i18n-t
+                  data-ja="AIの出力はすべて提案。承認した人と理由が記録に残る。"
+                  data-en="Every AI output is a proposal — approver and reason recorded."></text>
+
+            <text x="310" y="462" text-anchor="middle" font-size="11.5" font-weight="700" fill="#a5a5a5" data-i18n-t
+                  data-ja="この境界線を引けたことが、精度の源になった。" data-en="Drawing this line is where the accuracy came from."></text>
+          </svg>
+        </div>
+
+        <div class="ap-list">
+          <div class="ap-item" data-anim="4">
+            <div class="an">1</div>
+            <div><h4 data-i18n data-ja="ゼロから、大きなものを作る" data-en="Build something big, from scratch"></h4>
+              <p data-i18n data-ja="研修の学びを「知っている」で終わらせないため、実務で本当に使えるものを選んだ。デリバリー全工程を一つのシステムに収める、という題材。" data-en="To keep the training from staying theory, I picked something the company could actually use: the entire delivery lifecycle in one system."></p></div>
+          </div>
+          <div class="ap-item" data-anim="5">
+            <div class="an">2</div>
+            <div><h4 data-i18n data-ja="開発ワークフローへのAI適用を考える" data-en="Rethink the development workflow itself"></h4>
+              <p data-i18n data-ja="作る対象にAIを入れるだけでなく、作り方にもAIを入れた。計画書を書かせ、コードを書かせ、検証させ、直させる — その全体を設計した。" data-en="AI went not only into the product but into how the product gets made: it writes the plan, writes the code, verifies it, and repairs it — as one designed loop."></p></div>
+          </div>
+          <div class="ap-item" data-anim="6">
+            <div class="an">3</div>
+            <div><h4 data-i18n data-ja="適所に置き、十分な文脈を与える" data-en="Right place, enough context"></h4>
+              <p data-i18n data-ja="AIは万能ではない。数字は決定論的に計算し、AIには「説明」「下書き」「提案」をさせる。境界を決めたことが、精度の源になった。" data-en="A model is not a universal answer. Numbers are computed deterministically; the model explains, drafts and proposes. Drawing that boundary is what made it accurate."></p></div>
+          </div>
+          <div class="ap-note" data-anim="7">
+            <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2Z"/><path d="M9 21h6"/></svg>
+            <p data-i18n data-ja="設計思想：AIは提案し、人が決める。" data-en="Design principle: AI proposes, a human decides."></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 : SECTION COVER 3 ============ -->
+  <section class="slide sec" id="s07">
+    <div class="brandbar"></div>
+    <div class="sec-grid"></div>
+    <div class="sec-fx"><div class="sq a"></div><div class="sq b"></div><div class="sq c"></div><div class="sq d"></div></div>
+    <div class="sec-wrap">
+      <div class="sec-no" data-anim="1">03</div>
+      <div class="sec-txt">
+        <div class="sec-kicker" data-anim="2"><span class="dot"></span>Section 03</div>
+        <h2 data-anim="3" data-i18n data-ja="Open Assistant <span class='accent'>とは何か</span>" data-en="What <span class='accent'>Open Assistant</span> is"></h2>
+        <div class="sec-en" data-anim="4">The Full Delivery Lifecycle, in One System</div>
+        <div class="sec-rule" data-anim="4"></div>
+      </div>
+    </div>
+    <div class="sec-art" data-anim="5">
+      <svg viewBox="0 0 240 180">
+        <g class="glyph-float"><g transform="translate(120,90)">
+          <circle r="66" fill="none" stroke="#f3caca" stroke-width="2" stroke-dasharray="5 8"/>
+          <circle r="66" fill="none" stroke="#B71C1C" stroke-width="3.5" stroke-dasharray="72 343" stroke-linecap="round">
+            <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite"/></circle>
+          <circle r="44" fill="none" stroke="#f8dcdc" stroke-width="1.6"/>
+          <g fill="#B71C1C">
+            <circle cx="0" cy="-66" r="6"/><circle cx="47" cy="-47" r="6"/><circle cx="66" cy="0" r="6"/><circle cx="47" cy="47" r="6"/>
+            <circle cx="0" cy="66" r="6"/><circle cx="-47" cy="47" r="6"/><circle cx="-66" cy="0" r="6"/><circle cx="-47" cy="-47" r="6"/>
+          </g>
+          <circle r="25" fill="#B71C1C"/>
+          <g fill="#fff"><circle cx="-9" cy="-6" r="2.6"/><circle cx="9" cy="-6" r="2.6"/><circle cx="-9" cy="8" r="2.6"/><circle cx="9" cy="8" r="2.6"/><circle cx="0" cy="1" r="3.4"/></g>
+          <g stroke="#fff" stroke-width="1.2" opacity=".6"><line x1="-9" y1="-6" x2="0" y2="1"/><line x1="9" y1="-6" x2="0" y2="1"/><line x1="-9" y1="8" x2="0" y2="1"/><line x1="9" y1="8" x2="0" y2="1"/></g>
+        </g></g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ 08 : LIFECYCLE WHEEL (interactive) ============ -->
+  <section class="slide" id="s08">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="lc-head">
+        <div>
+          <div class="slide-tag" data-anim="1"><span class="part">03</span><span data-i18n data-ja="Open Assistant ｜ デリバリー全工程" data-en="Open Assistant ｜ The delivery lifecycle"></span></div>
+          <h2 class="slide-title" data-anim="2" data-i18n
+              data-ja="引き合いからナレッジまで、<span class='accent'>一つの循環</span>。"
+              data-en="From first contact to institutional memory — <span class='accent'>one loop</span>."></h2>
+        </div>
+      </div>
+
+      <div class="lc-stage" data-anim="3">
+        <svg class="lc-svg" viewBox="0 0 1060 660" preserveAspectRatio="xMidYMid meet">
+          <circle cx="530" cy="320" r="215" fill="none" stroke="#f0dede" stroke-width="16"/>
+          <circle cx="530" cy="320" r="215" fill="none" stroke="#B71C1C" stroke-width="3" stroke-dasharray="10 14" class="flow-path" opacity=".8"/>
+          <circle r="8" fill="#B71C1C">
+            <animateMotion dur="14s" repeatCount="indefinite" path="M530,105 A215,215 0 1,1 529,105"/>
+          </circle>
+
+          <g class="lc-arrows">
+            <path d="M-7,-6 L7,0 L-7,6 Z" fill="#B71C1C" transform="translate(612.3,121.4) rotate(22.5)"/>
+            <path d="M-7,-6 L7,0 L-7,6 Z" fill="#B71C1C" transform="translate(728.6,237.7) rotate(67.5)"/>
+            <path d="M-7,-6 L7,0 L-7,6 Z" fill="#B71C1C" transform="translate(728.6,402.3) rotate(112.5)"/>
+            <path d="M-7,-6 L7,0 L-7,6 Z" fill="#B71C1C" transform="translate(612.3,518.6) rotate(157.5)"/>
+            <path d="M-7,-6 L7,0 L-7,6 Z" fill="#B71C1C" transform="translate(447.7,518.6) rotate(202.5)"/>
+            <path d="M-7,-6 L7,0 L-7,6 Z" fill="#B71C1C" transform="translate(331.4,402.3) rotate(247.5)"/>
+            <path d="M-7,-6 L7,0 L-7,6 Z" fill="#B71C1C" transform="translate(331.4,237.7) rotate(292.5)"/>
+            <path d="M-7,-6 L7,0 L-7,6 Z" fill="#B71C1C" transform="translate(447.7,121.4) rotate(337.5)"/>
+          </g>
+
+          <!-- spokes -->
+          <g stroke="#f3caca" stroke-width="1.6" stroke-dasharray="4 6">
+            <line x1="530" y1="320" x2="530" y2="105"/><line x1="530" y1="320" x2="682" y2="168"/>
+            <line x1="530" y1="320" x2="745" y2="320"/><line x1="530" y1="320" x2="682" y2="472"/>
+            <line x1="530" y1="320" x2="530" y2="535"/><line x1="530" y1="320" x2="378" y2="472"/>
+            <line x1="530" y1="320" x2="315" y2="320"/><line x1="530" y1="320" x2="378" y2="168"/>
+          </g>
+
+          <!-- center AI hub -->
+          <circle cx="530" cy="320" r="120" fill="#fdecec"/>
+          <circle cx="530" cy="320" r="120" fill="none" stroke="#B71C1C" stroke-width="2.5" stroke-dasharray="92 662" stroke-linecap="round">
+            <animateTransform attributeName="transform" type="rotate" from="0 530 320" to="360 530 320" dur="11s" repeatCount="indefinite"/></circle>
+          <circle cx="530" cy="320" r="96" fill="#B71C1C"/>
+          <g fill="#fff" transform="translate(530,286)">
+            <circle cx="-20" cy="-12" r="4.2"><animate attributeName="opacity" values=".45;1;.45" dur="1.8s" repeatCount="indefinite"/></circle>
+            <circle cx="20" cy="-12" r="4.2"><animate attributeName="opacity" values="1;.45;1" dur="2.1s" repeatCount="indefinite"/></circle>
+            <circle cx="-20" cy="14" r="4.2"><animate attributeName="opacity" values=".6;1;.6" dur="2.4s" repeatCount="indefinite"/></circle>
+            <circle cx="20" cy="14" r="4.2"><animate attributeName="opacity" values="1;.6;1" dur="1.6s" repeatCount="indefinite"/></circle>
+            <circle cx="0" cy="1" r="6"/>
+          </g>
+          <g stroke="#fff" stroke-width="1.5" opacity=".55" transform="translate(530,286)">
+            <line x1="-20" y1="-12" x2="0" y2="1"/><line x1="20" y1="-12" x2="0" y2="1"/><line x1="-20" y1="14" x2="0" y2="1"/><line x1="20" y1="14" x2="0" y2="1"/>
+          </g>
+          <text x="530" y="348" text-anchor="middle" font-size="16" font-weight="900" fill="#fff" letter-spacing=".6">OPEN ASSISTANT</text>
+          <text x="530" y="372" text-anchor="middle" font-size="11.5" font-weight="700" fill="#f6c9c9" data-i18n-t
+                data-ja="AI + RAG ナレッジ基盤" data-en="AI + RAG knowledge core"></text>
+
+          <!-- ===== nodes ===== -->
+          <g class="lc-node" data-stage="0">
+            <circle class="nring" cx="530" cy="105" r="56" fill="none" stroke="#f3caca" stroke-width="3"/>
+            <circle class="nhit" cx="530" cy="105" r="62"/>
+            <g class="np"><circle cx="530" cy="105" r="44" fill="#B71C1C"/>
+              <g transform="translate(530,102)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="0" cy="-5" r="7"/><path d="M-11,11 a11,9 0 0,1 22,0"/></g>
+              <circle cx="566" cy="74" r="15" fill="#7f1010"/><text x="566" y="79" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">01</text></g>
+            <text x="530" y="24" text-anchor="middle" font-size="16.5" class="nlab" fill="#1a1a1a" data-i18n-t data-ja="顧客・CRM" data-en="Customer &amp; CRM"></text>
+            <text x="530" y="43" text-anchor="middle" font-size="11.5" class="nsub" fill="#7a7a7a" data-i18n-t data-ja="引き合い・案件化" data-en="Opportunity intake"></text>
+          </g>
+
+          <g class="lc-node" data-stage="1">
+            <circle class="nring" cx="682" cy="168" r="56" fill="none" stroke="#f3caca" stroke-width="3"/>
+            <circle class="nhit" cx="682" cy="168" r="62"/>
+            <g class="np"><circle cx="682" cy="168" r="44" fill="#c62828"/>
+              <g transform="translate(682,168)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M-11,-14 h16 l7,7 v21 h-23 z"/><path d="M-5,-2 h11 M-5,5 h11"/></g>
+              <circle cx="716" cy="139" r="15" fill="#7f1010"/><text x="716" y="144" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">02</text></g>
+            <text x="748" y="163" font-size="16.5" class="nlab" fill="#1a1a1a" data-i18n-t data-ja="RFI" data-en="RFI"></text>
+            <text x="748" y="182" font-size="11.5" class="nsub" fill="#7a7a7a" data-i18n-t data-ja="情報提供依頼への回答" data-en="Request for information"></text>
+          </g>
+
+          <g class="lc-node" data-stage="2">
+            <circle class="nring" cx="745" cy="320" r="56" fill="none" stroke="#f3caca" stroke-width="3"/>
+            <circle class="nhit" cx="745" cy="320" r="62"/>
+            <g class="np"><circle cx="745" cy="320" r="44" fill="#c62828"/>
+              <g transform="translate(745,320)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M-12,-14 h17 l7,7 v21 h-24 z"/><path d="M-6,-1 h12 M-6,6 h7"/></g>
+              <circle cx="779" cy="291" r="15" fill="#7f1010"/><text x="779" y="296" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">03</text></g>
+            <text x="811" y="315" font-size="16.5" class="nlab" fill="#1a1a1a" data-i18n-t data-ja="RFP" data-en="RFP"></text>
+            <text x="811" y="334" font-size="11.5" class="nsub" fill="#7a7a7a" data-i18n-t data-ja="提案依頼・要件整理" data-en="Requirements structuring"></text>
+          </g>
+
+          <g class="lc-node" data-stage="3">
+            <circle class="nring" cx="682" cy="472" r="56" fill="none" stroke="#f3caca" stroke-width="3"/>
+            <circle class="nhit" cx="682" cy="472" r="62"/>
+            <g class="np"><circle cx="682" cy="472" r="44" fill="#B71C1C"/>
+              <g transform="translate(682,472)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><rect x="-12" y="-14" width="24" height="28" rx="4"/><path d="M-6,-7 h12 M-6,0 h12 M-6,7 h6"/></g>
+              <circle cx="716" cy="443" r="15" fill="#7f1010"/><text x="716" y="448" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">04</text></g>
+            <text x="748" y="467" font-size="16.5" class="nlab" fill="#1a1a1a" data-i18n-t data-ja="見積" data-en="Estimate"></text>
+            <text x="748" y="486" font-size="11.5" class="nsub" fill="#7a7a7a" data-i18n-t data-ja="規模・工数・リスク" data-en="Size, effort, risk"></text>
+          </g>
+
+          <g class="lc-node" data-stage="4">
+            <circle class="nring" cx="530" cy="535" r="56" fill="none" stroke="#f3caca" stroke-width="3"/>
+            <circle class="nhit" cx="530" cy="535" r="62"/>
+            <g class="np"><circle cx="530" cy="535" r="44" fill="#B71C1C"/>
+              <g transform="translate(530,535)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M-12,-14 h15 l9,9 v19 h-24 z"/><path d="M-6,3 h12 M-6,10 h12"/></g>
+              <circle cx="564" cy="506" r="15" fill="#7f1010"/><text x="564" y="511" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">05</text></g>
+            <text x="530" y="612" text-anchor="middle" font-size="16.5" class="nlab" fill="#1a1a1a" data-i18n-t data-ja="提案・契約" data-en="Proposal &amp; Contract"></text>
+            <text x="530" y="631" text-anchor="middle" font-size="11.5" class="nsub" fill="#7a7a7a" data-i18n-t data-ja="提案書生成・受注" data-en="Drafted, then won"></text>
+          </g>
+
+          <g class="lc-node" data-stage="5">
+            <circle class="nring" cx="378" cy="472" r="56" fill="none" stroke="#f3caca" stroke-width="3"/>
+            <circle class="nhit" cx="378" cy="472" r="62"/>
+            <g class="np"><circle cx="378" cy="472" r="44" fill="#7f1010"/>
+              <g transform="translate(378,472)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M-12,12 v-12 M-4,12 v-20 M4,12 v-8 M12,12 v-16"/></g>
+              <circle cx="412" cy="443" r="15" fill="#B71C1C"/><text x="412" y="448" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">06</text></g>
+            <text x="312" y="467" text-anchor="end" font-size="16.5" class="nlab" fill="#1a1a1a" data-i18n-t data-ja="プロジェクト管理" data-en="Project Management"></text>
+            <text x="312" y="486" text-anchor="end" font-size="11.5" class="nsub" fill="#7a7a7a" data-i18n-t data-ja="立上げ・計画・基盤" data-en="Intake, plan, foundation"></text>
+          </g>
+
+          <g class="lc-node" data-stage="6">
+            <circle class="nring" cx="315" cy="320" r="56" fill="none" stroke="#f3caca" stroke-width="3"/>
+            <circle class="nhit" cx="315" cy="320" r="62"/>
+            <g class="np"><circle cx="315" cy="320" r="44" fill="#7f1010"/>
+              <g transform="translate(315,320)" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M-13,-2 l8,8 l16,-16"/><path d="M-13,12 h26"/></g>
+              <circle cx="349" cy="291" r="15" fill="#B71C1C"/><text x="349" y="296" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">07</text></g>
+            <text x="249" y="315" text-anchor="end" font-size="16.5" class="nlab" fill="#1a1a1a" data-i18n-t data-ja="デリバリー" data-en="Delivery"></text>
+            <text x="249" y="334" text-anchor="end" font-size="11.5" class="nsub" fill="#7a7a7a" data-i18n-t data-ja="実装・報告・要員" data-en="Build, report, staff"></text>
+          </g>
+
+          <g class="lc-node" data-stage="7">
+            <circle class="nring" cx="378" cy="168" r="56" fill="none" stroke="#f3caca" stroke-width="3"/>
+            <circle class="nhit" cx="378" cy="168" r="62"/>
+            <g class="np"><circle cx="378" cy="168" r="44" fill="#B71C1C"/>
+              <g transform="translate(378,168)" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><rect x="-13" y="-13" width="26" height="26" rx="4"/><path d="M-13,-4 h26 M-13,4 h26"/></g>
+              <circle cx="412" cy="139" r="15" fill="#7f1010"/><text x="412" y="144" text-anchor="middle" font-size="12" font-weight="900" fill="#fff">08</text></g>
+            <text x="312" y="163" text-anchor="end" font-size="16.5" class="nlab" fill="#1a1a1a" data-i18n-t data-ja="ナレッジ蓄積" data-en="Knowledge Archive"></text>
+            <text x="312" y="182" text-anchor="end" font-size="11.5" class="nsub" fill="#7a7a7a" data-i18n-t data-ja="次の案件の武器になる" data-en="Becomes the next bid's evidence"></text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 09 : FEATURES & SCALE ============ -->
+  <section class="slide" id="s09">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="slide-tag" data-anim="1"><span class="part">03</span><span data-i18n data-ja="機能とインテリジェンス" data-en="Features &amp; intelligence"></span></div>
+      <h2 class="slide-title" data-anim="2" data-i18n
+          data-ja="25モジュール。<span class='accent'>商流と開発が、同じ器の中に。</span>"
+          data-en="25 modules. <span class='accent'>Delivery in one place.</span>"></h2>
+
+      <div class="ft-grid">
+        <div>
+          <div class="ft-h" data-anim="3" data-i18n data-ja="主要機能 ｜ Main features" data-en="Main features"></div>
+          <div class="ft-cards">
+            <div class="ft" data-anim="3">
+              <div class="ft-top"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M2 19a5 5 0 0 1 10 0M12 19a5 5 0 0 1 10 0"/></svg></div><span class="bdg multi" data-i18n data-ja="マルチエージェント" data-en="Multiple Agents"></span></div>
+              <h4 data-i18n data-ja="ブレインストーミング・ルーム" data-en="Brainstorming room"></h4>
+              <p data-i18n data-ja="役割の違うエージェントが議論し、対立点を残す" data-en="Differently-roled agents debate; conflicts are kept visible"></p>
+            </div>
+            <div class="ft" data-anim="3">
+              <div class="ft-top"><div class="fi"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.4"/><path d="M5 21a7 7 0 0 1 14 0"/><path d="M19 3l1.2 2.4L23 6l-2 1.8.5 2.7L19 9.2 16.5 10.5 17 7.8 15 6l2.8-.6z"/></svg></div><span class="bdg" data-i18n data-ja="AIエージェント" data-en="AI Agent"></span></div>
+              <h4 data-i18n data-ja="リソース・インテリジェンス" data-en="Resource Intelligence"></h4>
+              <p data-i18n data-ja="要員の需給とスキルを予測し、配置を助言" data-en="Forecasts supply, demand and skills; advises staffing"></p>
+            </div>
+            <div class="ft" data-anim="4">
+              <div class="ft-top"><div class="fi"><svg viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div><span class="bdg" data-i18n data-ja="AIエージェント" data-en="AI Agent"></span></div>
+              <h4 data-i18n data-ja="提案フロー" data-en="Proposal flow"></h4>
+              <p data-i18n data-ja="RFI・RFP・見積・提案を、再入力なしで一本に" data-en="RFI, RFP, Estimate, Proposal — one chain, no re-entry"></p>
+            </div>
+            <div class="ft" data-anim="4">
+              <div class="ft-top"><div class="fi"><svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12"/><path d="M9 20v-6h6v6"/></svg></div><span class="bdg multi" data-i18n data-ja="マルチエージェント" data-en="Multiple Agents"></span></div>
+              <h4 data-i18n data-ja="プロジェクト管理" data-en="Project Management"></h4>
+              <p data-i18n data-ja="立上げ・計画・基盤を、複数エージェントが起案" data-en="Agents draft the intake, the plan and the foundation"></p>
+            </div>
+            <div class="ft" data-anim="5">
+              <div class="ft-top"><div class="fi"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18"/><path d="M8 14l2 2 4-4"/></svg></div><span class="bdg" data-i18n data-ja="AIエージェント" data-en="AI Agent"></span></div>
+              <h4 data-i18n data-ja="ソフトウェア工場・基盤" data-en="Software factory &amp; foundation"></h4>
+              <p data-i18n data-ja="仕様からコードへ。標準をプロジェクトに生成する" data-en="Spec to code; standards generated into the project"></p>
+            </div>
+            <div class="ft" data-anim="5">
+              <div class="ft-top"><div class="fi"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-8"/><path d="M14 8h7v7"/></svg></div><span class="bdg" data-i18n data-ja="AIエージェント" data-en="AI Agent"></span></div>
+              <h4 data-i18n data-ja="フォーキャスト" data-en="Forecasting"></h4>
+              <p data-i18n data-ja="プロジェクトのリスクと、市場の動きを先に読む" data-en="Project risk and market trend, read ahead of time"></p>
+            </div>
+          </div>
+
+        </div>
+
+        <div>
+          <div class="ft-h b" data-anim="4" data-i18n data-ja="インテリジェンス基盤 ｜ Where AI is applied" data-en="Where AI is applied"></div>
+          <div class="ai-list">
+            <div class="ai-row" data-anim="4">
+              <div class="ai-ic"><svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12"/><path d="M8 20v-5h8v5"/></svg></div>
+              <div><h4 data-i18n data-ja="プロジェクト・インテリジェンス" data-en="Project Intelligence"></h4>
+                <p data-i18n data-ja="いまの健全性ではなく、どこへ向かっているかを示す" data-en="Not where the project is — where it is heading"></p></div>
+            </div>
+            <div class="ai-row" data-anim="5">
+              <div class="ai-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div>
+              <div><h4 data-i18n data-ja="リソース・インテリジェンス" data-en="Resource Intelligence"></h4>
+                <p data-i18n data-ja="需要を予測し、空きとスキルのギャップを先に見せる" data-en="Forecast demand; surface the bench and the skill gap early"></p></div>
+            </div>
+            <div class="ai-row" data-anim="5">
+              <div class="ai-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/></svg></div>
+              <div><h4 data-i18n data-ja="マーケット・インテリジェンス" data-en="Market Intelligence"></h4>
+                <p data-i18n data-ja="日本市場のシグナルを、自社スキル体系に紐づける" data-en="Japan market signals, mapped onto our own skill taxonomy"></p></div>
+            </div>
+            <div class="ai-row" data-anim="6">
+              <div class="ai-ic"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V4M16 19v-7M21 19H3"/></svg></div>
+              <div><h4 data-i18n data-ja="セールス・インテリジェンス" data-en="Sales Intelligence"></h4>
+                <p data-i18n data-ja="受注確度を算出し、会話から需要タグを抽出する" data-en="Win probability computed; demand tags pulled from conversations"></p></div>
+            </div>
+          </div>
+
+          <div class="ft-note" data-anim="7">
+            <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M13 3l8 4-8 4z" fill="currentColor" stroke="none"/></svg>
+            <p data-i18n
+               data-ja="同じ基盤は、<b>マイグレーション・モダナイゼーション</b>案件にもそのまま延長できます。"
+               data-en="The same foundation extends, without redesign, to <b>migration and modernization</b> engagements."></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 10 : SECTION COVER 4 ============ -->
+  <section class="slide sec" id="s10">
+    <div class="brandbar"></div>
+    <div class="sec-grid"></div>
+    <div class="sec-fx"><div class="sq a"></div><div class="sq b"></div><div class="sq c"></div><div class="sq d"></div></div>
+    <div class="sec-wrap">
+      <div class="sec-no" data-anim="1">04</div>
+      <div class="sec-txt">
+        <div class="sec-kicker" data-anim="2"><span class="dot"></span>Section 04</div>
+        <h2 data-anim="3" data-i18n data-ja="現場の痛みに、<span class='accent'>どう効くのか</span>" data-en="How it actually <span class='accent'>relieves the pain</span>"></h2>
+        <div class="sec-en" data-anim="4">Pain Points, Resolution and Business Effect</div>
+        <div class="sec-rule" data-anim="4"></div>
+      </div>
+    </div>
+    <div class="sec-art" data-anim="5">
+      <svg viewBox="0 0 240 180">
+        <g class="glyph-float">
+          <rect x="44" y="118" width="26" height="34" rx="5" fill="#f3caca"/>
+          <rect x="82" y="92" width="26" height="60" rx="5" fill="#e5534b"/>
+          <rect x="120" y="64" width="26" height="88" rx="5" fill="#B71C1C"/>
+          <rect x="158" y="40" width="26" height="112" rx="5" fill="#7f1010"/>
+          <path d="M44,110 L96,84 L134,56 L172,32" fill="none" stroke="#B71C1C" stroke-width="3" stroke-linecap="round" stroke-dasharray="180" stroke-dashoffset="180">
+            <animate attributeName="stroke-dashoffset" from="180" to="0" dur="2.2s" fill="freeze" repeatCount="indefinite"/></path>
+          <circle cx="172" cy="32" r="7" fill="#B71C1C"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ 11 : HOW IT WORKS — the four intelligences ============ -->
+  <section class="slide" id="s11">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="slide-tag" data-anim="1"><span class="part">04</span><span data-i18n data-ja="効果 ｜ 4つのインテリジェンス" data-en="Effect ｜ Four intelligences"></span></div>
+      <h2 class="slide-title" data-anim="2" data-i18n
+          data-ja="記録するだけの仕組みから、<span class='accent'>先を読む仕組みへ。</span>"
+          data-en="From a system that records, <span class='accent'>to one that reads ahead.</span>"></h2>
+
+      <div class="iq-grid">
+        <div class="iq" data-anim="3">
+          <div class="iq-art">
+            <svg viewBox="0 0 220 112">
+              <polyline points="12,86 48,70 84,74 120,48 156,52 196,20" fill="none" stroke="#B71C1C" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="12,86 48,70 84,74 120,48" fill="none" stroke="#B71C1C" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
+              <path d="M120,48 L156,52 L196,20" fill="none" stroke="#B71C1C" stroke-width="3.5" stroke-dasharray="7 7" stroke-linecap="round"/>
+              <circle cx="120" cy="48" r="5.5" fill="#B71C1C"/>
+              <circle cx="196" cy="20" r="7" fill="none" stroke="#B71C1C" stroke-width="3"/>
+              <line x1="12" y1="98" x2="208" y2="98" stroke="#e6e6e6" stroke-width="2"/>
+              <text x="120" y="68" font-size="10" font-weight="800" fill="#a5a5a5" text-anchor="middle" data-i18n-t data-ja="いま" data-en="now"></text>
+            </svg>
+          </div>
+          <h4 data-i18n data-ja="プロジェクト" data-en="Project"></h4>
+          <p class="iq-q" data-i18n data-ja="どこへ向かっているか" data-en="Where is it heading?"></p>
+          <div class="iq-win" data-i18n data-ja="遅延を、起きる前に" data-en="Slippage, before it lands"></div>
+        </div>
+
+        <div class="iq" data-anim="4">
+          <div class="iq-art">
+            <svg viewBox="0 0 220 112">
+              <g fill="#eef0f3"><rect x="14" y="30" width="26" height="58" rx="5"/><rect x="50" y="30" width="26" height="58" rx="5"/><rect x="86" y="30" width="26" height="58" rx="5"/><rect x="122" y="30" width="26" height="58" rx="5"/><rect x="158" y="30" width="26" height="58" rx="5"/></g>
+              <g fill="#1565c0"><rect x="14" y="52" width="26" height="36" rx="5"/><rect x="50" y="44" width="26" height="44" rx="5"/><rect x="86" y="36" width="26" height="52" rx="5"/></g>
+              <g fill="#90b6e0"><rect x="122" y="60" width="26" height="28" rx="5"/><rect x="158" y="66" width="26" height="22" rx="5"/></g>
+              <path d="M122,24 h62" stroke="#ef6c00" stroke-width="3" stroke-dasharray="6 5" stroke-linecap="round"/>
+              <text x="153" y="18" font-size="10" font-weight="800" fill="#ef6c00" text-anchor="middle" data-i18n-t data-ja="空き" data-en="gap"></text>
+              <line x1="10" y1="94" x2="210" y2="94" stroke="#e6e6e6" stroke-width="2"/>
+            </svg>
+          </div>
+          <h4 data-i18n data-ja="リソース" data-en="Resource"></h4>
+          <p class="iq-q" data-i18n data-ja="誰が、いつ空くのか" data-en="Who is free, and when?"></p>
+          <div class="iq-win b" data-i18n data-ja="採用判断が、数字で" data-en="Hiring calls, on numbers"></div>
+        </div>
+
+        <div class="iq" data-anim="5">
+          <div class="iq-art">
+            <svg viewBox="0 0 220 112">
+              <g stroke="#f0f2f4" stroke-width="1.5"><line x1="14" y1="24" x2="206" y2="24"/><line x1="14" y1="54" x2="206" y2="54"/><line x1="14" y1="84" x2="206" y2="84"/></g>
+              <path d="M22,92 C70,86 96,54 200,22" fill="none" stroke="#00796b" stroke-width="2" stroke-dasharray="5 6" opacity=".4"/>
+              <g fill="#00796b">
+                <circle cx="34" cy="84" r="7" opacity=".28"/>
+                <circle cx="62" cy="64" r="11" opacity=".4"/>
+                <circle cx="88" cy="78" r="6.5" opacity=".25"/>
+                <circle cx="146" cy="68" r="9" opacity=".34"/>
+                <circle cx="176" cy="36" r="12" opacity=".5"/>
+                <circle cx="200" cy="74" r="6" opacity=".25"/>
+                <circle cx="116" cy="42" r="19"/>
+              </g>
+              <circle cx="116" cy="42" r="19" fill="none" stroke="#00796b" stroke-width="2.5" opacity=".55">
+                <animate attributeName="r" values="19;31;19" dur="2.8s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values=".6;0;.6" dur="2.8s" repeatCount="indefinite"/></circle>
+              <path d="M109,42 l5,5 l10,-11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="14" y1="100" x2="206" y2="100" stroke="#e6e6e6" stroke-width="2"/>
+            </svg>
+          </div>
+          <h4 data-i18n data-ja="マーケティング" data-en="Marketing"></h4>
+          <p class="iq-q" data-i18n data-ja="何を、どこに売り込むか" data-en="What should we take to market?"></p>
+          <div class="iq-win t" data-i18n data-ja="訴求点が、市場シグナルから" data-en="Positioning, from market signals"></div>
+        </div>
+
+        <div class="iq" data-anim="6">
+          <div class="iq-art">
+            <svg viewBox="0 0 220 112">
+              <polygon points="18,12 202,12 176,42 44,42" fill="#e3d7ef"/>
+              <polygon points="47,47 173,47 151,75 69,75" fill="#a584c9"/>
+              <polygon points="72,80 148,80 130,106 90,106" fill="#5b2a86"/>
+              <path d="M103,92 l5,6 l11,-13" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h4 data-i18n data-ja="セールス" data-en="Sales"></h4>
+          <p class="iq-q" data-i18n data-ja="この案件は、本当に取れるか" data-en="Can this one actually be won?"></p>
+          <div class="iq-win p" data-i18n data-ja="優先順位が、根拠つきで" data-en="Priorities, with a reason"></div>
+        </div>
+      </div>
+
+      <div class="iq-foot" data-anim="7">
+        <div class="iqf">
+          <span class="from" data-i18n data-ja="探す" data-en="Searching"></span>
+          <svg class="arw" viewBox="0 0 24 24"><path d="M4 12h15M14 6l6 6-6 6"/></svg>
+          <span class="to" data-i18n data-ja="返ってくる" data-en="Answered"></span>
+        </div>
+        <div class="iqf">
+          <span class="from" data-i18n data-ja="転記する" data-en="Re-typing"></span>
+          <svg class="arw" viewBox="0 0 24 24"><path d="M4 12h15M14 6l6 6-6 6"/></svg>
+          <span class="to" data-i18n data-ja="引き継がれる" data-en="Carried over"></span>
+        </div>
+        <div class="iqf">
+          <span class="from" data-i18n data-ja="勘で決める" data-en="Guesswork"></span>
+          <svg class="arw" viewBox="0 0 24 24"><path d="M4 12h15M14 6l6 6-6 6"/></svg>
+          <span class="to" data-i18n data-ja="根拠が残る" data-en="Evidence kept"></span>
+        </div>
+        <div class="iqf">
+          <span class="from" data-i18n data-ja="覚えている" data-en="Remembered"></span>
+          <svg class="arw" viewBox="0 0 24 24"><path d="M4 12h15M14 6l6 6-6 6"/></svg>
+          <span class="to" data-i18n data-ja="記録される" data-en="Recorded"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 12 : SECTION COVER 5 ============ -->
+  <section class="slide sec" id="s12">
+    <div class="brandbar"></div>
+    <div class="sec-grid"></div>
+    <div class="sec-fx"><div class="sq a"></div><div class="sq b"></div><div class="sq c"></div><div class="sq d"></div></div>
+    <div class="sec-wrap">
+      <div class="sec-no" data-anim="1">05</div>
+      <div class="sec-txt">
+        <div class="sec-kicker" data-anim="2"><span class="dot"></span>Section 05</div>
+        <h2 data-anim="3" data-i18n data-ja="作ってみて、<span class='accent'>分かったこと</span>" data-en="What building it <span class='accent'>actually taught me</span>"></h2>
+        <div class="sec-en" data-anim="4">Lessons from the Build</div>
+        <div class="sec-rule" data-anim="4"></div>
+      </div>
+    </div>
+    <div class="sec-art" data-anim="5">
+      <svg viewBox="0 0 240 180">
+        <g class="glyph-float">
+          <path d="M120,36 a34,34 0 0,1 20,61 v12 h-40 v-12 a34,34 0 0,1 20,-61 z" fill="#B71C1C"/>
+          <rect x="102" y="116" width="36" height="8" rx="4" fill="#e5534b"/>
+          <rect x="107" y="130" width="26" height="8" rx="4" fill="#f3caca"/>
+          <g stroke="#B71C1C" stroke-width="3" stroke-linecap="round" opacity=".5">
+            <line x1="120" y1="12" x2="120" y2="24"/><line x1="66" y1="34" x2="75" y2="43"/><line x1="174" y1="34" x2="165" y2="43"/>
+            <line x1="48" y1="86" x2="60" y2="86"/><line x1="192" y1="86" x2="180" y2="86"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============ 13 : PROCESS COMPARISON ============ -->
+  <section class="slide" id="s13">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="slide-tag" data-anim="1"><span class="part">05</span><span data-i18n data-ja="学び① ｜ 大規模システムの作り方が変わった" data-en="Lesson 1 ｜ How a large system gets built has changed"></span></div>
+      <h2 class="slide-title" data-anim="2" data-i18n
+          data-ja="詳細設計を書く代わりに、<span class='accent'>実装計画をAIに渡す。</span>"
+          data-en="Instead of detailed design, <span class='accent'>a plan AI executes.</span>"></h2>
+
+      <div class="pc-stage" data-anim="3">
+        <svg class="pc-svg" viewBox="0 0 1400 516" preserveAspectRatio="xMidYMid meet">
+          <!-- ============ TRADITIONAL ============ -->
+          <text x="0" y="13" font-size="12.5" font-weight="800" fill="#8a8a8a" letter-spacing="1.6" data-i18n-t data-ja="従来型プロセス" data-en="TRADITIONAL PROCESS"></text>
+          <line x1="0" y1="24" x2="1400" y2="24" stroke="#e6e6e6" stroke-width="2"/>
+          <g font-size="13.5" font-weight="800" fill="#6a6a6a" text-anchor="middle">
+            <g><rect x="0"    y="38" width="244" height="46" rx="11" fill="#f6f7f9" stroke="#dcdcdc" stroke-width="1.5"/><text x="122"  y="67">RD</text></g>
+            <g><rect x="289"  y="38" width="244" height="46" rx="11" fill="#f6f7f9" stroke="#dcdcdc" stroke-width="1.5"/><text x="411"  y="67">BD</text></g>
+            <g><rect x="578"  y="38" width="244" height="46" rx="11" fill="#f6f7f9" stroke="#dcdcdc" stroke-width="1.5"/><text x="700"  y="67">DD</text></g>
+            <g><rect x="867"  y="38" width="244" height="46" rx="11" fill="#f6f7f9" stroke="#dcdcdc" stroke-width="1.5"/><text x="989"  y="67" data-i18n-t data-ja="コーディング" data-en="Coding"></text></g>
+            <g><rect x="1156" y="38" width="244" height="46" rx="11" fill="#f6f7f9" stroke="#dcdcdc" stroke-width="1.5"/><text x="1278" y="67" data-i18n-t data-ja="テスト" data-en="Testing"></text></g>
+          </g>
+          <g stroke="#c9c9c9" stroke-width="2.4" fill="none" stroke-linecap="round">
+            <path d="M250,61 h33 M283,61 l-7,-5 M283,61 l-7,5"/><path d="M539,61 h33 M572,61 l-7,-5 M572,61 l-7,5"/>
+            <path d="M828,61 h33 M861,61 l-7,-5 M861,61 l-7,5"/><path d="M1117,61 h33 M1150,61 l-7,-5 M1150,61 l-7,5"/>
+          </g>
+          <text x="700" y="104" text-anchor="middle" font-size="12.5" font-weight="700" fill="#a5a5a5" data-i18n-t
+                data-ja="全工程が人手。設計書の粒度が、そのまま納期になる。" data-en="Every stage is human hands. The granularity of the design document becomes the schedule."></text>
+          <line x1="0" y1="126" x2="1400" y2="126" stroke="#f0dede" stroke-width="2" stroke-dasharray="6 8"/>
+
+          <!-- ============ AI-NATIVE ============ -->
+          <text x="0" y="152" font-size="12.5" font-weight="800" fill="#B71C1C" letter-spacing="1.6" data-i18n-t
+                data-ja="今回のプロセス（AIネイティブ）" data-en="THIS PROJECT'S PROCESS (AI-NATIVE)"></text>
+          <line x1="0" y1="163" x2="1400" y2="163" stroke="#f3caca" stroke-width="2"/>
+
+          <!-- ---- STAGE 1 : the design chain ---- -->
+          <g font-size="12.5" font-weight="800" fill="#B71C1C">
+            <g><rect x="0" y="180" width="210" height="44" rx="11" fill="#fff" stroke="#B71C1C" stroke-width="2"/>
+               <circle cx="24" cy="202" r="11" fill="#B71C1C"/><text x="24" y="206" text-anchor="middle" font-size="11" fill="#fff">1</text>
+               <text x="46" y="206" data-i18n-t data-ja="要件定義 (RD)" data-en="REQUIREMENT"></text></g>
+            <g><rect x="0" y="242" width="210" height="44" rx="11" fill="#fff" stroke="#B71C1C" stroke-width="2"/>
+               <circle cx="24" cy="264" r="11" fill="#B71C1C"/><text x="24" y="268" text-anchor="middle" font-size="11" fill="#fff">2</text>
+               <text x="46" y="268" data-i18n-t data-ja="基本設計 (BD)" data-en="BASIC DESIGN"></text></g>
+            <g><rect x="0" y="304" width="210" height="44" rx="11" fill="#fff" stroke="#B71C1C" stroke-width="2"/>
+               <circle cx="24" cy="326" r="11" fill="#B71C1C"/><text x="24" y="330" text-anchor="middle" font-size="11" fill="#fff">3</text>
+               <text x="46" y="330" data-i18n-t data-ja="影響分析" data-en="IMPACT ANALYSIS"></text></g>
+            <g><rect x="0" y="366" width="210" height="44" rx="11" fill="#fff" stroke="#B71C1C" stroke-width="2"/>
+               <circle cx="24" cy="388" r="11" fill="#B71C1C"/><text x="24" y="392" text-anchor="middle" font-size="11" fill="#fff">4</text>
+               <text x="46" y="392" data-i18n-t data-ja="実装計画" data-en="IMPLEMENTATION PLAN"></text></g>
+          </g>
+          <g stroke="#B71C1C" stroke-width="2.2" fill="none" stroke-linecap="round">
+            <path d="M105,226 v12 M105,238 l-5,-6 M105,238 l5,-6"/>
+            <path d="M105,288 v12 M105,300 l-5,-6 M105,300 l5,-6"/>
+            <path d="M105,350 v12 M105,362 l-5,-6 M105,362 l5,-6"/>
+          </g>
+
+          <!-- stage 1 -> stage 2 -->
+          <g stroke="#B71C1C" stroke-width="2.4" fill="none" stroke-linecap="round">
+            <path d="M216,295 h30 M246,295 l-7,-5 M246,295 l-7,5"/>
+          </g>
+
+          <!-- ---- STAGE 2 : execution context ---- -->
+          <rect x="252" y="176" width="200" height="238" rx="14" fill="#fff" stroke="#f3caca" stroke-width="2"/>
+          <path d="M252,190 a14,14 0 0 1 14,-14 h172 a14,14 0 0 1 14,14 v24 h-200 z" fill="#B71C1C"/>
+          <text x="352" y="201" text-anchor="middle" font-size="11.5" font-weight="900" fill="#fff" letter-spacing=".6" data-i18n-t
+                data-ja="実行コンテキスト" data-en="EXECUTION CONTEXT"></text>
+          <g font-size="12" font-weight="800" fill="#7f1010" text-anchor="middle">
+            <g><rect x="268" y="228" width="168" height="38" rx="9" fill="#fdecec"/><text x="352" y="252" data-i18n-t data-ja="ルール" data-en="Rules"></text></g>
+            <g><rect x="268" y="274" width="168" height="38" rx="9" fill="#fdecec"/><text x="352" y="298" data-i18n-t data-ja="スキル" data-en="Skills"></text></g>
+            <g><rect x="268" y="320" width="168" height="38" rx="9" fill="#fdecec"/><text x="352" y="344" data-i18n-t data-ja="テンプレート" data-en="Templates"></text></g>
+            <g><rect x="268" y="366" width="168" height="38" rx="9" fill="#fdecec"/><text x="352" y="390" data-i18n-t data-ja="参考実装例" data-en="Reference Examples"></text></g>
+          </g>
+
+          <!-- stage 2 -> stage 3 -->
+          <g stroke="#B71C1C" stroke-width="2.4" fill="none" stroke-linecap="round">
+            <path d="M458,295 h30 M488,295 l-7,-5 M488,295 l-7,5"/>
+          </g>
+
+          <!-- ---- STAGE 3 : the AI development loop ---- -->
+          <rect x="494" y="172" width="656" height="246" rx="18" fill="#fff" stroke="#f3caca" stroke-width="2"/>
+          <path d="M494,190 a18,18 0 0 1 18,-18 h620 a18,18 0 0 1 18,18 v20 h-656 z" fill="#B71C1C"/>
+          <text x="822" y="198" text-anchor="middle" font-size="12.5" font-weight="900" fill="#fff" letter-spacing="1" data-i18n-t
+                data-ja="AI開発ループ" data-en="AI DEVELOPMENT LOOP"></text>
+
+          <!-- loop · top row -->
+          <g text-anchor="middle" font-weight="800">
+            <g><rect x="516" y="236" width="160" height="46" rx="11" fill="#B71C1C"/><text x="596" y="265" font-size="13" fill="#fff" data-i18n-t data-ja="実行" data-en="EXECUTE"></text></g>
+            <g><rect x="716" y="236" width="160" height="46" rx="11" fill="#B71C1C"/><text x="796" y="265" font-size="13" fill="#fff" data-i18n-t data-ja="検証" data-en="VERIFY"></text></g>
+            <g><rect x="996" y="236" width="132" height="46" rx="11" fill="#7f1010"/><text x="1062" y="265" font-size="13" fill="#fff" data-i18n-t data-ja="合格？" data-en="PASS ?"></text></g>
+          </g>
+          <!-- loop · repair row (flows right to left, back into EXECUTE) -->
+          <g text-anchor="middle" font-weight="800" font-size="12.5" fill="#7f1010">
+            <g><rect x="996" y="348" width="132" height="46" rx="11" fill="#fdecec" stroke="#f3caca" stroke-width="1.5"/><text x="1062" y="376" data-i18n-t data-ja="原因分析" data-en="ANALYZE"></text></g>
+            <g><rect x="836" y="348" width="132" height="46" rx="11" fill="#fdecec" stroke="#f3caca" stroke-width="1.5"/><text x="902"  y="376" data-i18n-t data-ja="修正" data-en="FIX"></text></g>
+            <g><rect x="676" y="348" width="132" height="46" rx="11" fill="#fdecec" stroke="#f3caca" stroke-width="1.5"/><text x="742"  y="376" data-i18n-t data-ja="記録" data-en="RECORD"></text></g>
+            <g><rect x="516" y="348" width="132" height="46" rx="11" fill="#fdecec" stroke="#f3caca" stroke-width="1.5"/><text x="582"  y="376" data-i18n-t data-ja="改善" data-en="IMPROVE"></text></g>
+          </g>
+          <g stroke="#B71C1C" stroke-width="2.4" fill="none" stroke-linecap="round">
+            <path d="M676,259 h34 M710,259 l-7,-5 M710,259 l-7,5"/>
+            <path d="M876,259 h114 M990,259 l-7,-5 M990,259 l-7,5"/>
+            <path d="M1062,282 v60 M1062,342 l-5,-7 M1062,342 l5,-7"/>
+            <path d="M996,371 h-22 M974,371 l7,-5 M974,371 l7,5"/>
+            <path d="M836,371 h-22 M814,371 l7,-5 M814,371 l7,5"/>
+            <path d="M676,371 h-22 M654,371 l7,-5 M654,371 l7,5"/>
+            <path class="flow-path" d="M582,348 V288" stroke-dasharray="7 7"/>
+            <path d="M582,282 l-5,7 M582,282 l5,7"/>
+          </g>
+          <text x="1076" y="319" font-size="11.5" font-weight="900" fill="#B71C1C" data-i18n-t data-ja="不合格" data-en="NO"></text>
+          <text x="596" y="319" font-size="11" font-weight="800" fill="#B71C1C" data-i18n-t data-ja="再実行" data-en="re-run"></text>
+
+          <!-- loop exits right on PASS -->
+          <g stroke="#2e7d32" stroke-width="2.6" fill="none" stroke-linecap="round">
+            <path d="M1128,259 h52 M1180,259 l-7,-5 M1180,259 l-7,5"/>
+          </g>
+          <text x="1154" y="247" text-anchor="middle" font-size="11.5" font-weight="900" fill="#2e7d32" data-i18n-t data-ja="合格" data-en="YES"></text>
+
+          <!-- ---- STAGE 4 : testing ---- -->
+          <rect x="1186" y="236" width="214" height="46" rx="11" fill="#7f1010"/>
+          <text x="1293" y="265" text-anchor="middle" font-size="13" font-weight="900" fill="#fff" letter-spacing=".6" data-i18n-t data-ja="テスト" data-en="TESTING"></text>
+          <path d="M1206,282 V415" stroke="#c9c9c9" stroke-width="2" fill="none"/>
+          <g stroke="#c9c9c9" stroke-width="2" fill="none" stroke-linecap="round">
+            <path d="M1206,319 h18 M1224,319 l-6,-4 M1224,319 l-6,4"/>
+            <path d="M1206,367 h18 M1224,367 l-6,-4 M1224,367 l-6,4"/>
+            <path d="M1206,415 h18 M1224,415 l-6,-4 M1224,415 l-6,4"/>
+          </g>
+          <g font-size="12" font-weight="800" fill="#4a4a4a" text-anchor="middle">
+            <g><rect x="1224" y="300" width="176" height="38" rx="9" fill="#fff" stroke="#dcdcdc" stroke-width="1.5"/><text x="1312" y="324" data-i18n-t data-ja="単体テスト" data-en="UNIT TEST"></text></g>
+            <g><rect x="1224" y="348" width="176" height="38" rx="9" fill="#fff" stroke="#dcdcdc" stroke-width="1.5"/><text x="1312" y="372" data-i18n-t data-ja="結合テスト" data-en="INTEGRATION TEST"></text></g>
+            <g><rect x="1224" y="396" width="176" height="38" rx="9" fill="#fff" stroke="#dcdcdc" stroke-width="1.5"/><text x="1312" y="420" data-i18n-t data-ja="総合テスト" data-en="SYSTEM TEST"></text></g>
+          </g>
+
+          <!-- ---- human in the middle ---- -->
+          <g stroke="#f3caca" stroke-width="2" stroke-dasharray="5 5" fill="none">
+            <path d="M352,414 V450"/><path d="M822,418 V450"/><path d="M1293,434 V450"/>
+          </g>
+          <rect x="252" y="450" width="1148" height="56" rx="14" fill="#fdecec" stroke="#f3caca" stroke-width="2"/>
+          <g transform="translate(290,478)"><circle cx="0" cy="-7" r="8" fill="#B71C1C"/><path d="M-12,13 a12,11 0 0,1 24,0" fill="#B71C1C"/></g>
+          <text x="316" y="473" font-size="14" font-weight="900" fill="#B71C1C" data-i18n-t
+                data-ja="Human in the middle — 人が真ん中にいる" data-en="Human in the middle"></text>
+          <text x="316" y="491" font-size="11.5" font-weight="700" fill="#8a4141" data-i18n-t
+                data-ja="コンテキストを与えるのも、ループを止めるのも、テストを通す判断も人。全自動にはしない。"
+                data-en="A person supplies the context, stops the loop, and decides what passes. It is deliberately not fully autonomous."></text>
+        </svg>
+      </div>
+
+      <div class="pc-foot">
+        <div class="pcf" data-anim="4">
+          <div class="pci"><svg viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5"/><path d="M9 14h6"/></svg></div>
+          <div><h5 data-i18n data-ja="詳細設計 → 実行コンテキスト" data-en="Detailed design → execution context"></h5><p data-i18n data-ja="ルール・スキル・テンプレート・参考実装をAIに渡す" data-en="Rules, skills, templates and reference examples are what AI gets"></p></div>
+        </div>
+        <div class="pcf" data-anim="5">
+          <div class="pci"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg></div>
+          <div><h5 data-i18n data-ja="失敗は、記録してから直す" data-en="A failure is recorded, then fixed"></h5><p data-i18n data-ja="原因分析 → 修正 → 記録 → 改善。回数には上限を切る" data-en="Analyze → fix → record → improve, and the loop is always capped"></p></div>
+        </div>
+        <div class="pcf" data-anim="6">
+          <div class="pci"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div>
+          <div><h5 data-i18n data-ja="人は消えず、上流に移る" data-en="The human moves upstream, not away"></h5><p data-i18n data-ja="書く人から、決める人・確かめる人へ" data-en="From the one who types to the one who decides and verifies"></p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 14 : LESSONS ============ -->
+  <section class="slide" id="s14">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="slide-tag" data-anim="1"><span class="part">05</span><span data-i18n data-ja="学び② ｜ 身についた能力" data-en="Lesson 2 ｜ Capabilities gained"></span></div>
+      <h2 class="slide-title" data-anim="2" data-i18n
+          data-ja="<span class='accent'>6つ</span>の能力が、手元に残った。"
+          data-en="<span class='accent'>Six</span> capabilities I now actually have."></h2>
+
+      <div class="ls-grid">
+        <div class="ls" data-anim="3">
+          <div class="lnum">01</div>
+          <div class="lic"><svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12"/><path d="M9 20v-6h6v6"/></svg></div>
+          <h4 data-i18n data-ja="ゼロから大規模システムを立ち上げる" data-en="Standing up a large system from zero"></h4>
+          <p data-i18n data-ja="戦略 → RD → BD → 実装計画 → 実装 → 検証。25モジュールを、破綻させずに一本の線で通す進め方。" data-en="Strategy → RD → BD → implementation plan → build → verify: running 25 modules along one line without it coming apart."></p>
+        </div>
+        <div class="ls c2" data-anim="3">
+          <div class="lnum">02</div>
+          <div class="lic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></div>
+          <h4 data-i18n data-ja="AIを「正しい場所」に置く" data-en="Placing AI where it belongs"></h4>
+          <p data-i18n data-ja="数字は決定論的に計算し、AIには説明・下書き・提案をさせる。この境界線を引けることが、精度の源になった。" data-en="Numbers computed deterministically; the model explains, drafts and proposes. Drawing that line is where the accuracy came from."></p>
+        </div>
+        <div class="ls c3" data-anim="4">
+          <div class="lnum">03</div>
+          <div class="lic"><svg viewBox="0 0 24 24"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M2 19a5 5 0 0 1 10 0M12 19a5 5 0 0 1 10 0"/></svg></div>
+          <h4 data-i18n data-ja="複数エージェントを設計・協調させる" data-en="Designing agents that work together"></h4>
+          <p data-i18n data-ja="役割の違うエージェントに議論させ、不一致を隠さず表に出す。最後に決めるのは人、という前提で組む。" data-en="Agents with different roles argue, and the disagreement is surfaced rather than smoothed over — because a person makes the call."></p>
+        </div>
+        <div class="ls c4" data-anim="4">
+          <div class="lnum">04</div>
+          <div class="lic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2.6"/></svg></div>
+          <h4 data-i18n data-ja="精度をルールと文脈で制御する" data-en="Controlling accuracy with rules and context"></h4>
+          <p data-i18n data-ja="出力形式を型で縛り、根拠のない記述を禁じ、プロンプトをバージョン管理する。「うまく書く」ではなく「外さない仕組み」。" data-en="Typed output schemas, an explicit ban on narrating what the record lacks, and versioned prompts. Not clever wording — a structure that cannot drift."></p>
+        </div>
+        <div class="ls c5" data-anim="5">
+          <div class="lnum">05</div>
+          <div class="lic"><svg viewBox="0 0 24 24"><path d="M12 3l9 5v8l-9 5-9-5V8z"/><path d="M12 12l9-4M12 12v9M12 12L3 8"/></svg></div>
+          <h4 data-i18n data-ja="知識を組織の資産に変える" data-en="Turning knowledge into an organizational asset"></h4>
+          <p data-i18n data-ja="実績・文書をベクタDBに入れ、画面からもIDEからも同じ答えが返る状態にする。個人の記憶を、会社の記憶にする。" data-en="Achievements and documents embedded so the same answer comes back from the UI and from the IDE — personal memory becomes company memory."></p>
+        </div>
+        <div class="ls c6" data-anim="5">
+          <div class="lnum">06</div>
+          <div class="lic"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-4 12.7V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.3A7 7 0 0 0 12 2Z"/><path d="M9 21h6"/></svg></div>
+          <h4 data-i18n data-ja="自分の経験を、実物に翻訳する" data-en="Translating my own experience into a real product"></h4>
+          <p data-i18n data-ja="現場で見てきた痛みを、そのまま機能に落とす。分析できること自体が能力であり、それを試す場が必要だった。" data-en="Taking pain I had actually watched happen and turning it into features. The analysis is itself the skill — and it needed somewhere real to be tested."></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 15 : DEMO ============ -->
+  <section class="slide" id="s15">
+    <div class="brandbar"></div>
+    <div class="sec-grid"></div>
+    <div class="dm-fx"><div class="dm-ring r1"></div><div class="dm-ring r2"></div><div class="dm-ring r3"></div></div>
+    <div class="dm-wrap">
+      <div class="dm-play" data-anim="1"><svg viewBox="0 0 24 24"><path d="M6 3l15 9-15 9V3z"/></svg></div>
+      <div class="dm-kicker" data-anim="2">Live Demonstration</div>
+      <h2 class="dm-title" data-anim="3" data-i18n data-ja="ここから、実際の画面で。" data-en="From here — the real screens."></h2>
+      <p class="dm-sub" data-anim="4" data-i18n
+         data-ja="スライドではなく、動いているシステムをそのままご覧いただきます。" data-en="Not slides. The running system, as it is."></p>
+
+      <div class="dm-cards">
+        <div class="dc" data-anim="5"><div class="dn">01</div>
+          <div class="di"><svg viewBox="0 0 24 24"><path d="M3 20V8l9-5 9 5v12"/><path d="M8 20v-5h8v5"/></svg></div>
+          <h4 data-i18n data-ja="プロジェクト・インテリジェンス" data-en="Project Intelligence"></h4>
+          <p data-i18n data-ja="健全性の先読みと、リスクの説明" data-en="Where a project is heading, and why"></p></div>
+        <div class="dc" data-anim="5"><div class="dn">02</div>
+          <div class="di"><svg viewBox="0 0 24 24"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M2 19a5 5 0 0 1 10 0M12 19a5 5 0 0 1 10 0"/></svg></div>
+          <h4 data-i18n data-ja="ブレインストーミング・ルーム" data-en="Brainstorming room"></h4>
+          <p data-i18n data-ja="複数エージェントの議論と、対立点の抽出" data-en="Agents debating, and where they disagree"></p></div>
+        <div class="dc" data-anim="6"><div class="dn">03</div>
+          <div class="di"><svg viewBox="0 0 24 24"><path d="M5 3h9l5 5v13H5z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div>
+          <h4 data-i18n data-ja="提案インテリジェンス" data-en="Proposal Intelligence"></h4>
+          <p data-i18n data-ja="RFI → RFP → 見積 → 提案を、根拠つきで" data-en="RFI → RFP → estimate → proposal, with evidence"></p></div>
+        <div class="dc" data-anim="6"><div class="dn">04</div>
+          <div class="di"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></div>
+          <h4 data-i18n data-ja="リソース・インテリジェンス" data-en="Resource Intelligence"></h4>
+          <p data-i18n data-ja="需要予測と、要員配置の助言" data-en="Demand forecast and advisory staffing"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 16 : NEXT STEP ============ -->
+  <section class="slide" id="s16">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="slide-tag" data-anim="1"><span class="part">06</span><span data-i18n data-ja="次のステップ" data-en="Next steps"></span></div>
+      <h2 class="slide-title" data-anim="2" data-i18n
+          data-ja="まだ完成ではない。<span class='accent'>だからこそ、次がある。</span>"
+          data-en="It is not finished — <span class='accent'>and that is the point.</span>"></h2>
+      <p class="subline" data-anim="2" data-i18n
+         data-ja="未完了の機能を仕上げ、検証・最適化を重ねたうえで、実プロジェクトとして本番運用に入ります。"
+         data-en="Finish the open features, keep verifying and optimizing, and only then run it as a real project in production."></p>
+
+      <div class="ns-stage">
+        <div data-anim="3">
+          <svg class="ns-svg" viewBox="0 0 1160 190" preserveAspectRatio="xMidYMid meet">
+            <line x1="90" y1="95" x2="1080" y2="95" stroke="#eef0f3" stroke-width="10" stroke-linecap="round"/>
+            <line x1="90" y1="95" x2="420" y2="95" stroke="#B71C1C" stroke-width="10" stroke-linecap="round"/>
+            <g>
+              <g transform="translate(90,95)"><circle r="17" fill="#B71C1C"/><path d="M-7,0 l5,6 l9,-11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <text y="-34" text-anchor="middle" font-size="13.5" font-weight="900" fill="#B71C1C" data-i18n-t data-ja="構築完了" data-en="Built"></text>
+                <text y="44" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7a7a7a" data-i18n-t data-ja="25モジュール実装" data-en="25 modules implemented"></text></g>
+              <g transform="translate(420,95)"><circle r="17" fill="#B71C1C"/><circle r="6" fill="#fff"/>
+                <circle r="26" fill="none" stroke="#B71C1C" stroke-width="2.5"><animate attributeName="r" values="20;30;20" dur="2.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".8;0;.8" dur="2.4s" repeatCount="indefinite"/></circle>
+                <text y="-34" text-anchor="middle" font-size="13.5" font-weight="900" fill="#B71C1C" data-i18n-t data-ja="現在地" data-en="We are here"></text>
+                <text y="44" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7a7a7a" data-i18n-t data-ja="未完了機能の仕上げ" data-en="Finishing the open features"></text></g>
+              <g transform="translate(750,95)"><circle r="17" fill="#fff" stroke="#c9c9c9" stroke-width="3"/>
+                <text y="-34" text-anchor="middle" font-size="13.5" font-weight="900" fill="#7a7a7a" data-i18n-t data-ja="検証・最適化" data-en="Verify &amp; optimize"></text>
+                <text y="44" text-anchor="middle" font-size="11.5" font-weight="700" fill="#a5a5a5" data-i18n-t data-ja="全機能の通し確認" data-en="Every feature, end to end"></text></g>
+              <g transform="translate(1080,95)"><circle r="17" fill="#fff" stroke="#c9c9c9" stroke-width="3"/>
+                <text y="-34" text-anchor="middle" font-size="13.5" font-weight="900" fill="#7a7a7a" data-i18n-t data-ja="本番運用" data-en="Go-live"></text>
+                <text y="44" text-anchor="middle" font-size="11.5" font-weight="700" fill="#a5a5a5" data-i18n-t data-ja="実プロジェクトとして" data-en="Run as a real project"></text></g>
+            </g>
+          </svg>
+        </div>
+
+        <div class="ns-cards">
+          <div class="nsc" data-anim="4">
+            <div class="nph">Step 01</div>
+            <h4 data-i18n data-ja="未完了機能の完成" data-en="Complete the open features"></h4>
+            <ul>
+              <li data-i18n data-ja="残るモジュールの機能を閉じる" data-en="Close out the remaining module work"></li>
+              <li data-i18n data-ja="画面への導線を全機能で担保" data-en="Guarantee every screen has a way in"></li>
+              <li data-i18n data-ja="日本語・英語の表示を通しで確認" data-en="Verify JA / EN end to end"></li>
+            </ul>
+          </div>
+          <div class="nsc q2" data-anim="5">
+            <div class="nph">Step 02</div>
+            <h4 data-i18n data-ja="検証と品質の作り込み" data-en="Verification &amp; quality"></h4>
+            <ul>
+              <li data-i18n data-ja="業務シナリオでの通し検証" data-en="End-to-end business scenarios"></li>
+              <li data-i18n data-ja="AI出力の精度評価を継続" data-en="Continuous evaluation of AI output"></li>
+              <li data-i18n data-ja="権限・監査の確認" data-en="Permissions and audit review"></li>
+            </ul>
+          </div>
+          <div class="nsc q3" data-anim="5">
+            <div class="nph">Step 03</div>
+            <h4 data-i18n data-ja="最適化" data-en="Optimization"></h4>
+            <ul>
+              <li data-i18n data-ja="応答性能とコストの調整" data-en="Response time and cost tuning"></li>
+              <li data-i18n data-ja="AI利用量の可視化と上限管理" data-en="AI spend made visible and capped"></li>
+              <li data-i18n data-ja="実データでの較正（見積精度）" data-en="Calibration on real delivery data"></li>
+            </ul>
+          </div>
+          <div class="nsc q4" data-anim="6">
+            <div class="nph">Step 04</div>
+            <h4 data-i18n data-ja="本番運用へ" data-en="Into production"></h4>
+            <ul>
+              <li data-i18n data-ja="パイロット部門から段階導入" data-en="Phased rollout from a pilot team"></li>
+              <li data-i18n data-ja="運用ルールと教育の整備" data-en="Operating rules and enablement"></li>
+              <li data-i18n data-ja="効果測定を実数で取る" data-en="Measure the effect with real numbers"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 17 : LOOK BACK ============ -->
+  <section class="slide" id="s17">
+    <div class="brandbar"></div>
+    <div class="content">
+      <div class="slide-tag" data-anim="1" data-i18n data-ja="Look back ｜ 本日のまとめ" data-en="Look back ｜ Summary"></div>
+      <h2 class="slide-title" data-anim="2" data-i18n
+          data-ja="本日<span class='accent'>お伝えしたこと</span>。"
+          data-en="<span class='accent'>What I presented</span> today."></h2>
+
+      <div class="lb-grid">
+        <div class="lb" data-anim="3">
+          <div class="lbn" data-i18n data-ja="01 ｜ 学び" data-en="01 ｜ The learning"></div>
+          <h4 data-i18n data-ja="FDEで、2つのスキルを得た" data-en="FDE gave me two skills"></h4>
+          <p data-i18n data-ja="AIエージェント／RAGの構築と、課題を引き出すヒアリング。この2つが、AI駆動開発手法の土台になりました。" data-en="Building AI agents and RAG, and listening well enough to find the real problem. Together they became the foundation of an AI-driven method."></p>
+        </div>
+        <div class="lb c2" data-anim="3">
+          <div class="lbn" data-i18n data-ja="02 ｜ 検証" data-en="02 ｜ The test"></div>
+          <h4 data-i18n data-ja="Open Assistant で実証した" data-en="Open Assistant proved it out"></h4>
+          <p data-i18n data-ja="デリバリー全工程を1つのシステムに。25モジュール・49のAI適用点を、AI中心の開発プロセスで構築しました。" data-en="The whole delivery lifecycle in one system: 25 modules and 49 AI touchpoints, built with an AI-centred development process."></p>
+        </div>
+        <div class="lb c3" data-anim="4">
+          <div class="lbn" data-i18n data-ja="03 ｜ 次へ" data-en="03 ｜ What is next"></div>
+          <h4 data-i18n data-ja="仕上げて、本番で使う" data-en="Finish it, then use it for real"></h4>
+          <p data-i18n data-ja="未完了機能を閉じ、検証と最適化を重ねたうえで、実プロジェクトとして運用に入ります。" data-en="Close the open features, verify and optimize, and then run it as a real project in production."></p>
+        </div>
+      </div>
+
+      <div class="lb-foot" data-anim="5">
+        <div class="lfi"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></div>
+        <p data-i18n
+           data-ja="結論：AIは、正しい場所に置き、十分な文脈を与え、人が決める形にしたときに、初めて事業価値になる。"
+           data-en="The conclusion: AI becomes business value only when it is placed correctly, given enough context, and arranged so a human decides."></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 18 : THANK YOU ============ -->
+  <section class="slide" id="s18">
+    <div class="brandbar"></div>
+    <div class="sec-grid"></div>
+    <div class="ty-fx">
+      <div class="ty-ring r1"></div><div class="ty-ring r2"></div><div class="ty-ring r3"></div>
+      <div class="ty-float f1"></div><div class="ty-float f2"></div><div class="ty-float f3"></div><div class="ty-float f4"></div>
+    </div>
+    <div class="ty-wrap">
+      <div class="ty-kicker" data-anim="1">Open Assistant ｜ AI-Native Delivery Platform</div>
+      <h2 class="ty-title" data-anim="2">Thank you.</h2>
+      <p class="ty-sub" data-anim="3" data-i18n
+         data-ja="ご清聴ありがとうございました。<br>ご質問・ご指摘をいただけますと幸いです。"
+         data-en="Thank you for your time.<br>I would welcome your questions and your challenges."></p>
+      <div class="ty-cta" data-anim="4">
+        <span class="ty-btn"><span data-i18n data-ja="質疑応答" data-en="Questions &amp; discussion"></span></span>
+        <span class="ty-btn ghost" data-i18n data-ja="Kien Phan ｜ Rikkeisoft" data-en="Kien Phan ｜ Rikkeisoft"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- nav -->
+  <div class="nav-dots" id="dots"></div>
+  <div class="nav-arrows">
+    <button id="prev" aria-label="prev"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button id="next" aria-label="next"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+  <div class="hint"><kbd>←</kbd><kbd>→</kbd><span id="hintTxt">で移動 ・ <kbd>F</kbd> 全画面 ・ <kbd>L</kbd> 言語</span></div>
+</div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal" id="modal">
+  <div class="mbox" role="dialog" aria-modal="true">
+    <div class="mhead">
+      <div class="mstep"><span class="s1">STAGE</span><span class="s2" id="mStep">01</span></div>
+      <div class="mt"><h3 id="mTitle"></h3><div class="men" id="mEn"></div></div>
+      <div class="mnav">
+        <button id="mPrev" aria-label="previous stage"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <span class="mpos" id="mPos">01 / 08</span>
+        <button id="mNext" aria-label="next stage"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+      <button class="mclose" id="mClose" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="mbody">
+      <div class="mvis">
+        <div class="mv-card" id="mVis"></div>
+        <div class="mpurpose"><div class="pl" id="mPl">この工程の役割</div><p id="mPurpose"></p></div>
+      </div>
+      <div class="mai">
+        <div class="mai-h" id="mAiH">AI が効いている所</div>
+        <ul id="mList"></ul>
+        <div class="mfoot"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg><p id="mFoot"></p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ============================================================
+     1. STAGE DATA — the delivery lifecycle, and where AI sits.
+        Every AI item below corresponds to a prompt pack that
+        exists in the codebase (backend/app/ai/prompts/…).
+     ============================================================ */
+  const V = {
+    crm:`<svg viewBox="0 0 300 168">
+      <rect x="18" y="26" width="140" height="116" rx="14" fill="#fff" stroke="#e6e6e6" stroke-width="2"/>
+      <circle cx="50" cy="60" r="15" fill="#fdecec"/><circle cx="50" cy="56" r="6" fill="#B71C1C"/><path d="M40,72 a10,8 0 0,1 20,0" fill="#B71C1C"/>
+      <rect x="74" y="50" width="66" height="8" rx="4" fill="#1a1a1a" opacity=".82"/>
+      <rect x="74" y="64" width="46" height="7" rx="3.5" fill="#d8d8d8"/>
+      <rect x="34" y="92" width="106" height="7" rx="3.5" fill="#eef0f3"/>
+      <rect x="34" y="106" width="82" height="7" rx="3.5" fill="#eef0f3"/>
+      <rect x="34" y="120" width="94" height="7" rx="3.5" fill="#eef0f3"/>
+      <path d="M160,84 h20" stroke="#f3caca" stroke-width="2.5" stroke-dasharray="5 5"/>
+      <g transform="translate(238,104)">
+        <path d="M-50,0 a50,50 0 0 1 100,0" fill="none" stroke="#eef0f3" stroke-width="15" stroke-linecap="round"/>
+        <path d="M-50,0 a50,50 0 0 1 14,-40" fill="none" stroke="#f3caca" stroke-width="15" stroke-linecap="round"/>
+        <path d="M22,-45 a50,50 0 0 1 28,45" fill="none" stroke="#B71C1C" stroke-width="15" stroke-linecap="round"/>
+        <line x1="0" y1="4" x2="26" y2="-33" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="0" cy="4" r="6" fill="#1a1a1a"/>
+        <text y="28" text-anchor="middle" font-size="9.5" font-weight="800" fill="#7a7a7a" letter-spacing=".4" data-i18n-t data-ja="受注確度" data-en="WIN PROBABILITY"></text>
+      </g>
+    </svg>`,
+    rfi:`<svg viewBox="0 0 300 168">
+      <g>
+        <text x="28" y="26" font-size="10.5" font-weight="800" fill="#7a7a7a" letter-spacing="1.2">MECE DISCOVERY MATRIX</text>
+        <g fill="#fff" stroke="#e6e6e6" stroke-width="2">
+          <rect x="28" y="38" width="76" height="34" rx="8"/><rect x="112" y="38" width="76" height="34" rx="8"/><rect x="196" y="38" width="76" height="34" rx="8"/>
+          <rect x="28" y="80" width="76" height="34" rx="8"/><rect x="112" y="80" width="76" height="34" rx="8"/><rect x="196" y="80" width="76" height="34" rx="8"/>
+          <rect x="28" y="122" width="76" height="34" rx="8"/><rect x="112" y="122" width="76" height="34" rx="8"/><rect x="196" y="122" width="76" height="34" rx="8"/>
+        </g>
+        <g fill="#fdecec"><rect x="28" y="38" width="76" height="34" rx="8"/><rect x="112" y="80" width="76" height="34" rx="8"/><rect x="196" y="122" width="76" height="34" rx="8"/></g>
+        <g fill="none" stroke="#B71C1C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M58,55 l5,5 l11,-11"/><path d="M142,97 l5,5 l11,-11"/><path d="M226,139 l5,5 l11,-11"/>
+        </g>
+        <g fill="#d8d8d8"><rect x="128" y="51" width="44" height="7" rx="3.5"/><rect x="212" y="51" width="44" height="7" rx="3.5"/>
+          <rect x="44" y="93" width="44" height="7" rx="3.5"/><rect x="212" y="93" width="44" height="7" rx="3.5"/>
+          <rect x="44" y="135" width="44" height="7" rx="3.5"/><rect x="128" y="135" width="44" height="7" rx="3.5"/></g>
+      </g>
+    </svg>`,
+    rfp:`<svg viewBox="0 0 300 168">
+      <rect x="24" y="18" width="128" height="132" rx="12" fill="#fff" stroke="#e6e6e6" stroke-width="2"/>
+      <rect x="40" y="36" width="70" height="8" rx="4" fill="#1a1a1a" opacity=".8"/>
+      <g fill="#eef0f3"><rect x="40" y="56" width="96" height="7" rx="3.5"/><rect x="40" y="70" width="80" height="7" rx="3.5"/><rect x="40" y="84" width="96" height="7" rx="3.5"/><rect x="40" y="98" width="62" height="7" rx="3.5"/><rect x="40" y="112" width="90" height="7" rx="3.5"/><rect x="40" y="126" width="72" height="7" rx="3.5"/></g>
+      <g stroke="#f3caca" stroke-width="2.5" stroke-dasharray="5 5"><path d="M154,84 h24"/></g>
+      <g>
+        <rect x="180" y="30" width="96" height="30" rx="8" fill="#fdecec"/><text x="228" y="50" text-anchor="middle" font-size="11" font-weight="800" fill="#B71C1C">REQ-01</text>
+        <rect x="180" y="68" width="96" height="30" rx="8" fill="#fdecec"/><text x="228" y="88" text-anchor="middle" font-size="11" font-weight="800" fill="#B71C1C">REQ-02</text>
+        <rect x="180" y="106" width="96" height="30" rx="8" fill="#fff3e6" stroke="#ef6c00" stroke-width="2" stroke-dasharray="5 4"/>
+        <text x="228" y="126" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ef6c00">GAP ?</text>
+      </g>
+    </svg>`,
+    est:`<svg viewBox="0 0 300 168">
+      <g font-size="11" font-weight="800" fill="#fff">
+        <rect x="30" y="20" width="240" height="24" rx="7" fill="#7f1010"/><text x="46" y="36" data-i18n-t data-ja="案件の分類" data-en="CLASSIFICATION"></text>
+        <rect x="30" y="48" width="240" height="24" rx="7" fill="#B71C1C"/><text x="46" y="64" data-i18n-t data-ja="規模（数えた対象物）" data-en="SIZE — objects counted"></text>
+        <rect x="30" y="76" width="240" height="24" rx="7" fill="#c62828"/><text x="46" y="92" data-i18n-t data-ja="生産性（自社実績）" data-en="PRODUCTIVITY — our record"></text>
+        <rect x="30" y="104" width="240" height="24" rx="7" fill="#e5534b"/><text x="46" y="120" data-i18n-t data-ja="工程への配分" data-en="PHASE DISTRIBUTION"></text>
+        <rect x="30" y="132" width="240" height="24" rx="7" fill="#ef6c00"/><text x="46" y="148" data-i18n-t data-ja="リスクを工数として" data-en="RISK — as effort"></text>
+      </g>
+      <g stroke="#f3caca" stroke-width="2" stroke-linecap="round">
+        <path d="M18,32 v116"/><path d="M18,32 h8"/><path d="M18,148 h8"/>
+      </g>
+    </svg>`,
+    prop:`<svg viewBox="0 0 300 168">
+      <rect x="40" y="34" width="112" height="86" rx="10" fill="#f6f7f9" stroke="#e6e6e6" stroke-width="2"/>
+      <rect x="54" y="26" width="112" height="86" rx="10" fill="#fdecec" stroke="#f3caca" stroke-width="2"/>
+      <rect x="68" y="18" width="112" height="86" rx="10" fill="#fff" stroke="#B71C1C" stroke-width="2.5"/>
+      <rect x="82" y="34" width="58" height="8" rx="4" fill="#B71C1C"/>
+      <g fill="#eef0f3"><rect x="82" y="52" width="80" height="6" rx="3"/><rect x="82" y="64" width="64" height="6" rx="3"/><rect x="82" y="76" width="74" height="6" rx="3"/></g>
+      <g transform="translate(228,108)">
+        <rect x="-44" y="-34" width="88" height="68" rx="10" fill="#fff" stroke="#2e7d32" stroke-width="2.5"/>
+        <path d="M-16,0 l10,11 l22,-26" fill="none" stroke="#2e7d32" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text y="26" text-anchor="middle" font-size="9.5" font-weight="800" fill="#2e7d32">CONTRACT</text>
+      </g>
+      <path d="M186,90 h36" stroke="#f3caca" stroke-width="2.5" stroke-dasharray="5 5"/>
+    </svg>`,
+    proj:`<svg viewBox="0 0 300 168">
+      <circle cx="112" cy="84" r="56" fill="none" stroke="#f3caca" stroke-width="2" stroke-dasharray="5 7"/>
+      <g fill="#B71C1C"><circle cx="112" cy="28" r="15"/><circle cx="168" cy="84" r="15"/><circle cx="112" cy="140" r="15"/><circle cx="56" cy="84" r="15"/></g>
+      <g fill="#fff" font-size="10" font-weight="900" text-anchor="middle">
+        <text x="112" y="32">A1</text><text x="168" y="88">A2</text><text x="112" y="144">A3</text><text x="56" y="88">A4</text>
+      </g>
+      <circle cx="112" cy="84" r="29" fill="#7f1010"/>
+      <text x="112" y="82" text-anchor="middle" font-size="10" font-weight="900" fill="#fff">PLAN</text>
+      <text x="112" y="94" text-anchor="middle" font-size="7.5" font-weight="700" fill="#f0b6b6">SYNTHESIS</text>
+      <path d="M190,84 h52" stroke="#f3caca" stroke-width="2.5" stroke-dasharray="5 5"/>
+      <g transform="translate(264,84)"><circle r="20" fill="#fff" stroke="#B71C1C" stroke-width="2.5"/><circle cy="-5" r="6" fill="#B71C1C"/><path d="M-10,11 a10,8 0 0,1 20,0" fill="#B71C1C"/></g>
+      <text x="264" y="128" text-anchor="middle" font-size="9" font-weight="800" fill="#B71C1C">DECIDES</text>
+    </svg>`,
+    del:`<svg viewBox="0 0 300 168">
+      <rect x="22" y="22" width="120" height="124" rx="12" fill="#1f1f1f"/>
+      <g><circle cx="38" cy="38" r="3.5" fill="#ff5f56"/><circle cx="50" cy="38" r="3.5" fill="#ffbd2e"/><circle cx="62" cy="38" r="3.5" fill="#27c93f"/></g>
+      <g><rect x="36" y="58" width="30" height="6" rx="3" fill="#569cd6"/><rect x="70" y="58" width="44" height="6" rx="3" fill="#4ec9b0"/>
+        <rect x="36" y="74" width="72" height="6" rx="3" fill="#9cdcfe"/><rect x="46" y="90" width="58" height="6" rx="3" fill="#ce9178"/>
+        <rect x="46" y="106" width="74" height="6" rx="3" fill="#dcdcaa"/><rect x="36" y="122" width="40" height="6" rx="3" fill="#569cd6"/></g>
+      <g transform="translate(212,52)">
+        <rect x="-48" y="-24" width="96" height="48" rx="10" fill="#e8f5e9"/>
+        <path d="M-18,0 l9,10 l20,-24" fill="none" stroke="#2e7d32" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text y="38" text-anchor="middle" font-size="9.5" font-weight="800" fill="#2e7d32">6,346 TESTS</text>
+      </g>
+      <g transform="translate(212,126)">
+        <rect x="-48" y="-26" width="96" height="46" rx="10" fill="#fff" stroke="#e6e6e6" stroke-width="2"/>
+        <g fill="#B71C1C"><rect x="-32" y="-6" width="10" height="20" rx="3"/><rect x="-16" y="-16" width="10" height="30" rx="3"/><rect x="0" y="-10" width="10" height="24" rx="3"/><rect x="16" y="-20" width="10" height="34" rx="3"/></g>
+      </g>
+    </svg>`,
+    kn:`<svg viewBox="0 0 300 168">
+      <rect x="20" y="22" width="132" height="124" rx="14" fill="#fdecec"/>
+      <g fill="#B71C1C" opacity=".85">
+        <circle cx="48" cy="52" r="5"/><circle cx="76" cy="40" r="4"/><circle cx="104" cy="62" r="6"/><circle cx="60" cy="84" r="4.5"/>
+        <circle cx="92" cy="98" r="5"/><circle cx="124" cy="82" r="4"/><circle cx="44" cy="116" r="5"/><circle cx="80" cy="128" r="4"/><circle cx="118" cy="120" r="5.5"/>
+      </g>
+      <g stroke="#e5534b" stroke-width="1.3" opacity=".45">
+        <line x1="48" y1="52" x2="76" y2="40"/><line x1="76" y1="40" x2="104" y2="62"/><line x1="104" y1="62" x2="92" y2="98"/>
+        <line x1="60" y1="84" x2="92" y2="98"/><line x1="92" y1="98" x2="118" y2="120"/><line x1="44" y1="116" x2="80" y2="128"/>
+      </g>
+      <circle cx="104" cy="62" r="14" fill="none" stroke="#B71C1C" stroke-width="2.5"/>
+      <path d="M114,72 l12,12" stroke="#B71C1C" stroke-width="3.5" stroke-linecap="round"/>
+      <g transform="translate(224,58)">
+        <rect x="-52" y="-26" width="104" height="52" rx="10" fill="#fff" stroke="#e6e6e6" stroke-width="2"/>
+        <g fill="#d8d8d8"><rect x="-38" y="-12" width="60" height="6" rx="3"/><rect x="-38" y="0" width="46" height="6" rx="3"/></g>
+        <rect x="-38" y="12" width="30" height="6" rx="3" fill="#B71C1C"/>
+        <text y="42" text-anchor="middle" font-size="9.5" font-weight="800" fill="#7a7a7a">WEB UI</text>
+      </g>
+      <g transform="translate(224,128)">
+        <rect x="-52" y="-24" width="104" height="44" rx="10" fill="#1f1f1f"/>
+        <g fill="#4ec9b0"><rect x="-38" y="-10" width="34" height="5" rx="2.5"/></g>
+        <g fill="#9cdcfe"><rect x="-38" y="2" width="56" height="5" rx="2.5"/></g>
+        <text y="34" text-anchor="middle" font-size="9.5" font-weight="800" fill="#7a7a7a">IDE ｜ MCP</text>
+      </g>
+    </svg>`
+  };
+
+  const STAGES=[
+  { step:'01', vis:V.crm,
+    t:{ja:'顧客・CRM',en:'Customer &amp; CRM'}, en:'Opportunity &amp; Account Intelligence',
+    p:{ja:'引き合いの入口。顧客・接点・案件をここで一度だけ登録し、以降の全工程がこの1件を参照します。',
+       en:'The entry point. The account, the contacts and the opportunity are recorded once here — every later stage references this one record.'},
+    items:[
+      {h:{ja:'受注確度は計算、AIは説明役',en:'Win probability is computed; AI narrates it'},
+       d:{ja:'確度スコアは決定論的に算出し、AIがその要因リストを読み、<b>なぜその数字になったのか</b>を文章にします。',
+          en:'The score is calculated deterministically; the AI reads its driver list and writes <b>why the number came out that way</b>.'}},
+      {h:{ja:'会話から需要タグを抽出',en:'Demand tags extracted from what customers say'},
+       d:{ja:'顧客とのやり取りから、求められている技術と領域をAIが抜き出して構造化し、案件の傾向として蓄積します。',
+          en:'The AI pulls what customers are actually asking for out of the correspondence, structures it, and accumulates it as a trend.'}},
+      {h:{ja:'日本市場のシグナルを取り込む',en:'Japan market signals folded in'},
+       d:{ja:'外部の市場情報をAIが抽出・分類し、自社のスキル体系に紐づけます。市場の動きと自社の強みが、同じ言葉で並びます。',
+          en:'The AI extracts and clusters external market information onto our own skill taxonomy — so market movement and our strengths are described in the same words.'}}
+    ],
+    f:{ja:'スコアはAIが作らない。AIは、出た数字の理由だけを語る。',en:'The AI never invents the score. It only explains the number the system computed.'} },
+
+  { step:'02', vis:V.rfi,
+    t:{ja:'RFI ｜ 情報提供依頼',en:'RFI'}, en:'Request for Information',
+    p:{ja:'お客様からの照会に答える工程。質問を並べるのではなく、抜け漏れのない論点マトリクス（MECE）として組み立てます。',
+       en:'Answering the customer\'s enquiry — built as a MECE discovery matrix rather than a flat list of questions, so nothing falls through.'},
+    items:[
+      {h:{ja:'回答を、過去の実績から下書きする',en:'Answers drafted from what we have actually done'},
+       d:{ja:'AIは回答ライブラリと過去の実績だけを根拠に下書きを出します。根拠のない文章は出しません。',
+          en:'The AI drafts only from the answer library and from past achievements it can cite — grounded, never invented.'}},
+      {h:{ja:'論点の網羅性を構造で担保',en:'Coverage guaranteed by structure'},
+       d:{ja:'RFIは質問の羅列ではなく、重複なく漏れのない探索マトリクスとして組み立てます。抜けが、構造の穴として見えます。',
+          en:'An RFI carries a mutually-exclusive, collectively-exhaustive discovery matrix rather than a list of questions — so a gap shows up as a hole in the structure.'}},
+      {h:{ja:'答えたものは資産として残る',en:'Every answered question becomes an asset'},
+       d:{ja:'確定した回答は回答ライブラリに戻り、次のRFIの下書き根拠になります。',
+          en:'Approved answers flow back into the answer library and become the grounding for the next RFI.'}}
+    ],
+    f:{ja:'出典のない回答は出さない。これは設計上の制約です。',en:'An answer without a source is not produced. That is a design constraint, not a guideline.'} },
+
+  { step:'03', vis:V.rfp,
+    t:{ja:'RFP ｜ 提案依頼',en:'RFP'}, en:'Requirements Structuring',
+    p:{ja:'提案依頼書を構造化された要件に分解し、見積・提案書の直接の入力に変える工程です。',
+       en:'Breaking the RFP into structured requirements that feed the estimate and the proposal directly — no re-typing in between.'},
+    items:[
+      {h:{ja:'スコープの抜けをAIが指摘',en:'AI names what the scope appears to be missing'},
+       d:{ja:'AIが「この種の案件に通常含まれるもの」と突き合わせ、欠けていそうな項目を挙げます。あくまで助言で、勝手に追加はしません。',
+          en:'The AI compares the priced scope against what this class of project usually involves and names what looks absent. Advisory — it adds nothing by itself.'}},
+      {h:{ja:'仕様から対象物を数える',en:'Counting the objects the spec describes'},
+       d:{ja:'AIが画面・外部インターフェース・テーブル・帳票を数え、<b>それぞれの出典箇所</b>を併記します。工数は出しません。',
+          en:'The AI counts screens, interfaces, tables and reports — each with <b>the passage it came from</b>. It counts objects, never effort.'}},
+      {h:{ja:'要件が見積行になる',en:'A requirement becomes an estimate line'},
+       d:{ja:'構造化された要件はそのまま見積の規模項目になり、転記による齟齬が発生しません。',
+          en:'Structured requirements become size items in the estimate directly, so transcription drift never happens.'}}
+    ],
+    f:{ja:'AIは数えて、見つけて、示す。決めるのは提案責任者です。',en:'The AI counts, finds and shows. The bid owner decides.'} },
+
+  { step:'04', vis:V.est,
+    t:{ja:'見積',en:'Estimate'}, en:'Defensible Estimation',
+    p:{ja:'工数を「経験で置く」のをやめ、分類・規模・生産性・工程配分・リスクの5層で積み上げ、後から説明できる見積にします。',
+       en:'Effort stops being a number someone types. Five layers — class, size, productivity, phase distribution, risk — build an estimate that can be defended later.'},
+    items:[
+      {h:{ja:'案件分類を提案する',en:'Proposes which class of project this is'},
+       d:{ja:'AIが8つの案件分類から候補を理由つきで提示します。<b>自動適用はしません</b> — 見積担当が受け入れるか、却下します。',
+          en:'The AI proposes one of eight project classes with its reasons. It <b>applies nothing</b> — the estimator accepts it or rejects it.'}},
+      {h:{ja:'ヒアリングを支援する',en:'Guides the estimation interview'},
+       d:{ja:'聞き漏らしやすい論点と、見落とされがちなリスクをAIが先に出します。',
+          en:'The AI surfaces the questions and the risks that are most often missed.'}},
+      {h:{ja:'数字の理由を文章にする',en:'Turns the numbers into an explanation'},
+       d:{ja:'見積の根拠、前回との差分、前提を変えたときの影響を、AIがそれぞれ文章で説明します。',
+          en:'The AI explains the basis of the figure, what changed since last time, and what a changed assumption would do to it.'}},
+      {h:{ja:'自社の実績で較正し続ける',en:'Calibrated against our own delivery record'},
+       d:{ja:'生産性の基準値は、過去プロジェクトの実績から継続的に較正されます。使うほど精度が上がる設計です。',
+          en:'Productivity baselines are continuously calibrated from our own completed projects — the more we deliver, the sharper it gets.'}}
+    ],
+    f:{ja:'計算はシステム、説明はAI、判断は人。三者の役割を混ぜない。',en:'The system computes, the AI explains, the human judges. The three roles are never mixed.'} },
+
+  { step:'05', vis:V.prop,
+    t:{ja:'提案・契約',en:'Proposal &amp; Contract'}, en:'Proposal Drafting and Award',
+    p:{ja:'ここまでの情報（顧客・要件・見積）を一つの提案書に束ねます。受注が決まれば、同じデータから契約書に進みます。',
+       en:'Everything gathered so far — account, requirements, estimate — is bound into one proposal. A win carries the same data into the contract.'},
+    items:[
+      {h:{ja:'セクション単位で下書きする',en:'Drafts the proposal section by section'},
+       d:{ja:'AIは、その提案書の確定済みの文脈と、ナレッジ検索で取れた根拠<b>だけ</b>を材料に、各セクションを下書きします。',
+          en:'The AI drafts each section from that proposal\'s own resolved context and its retrieved grounding — and from nothing else.'}},
+      {h:{ja:'実績が提案の裏付けになる',en:'Past achievements become the evidence'},
+       d:{ja:'ナレッジベースの過去実績が引用元として結び付き、「できます」ではなく「やりました」を書けます。',
+          en:'Achievements from the knowledge base attach as citations, so the proposal says what we have done, not what we could do.'}},
+      {h:{ja:'受注後は契約書へ',en:'A win generates the contract'},
+       d:{ja:'受注すると契約テンプレートから DOCX / PDF を生成。見積のバージョンが契約に参照として残ります。',
+          en:'On a win, contract templates generate DOCX / PDF, and the estimate version stays referenced from the contract.'}}
+    ],
+    f:{ja:'AIが書くのは初稿まで。最終責任は提案責任者にあります。',en:'The AI writes the first draft only. The bid owner still owns what goes out.'} },
+
+  { step:'06', vis:V.proj,
+    t:{ja:'プロジェクト管理',en:'Project Management'}, en:'Set-up, Planning &amp; Foundation',
+    p:{ja:'受注した案件を「人もエージェントも作業できる状態」にする工程。ここで基盤を設計しないと、後からの是正は桁違いに高くつきます。',
+       en:'Turning a won deal into a project a person — or an agent — can actually build in. Designed in here, or retrofitted later at an order of magnitude more cost.'},
+    items:[
+      {h:{ja:'AI Delivery Architect ｜ 立上げ補助',en:'AI Delivery Architect — intake assist'},
+       d:{ja:'未記入の項目にAIが候補を出し、曖昧な点を指摘します。<b>出力はすべて項目ごとの提案</b>で、人が1つずつ受け入れます。',
+          en:'The AI proposes values for the empty fields and flags what is ambiguous. <b>Every output is a per-field proposal</b> a human accepts one at a time.'}},
+      {h:{ja:'複数エージェントで計画し、不一致を隠さない',en:'Multiple agents plan — and disagreements stay visible'},
+       d:{ja:'役割の異なるエージェントがそれぞれ検討し、結果を1つの計画にまとめます。<b>意見の相違はそのまま表に出し、システムは解決しません</b>。',
+          en:'Agents with different roles each reason it through, and their work is assembled into one plan that <b>surfaces every unresolved disagreement rather than resolving it</b>.'}},
+      {h:{ja:'Project Foundation ｜ 決定に推奨を出す',en:'Project Foundation — a recommendation per decision'},
+       d:{ja:'技術・アーキテクチャ・認証などの決定に、<b>代替案・トレードオフ・リスク・確信度</b>を必須項目として付けた推奨が出ます。1つでも欠けた推奨は保存されません。',
+          en:'Each consequential decision gets a recommendation carrying <b>alternatives, tradeoffs, risks and confidence as required fields</b> — one missing any of them is rejected, not stored.'}},
+      {h:{ja:'承認された基盤だけが生成される',en:'Only an approved foundation is generated'},
+       d:{ja:'AIが開発ルールを導出し、人が承認したあとに実ファイルを生成します。後からズレが出たときは、どこがどう違うかを説明します。',
+          en:'The AI derives the engineering rules, emits the actual files once a human approves, and later explains any drift away from them.'}},
+      {h:{ja:'リスクは計算し、AIは語る',en:'Risk is computed; the AI narrates it'},
+       d:{ja:'リスク評価そのものはシステムが算出します。AIはその要因リストを説明するだけで、評価は行いません。',
+          en:'The system computes the risk assessment. The AI only narrates it from its drivers — it assesses nothing itself.'}}
+    ],
+    f:{ja:'決定には、必ず理由と承認者が残る。これが監査可能性の土台です。',en:'Every decision keeps its reason and its approver. That is what makes the project auditable.'} },
+
+  { step:'07', vis:V.del,
+    t:{ja:'デリバリー',en:'Delivery'}, en:'Build, Report and Staff',
+    p:{ja:'実装・報告・要員配置の工程。作る作業だけでなく、お客様への報告と人のアサインまでを同じ基盤で扱います。',
+       en:'Implementation, reporting and staffing — the build, the customer-facing report and who works on it, all on the same base.'},
+    items:[
+      {h:{ja:'Software Factory ｜ 仕様からコードへ',en:'Software Factory — spec to code'},
+       d:{ja:'AIが実装の計画を立て、コードを書き、検証に落ちたときは自分で直します。',
+          en:'The AI plans the implementation, writes the code, and repairs it itself when verification fails.'}},
+      {h:{ja:'レポート作成支援',en:'AI-assisted reporting'},
+       d:{ja:'AIは<b>確定済みのセクションデータから</b>所見を下書きします。数字を作ることはありません。ダッシュボードの変動も同じ原則で説明します。',
+          en:'The AI drafts the narrative <b>from section data already resolved</b> — it never produces a number. Dashboard movements are explained on the same principle.'}},
+      {h:{ja:'議事録を、記録に変える',en:'Meeting notes become records'},
+       d:{ja:'AIが議事録から要約と決定事項をまとめ、やるべきことを抜き出します。',
+          en:'The AI pulls the digest and the apparent decisions out of a meeting note, and lifts the action items from it.'}},
+      {h:{ja:'Resume AI ｜ 要員経歴書',en:'Resume AI — the engineer\'s CV'},
+       d:{ja:'登録済みのプロフィールから経歴書の文章を生成します。改訂版で<b>記録にないことを書くことを禁止</b>しました。',
+          en:'The AI writes the CV prose from the recorded profile. A later revision <b>forbids it from narrating what the record does not contain</b>.'}},
+      {h:{ja:'アサインは計算、AIは助言',en:'Assignment is computed; AI advises'},
+       d:{ja:'AIは候補者ごとに助言スコアと理由を付けますが、<b>システムが計算したマッチ度を置き換えることはありません</b>。',
+          en:'The AI adds an advisory score and a written reason, but <b>never replaces the match score the system computed</b>.'}}
+    ],
+    f:{ja:'AIが数字を作ることはない。AIは、出た数字を説明するだけ。',en:'The AI never produces a number. It explains the numbers the system produced.'} },
+
+  { step:'08', vis:V.kn,
+    t:{ja:'ナレッジ蓄積',en:'Knowledge Archive'}, en:'Institutional Memory as a Service',
+    p:{ja:'終わったプロジェクトを、次の案件で使える資産に変える工程。ここが閉じることで、循環が一周します。',
+       en:'Turning a finished project into something the next bid can use. Closing this stage is what makes the loop a loop.'},
+    items:[
+      {h:{ja:'実績と文書をベクタDBへ',en:'Achievements and documents, embedded'},
+       d:{ja:'完了したプロジェクトの実績・提案書・成果物がベクトルデータベースに取り込まれ、検索できる組織の記憶になります。',
+          en:'Completed achievements, proposals and deliverables are embedded into a vector database and become searchable organizational memory.'}},
+      {h:{ja:'出典付きで答える',en:'Answers come back with citations'},
+       d:{ja:'AIは検索で取れた断片だけを根拠に回答し、必ず出典を添えます。',
+          en:'The AI answers only from the passages it retrieved, and always attaches the citations.'}},
+      {h:{ja:'開発者はIDEから同じ知識を引く',en:'Developers get the same knowledge in their IDE'},
+       d:{ja:'開発者はエディタからも同じナレッジに到達できます。<b>呼び出した人の権限で動く</b>ため、その人に見えないものは見えません。',
+          en:'Developers reach the same knowledge from inside their editor — and <b>it runs under the caller\'s own permissions</b>, so nothing leaks.'}},
+      {h:{ja:'ブレストルームで多角的に検討',en:'A brainstorming room for many viewpoints'},
+       d:{ja:'役割の違うエージェントが議論し、どこで意見が割れたかを抽出して、1つのブリーフにまとめます。',
+          en:'Differently-roled agents run a debate, the points where they conflict are pulled out, and the whole thing is assembled into one brief.'}}
+    ],
+    f:{ja:'個人の記憶を、会社の記憶に。ここが一周して、次の引き合いに効く。',en:'Personal memory becomes company memory — and the loop pays off at the next enquiry.'} }
+  ];
+
+  /* ============================================================
+     2. i18n
+     ============================================================ */
+  let lang = 'ja';
+  const I18N_STATIC = {
+    mPl:{ja:'この工程の役割',en:'What this stage is for'},
+    mAiH:{ja:'AIが効いている所 ｜ Where AI helps',en:'Where AI helps'},
+    hintTxt:{ja:'で移動 ・ <kbd>F</kbd> 全画面 ・ <kbd>L</kbd> 言語',en:'to move ・ <kbd>F</kbd> fullscreen ・ <kbd>L</kbd> language'}
+  };
+  function applyLang(){
+    document.documentElement.lang = (lang==='ja'?'ja':'en');
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const v = el.dataset[lang]; if(v!=null) el.innerHTML = v;
+    });
+    document.querySelectorAll('[data-i18n-t]').forEach(el=>{
+      const v = el.dataset[lang]; if(v!=null) el.textContent = v;
+    });
+    for(const id in I18N_STATIC){
+      const el=document.getElementById(id); if(el) el.innerHTML = I18N_STATIC[id][lang];
+    }
+    document.getElementById('lgJA').classList.toggle('on',lang==='ja');
+    document.getElementById('lgEN').classList.toggle('on',lang==='en');
+    if(modal.classList.contains('on') && openStage>=0) renderModal(openStage);
+  }
+  document.getElementById('lgJA').onclick=()=>{lang='ja';applyLang();};
+  document.getElementById('lgEN').onclick=()=>{lang='en';applyLang();};
+
+  /* ============================================================
+     3. MODAL
+     ============================================================ */
+  const modal=document.getElementById('modal');
+  let openStage=-1;
+  function renderModal(k){
+    const s=STAGES[k];
+    document.getElementById('mStep').textContent=s.step;
+    document.getElementById('mTitle').innerHTML=s.t[lang];
+    document.getElementById('mEn').innerHTML=s.en;
+    document.getElementById('mVis').innerHTML=s.vis;
+    document.getElementById('mPurpose').innerHTML=s.p[lang];
+    document.getElementById('mFoot').innerHTML=s.f[lang];
+    const ul=document.getElementById('mList'); ul.innerHTML='';
+    s.items.forEach((it,i)=>{
+      const li=document.createElement('li');
+      li.innerHTML='<span class="lic">'+String(i+1).padStart(2,'0')+'</span><div><h5>'+it.h[lang]+'</h5><p>'+it.d[lang]+'</p></div>';
+      ul.appendChild(li);
+    });
+    document.getElementById('mPos').textContent=String(k+1).padStart(2,'0')+' / '+String(STAGES.length).padStart(2,'0');
+    modal.querySelectorAll('[data-i18n]').forEach(el=>{const v=el.dataset[lang];if(v!=null)el.innerHTML=v;});
+    modal.querySelectorAll('[data-i18n-t]').forEach(el=>{const v=el.dataset[lang];if(v!=null)el.textContent=v;});
+    for(const id in I18N_STATIC){const el=document.getElementById(id);if(el)el.innerHTML=I18N_STATIC[id][lang];}
+  }
+  const stepModal=d=>{if(openStage<0)return;openModal((openStage+d+STAGES.length)%STAGES.length);};
+  function openModal(k){openStage=k;renderModal(k);modal.classList.add('on');}
+  function closeModal(){modal.classList.remove('on');openStage=-1;}
+  document.getElementById('mClose').onclick=closeModal;
+  document.getElementById('mPrev').onclick=e=>{e.stopPropagation();stepModal(-1);};
+  document.getElementById('mNext').onclick=e=>{e.stopPropagation();stepModal(1);};
+  modal.addEventListener('click',e=>{if(e.target===modal)closeModal();});
+  document.querySelectorAll('.lc-node').forEach(n=>{
+    n.addEventListener('click',()=>openModal(parseInt(n.dataset.stage,10)));
+  });
+
+  /* ============================================================
+     4. DECK NAVIGATION
+     ============================================================ */
+  const slides=[...document.querySelectorAll('.slide')];
+  const dots=document.getElementById('dots');
+  const progress=document.getElementById('progress');
+  const count=document.getElementById('count');
+  const deck=document.getElementById('deck');
+  const prevBtn=document.getElementById('prev');
+  const nextBtn=document.getElementById('next');
+  let i=0;const n=slides.length;
+  const secSlides=['s03','s05','s07','s10','s12'];
+
+  slides.forEach((s,k)=>{
+    const b=document.createElement('button');
+    b.setAttribute('aria-label','slide '+(k+1));
+    if(secSlides.includes(s.id))b.classList.add('sec');
+    b.onclick=()=>go(k);dots.appendChild(b);
+  });
+  const dotBtns=[...dots.children];
+
+  function go(k){
+    i=Math.max(0,Math.min(n-1,k));
+    slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+    dotBtns.forEach((d,idx)=>d.classList.toggle('on',idx===i));
+    progress.style.width=((i+1)/n*100)+'%';
+    count.innerHTML='<b>'+String(i+1).padStart(2,'0')+'</b> / '+String(n).padStart(2,'0');
+    prevBtn.disabled=(i===0);nextBtn.disabled=(i===n-1);
+    if(location.hash!=='#'+(i+1))history.replaceState(null,'','#'+(i+1));
+  }
+  const nextS=()=>go(i+1),prevS=()=>go(i-1);
+  prevBtn.onclick=prevS;nextBtn.onclick=nextS;
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){if(modal.classList.contains('on')){closeModal();return;}}
+    if(e.key.toLowerCase()==='l'){lang=(lang==='ja'?'en':'ja');applyLang();return;}
+    if(modal.classList.contains('on')){
+      if(['ArrowRight','PageDown'].includes(e.key)||e.key===' '){e.preventDefault();stepModal(1);}
+      else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();stepModal(-1);}
+      return;
+    }
+    if(['ArrowRight','PageDown'].includes(e.key)||e.key===' '){e.preventDefault();nextS();}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prevS();}
+    else if(e.key==='Home'){go(0);}
+    else if(e.key==='End'){go(n-1);}
+    else if(e.key.toLowerCase()==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  });
+
+  let sx=0;
+  deck.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+  deck.addEventListener('touchend',e=>{
+    if(modal.classList.contains('on'))return;
+    const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>60){dx<0?nextS():prevS();}},{passive:true});
+  let wlock=false;
+  deck.addEventListener('wheel',e=>{
+    if(modal.classList.contains('on')||wlock)return;
+    if(Math.abs(e.deltaY)<24&&Math.abs(e.deltaX)<24)return;
+    wlock=true;(e.deltaY>0||e.deltaX>0)?nextS():prevS();setTimeout(()=>wlock=false,900);},{passive:true});
+
+  document.querySelectorAll('.toc-item[data-goto]').forEach(el=>{
+    el.addEventListener('click',()=>go(parseInt(el.dataset.goto,10)-1));});
+
+  const hashIdx=()=>{const k=parseInt((location.hash||'').replace('#',''),10);return (k>=1&&k<=n)?k-1:0;};
+  window.addEventListener('hashchange',()=>{const k=hashIdx();if(k!==i)go(k);});
+
+  applyLang();
+  go(hashIdx());
+})();
+</script>
+</body>
+</html>

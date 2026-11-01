@@ -1,0 +1,29 @@
+# Worker image. Separate from the API's on purpose: the worker needs rendering, document and
+# OCR tooling the API must never carry, and the API's attack surface should not grow to match.
+#
+# REBUILD THIS BEFORE EVERY LIVE CHECK that touches a task. A worker on a stale image writes
+# well-formed WRONG ROWS that outlive the container, reports success, and leaves no failure to
+# notice (R-W9 §26).
+FROM python:3.13-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# Add only what tasks genuinely need (e.g. poppler-utils, tesseract-ocr, fonts) — each addition
+# is image size the whole worker tier pays for.
+RUN apt-get update && apt-get install -y --no-install-recommends libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.lock.txt requirements-worker.txt ./
+RUN pip install --require-hashes -r requirements.lock.txt \
+    && pip install -r requirements-worker.txt
+
+COPY app ./app
+
+RUN useradd -m -u 10001 appuser && chown -R appuser:appuser /app
+USER appuser
+
+CMD ["celery", "-A", "app.workers.celery_app", "worker", "-Q", "default,ai,export,index", "-l", "info"]
