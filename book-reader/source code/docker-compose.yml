@@ -1,0 +1,177 @@
+# <PROJECT> — local development stack
+#
+# Docker Compose v2+ — the `version:` key is obsolete and intentionally omitted.
+#
+#   docker compose up -d              bring the stack up
+#   docker compose logs -f api        read a service's own output (NOT `ps`, see below)
+#   docker compose build api          put changed code into the image
+#   docker compose down -v            tear down, including volumes
+#
+# `docker compose ps` reporting "healthy" is not evidence that anything works: a proxy answers
+# its own /healthz without touching an upstream, and will report healthy while returning 502 for
+# every route. Read the logs, and assert a changed value from *inside* the running process.
+
+name: <project>
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  pgdata:
+  valkeydata:
+  miniodata:
+
+services:
+  # ─────────────────────────────── data tier ───────────────────────────────
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      # Deterministic collation, so ORDER BY does not differ between a developer's
+      # machine and production.
+      LANG: C.UTF-8
+    command:
+      - postgres
+      - -c
+      - log_min_duration_statement=500   # anything slower than the p95 budget is logged
+      - -c
+      - shared_preload_libraries=pg_stat_statements
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app} -d ${POSTGRES_DB:-app}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [internal]
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    restart: unless-stopped
+    command: ["valkey-server", "--appendonly", "yes"]
+    volumes:
+      - valkeydata:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [internal]
+
+  # Object storage. Swap for real S3 in deployed environments by changing S3_ENDPOINT only —
+  # the application never knows which it is talking to.
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:?set S3_SECRET_KEY in .env}
+    volumes:
+      - miniodata:/data
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+
+  # ─────────────────────────────── application ───────────────────────────────
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-app}
+      BROKER_URL: redis://valkey:6379/0
+      S3_ENDPOINT: http://minio:9000
+    # The dev image mounts source so an edit is live. A *production* image copies source in,
+    # and then a backend edit needs `docker compose build api` before it exists in the container.
+    volumes:
+      - ./backend:/app
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      postgres: {condition: service_healthy}
+      valkey: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request;urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks: [internal]
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.worker
+    restart: unless-stopped
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-app}
+      BROKER_URL: redis://valkey:6379/0
+      S3_ENDPOINT: http://minio:9000
+    # Queue tiers, not one queue: a 20-minute AI job must not sit in front of a 200ms export.
+    command: ["celery", "-A", "app.workers.celery_app", "worker",
+              "-Q", "default,ai,export,index", "-c", "${WORKER_CONCURRENCY:-4}", "-l", "info"]
+    depends_on:
+      postgres: {condition: service_healthy}
+      valkey: {condition: service_healthy}
+    networks: [internal]
+
+  beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.worker
+    restart: unless-stopped
+    env_file: [.env]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-app}
+      BROKER_URL: redis://valkey:6379/0
+    # Exactly one beat container, always. Two schedulers mean every periodic job runs twice.
+    command: ["celery", "-A", "app.workers.celery_app", "beat", "-l", "info"]
+    depends_on:
+      valkey: {condition: service_healthy}
+    networks: [internal]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      # Server-side calls stay inside the network; the browser goes through the proxy.
+      API_INTERNAL_URL: http://api:8000
+      NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:8080/api}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules          # keep the image's Linux-built modules, not the host's
+    # If another stack already holds this port, override it in docker-compose.override.yml
+    # rather than editing this file.
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on: [api]
+    networks: [internal]
+
+  proxy:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "${PROXY_PORT:-8080}:80"
+    depends_on: [api, frontend]
+    networks: [internal]

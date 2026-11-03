@@ -1,0 +1,38 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+
+# node
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# test output
+playwright-report/
+test-results/
+*-results.xml
+*-results.json
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# local artifacts
+/tmp/
+/scratch/
