@@ -1,17 +1,20 @@
-﻿# Book Reader — project baseline
+# Book Reader — Dự án đọc sách
 
-Status: Draft. Created 2026-11-03.
+Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
 
-## Confirmed decisions
 
-- Create a separate project from template-ai/project-base-line-template.
-- Keep React + TypeScript + Vite, Java + Spring Boot + JPA, and SQL Server.
-- Initial delivery is for personal use.
-- Prepare boundaries for a separately developed account and access module to support multiple users later.
-- Preserve the template workflow: analysis → strategy → RD → BD → implementation plan → code → evidence-based exit gate.
+Giữ React/Vite, Spring Boot/JPA và SQL Server. Cá nhân trước; quyền sở hữu dữ liệu sẵn cho phân hệ tài khoản tương lai.
 
-## Current state
+## Thứ tự đọc
+1. [Tiến độ](management/PROGRESS.md)
+2. [Phân tích hiện trạng](plan/analysis/01_CURRENT_STATE_AND_GAP.md)
+3. [Chiến lược](plan/STRATEGY.md)
+4. [Danh mục yêu cầu](plan/RD/RD-INDEX.md)
+5. [Danh mục thiết kế](plan/BD/BD-INDEX.md)
+6. [Quyết định còn mở](management/OPEN-DECISIONS.md)
 
-This is a copied baseline, not a runnable application. The inherited FastAPI, Next.js, PostgreSQL, Celery, Docker, and Claude instructions have NOT yet been adapted. They are reference material until replaced by the approved project design. No application code has been migrated.
+RD/BD là bản nháp, chưa chốt làm chuẩn. Chưa có ứng dụng hay kiểm thử mới. source code/, các tệp *TEMPLATE.md và GETTING-STARTED còn ví dụ công nghệ cũ, phải chuyển ở P0 trước sử dụng.
+AGENTS.md là hướng dẫn đầu vào. Không sửa Project_ngan hoặc template-ai gốc.
 
-Read management/PROGRESS.md first, then plan/STRATEGY.md and the relevant design documents. Project-specific entry instructions are in AGENTS.md.
+## Ngôn ngữ tài liệu
+Ưu tiên tiếng Việt ở tiêu đề và lời giải thích; giữ tên công nghệ, tên trường/hàm, mã yêu cầu, đường dẫn API và lệnh. Thuật ngữ khó được giải thích tại references/GLOSSARY.md.

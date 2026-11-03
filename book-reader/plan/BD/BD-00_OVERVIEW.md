@@ -1,126 +1,74 @@
-# BD-00 — Overview & Common Standards
+# BD-00 — Kiến trúc và chuẩn chung
 
-> **Version:** 0.1 · **Date:** YYYY-MM-DD · **Status:** 🟡 Draft
+Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
 
-The standards every module BD inherits. Start here for any code question. Module BDs state deltas.
 
----
+## 1. Kiến trúc
+Một ứng dụng Spring Boot chia phân hệ, dùng JPA và SQL Server; giao diện React/Vite chạy cùng nguồn qua máy chủ trung gian. Kiến trúc đích không dùng FastAPI/Next/Postgres/Celery. Hướng dẫn và Docker kế thừa còn phải chuyển ở P0.
 
-## 1. Architecture summary
+## 2. Cấu trúc đích
+- source code/backend/src/main/java/<base>/core: cấu hình, lỗi và giao diện xác định người đọc/quyền.
+- modules/{library,readerdata,navigation,identity}: mỗi phân hệ có controller,dto,service,repository,entity.
+- source code/backend/src/main/resources/db/migration: cập nhật cấu trúc SQL Server.
+- source code/frontend/src/{app,features,components,lib/api,storage,i18n,styles}: giao diện, API sinh tự động, lưu cục bộ, ngôn ngữ và kiểu hiển thị.
+Giao diện dùng React Router; không dùng cơ chế định tuyến/thành phần máy chủ của Next.js. Mỗi phía có khai báo thư viện, khóa phiên bản và lệnh kiểm tra riêng, chưa tạo trong đợt tài liệu.
 
-See `plan/STRATEGY.md` §4. One FastAPI application, one PostgreSQL instance, one Celery worker
-tier, one Next.js frontend. **One shared core:** cross-module calls are in-process service → service
-calls, not HTTP.
+## 3. Phân vùng tên
+| Phân hệ | Tuyến sau /api/v1 | Tiền tố bảng |
+|---|---|---|
+| MOD-01 | /books, /imports | lib_ |
+| MOD-02 | Tuyến trình duyệt /reader/:bookId | Không bảng riêng |
+| MOD-03 | /books/{id}/toc, /books/{id}/bookmarks | nav_ |
+| MOD-04 | /books/{id}/progress, /settings, /sync/manifest | rd_, sys_idempotency |
+| MOD-05 | Chưa có tuyến đăng nhập bản đầu | id_readers; bảng tài khoản chưa chốt |
 
----
+## 4. Phân lớp
+Controller nhận/phân tích/kiểm tra dữ liệu và quyền, trả kết quả → Service xử lý nghiệp vụ và giao dịch → Repository truy cập dữ liệu qua JPA/truy vấn → Entity mô tả dữ liệu.
+Controller không gọi Repository. Service dùng AccessPolicy và CurrentReader, không nhận danh tính tùy ý từ nội dung yêu cầu. StoragePort nhận khóa lưu trữ do máy chủ tạo, không nhận đường dẫn người dùng; tệp nằm ngoài cơ sở dữ liệu và vùng công khai của web.
 
-## 2. Project layout
-
-```
-source code/
-├── backend/app/
-│   ├── core/          config, db, logging, errors, security, types
-│   ├── shared/        cross-module services (audit, outbox, storage, jobs, search)
-│   ├── modules/<m>/   router.py schemas.py service.py repository.py models.py events.py permissions.py tests/
-│   ├── workers/       celery app, queues, schedules
-│   └── main.py        app factory
-├── frontend/src/
-│   ├── app/(auth)/    unauthenticated routes
-│   ├── app/(app)/     authenticated routes, per module
-│   ├── features/<m>/  components, hooks, forms, types
-│   ├── components/    shared UI
-│   └── lib/api/       GENERATED client — never hand-edited
-└── infra/             nginx, container configs
-```
-
----
-
-## 3. Namespace allocation
-
-| Module | API prefix | Table prefix | Celery prefix |
+## 5. Giao diện công khai giữa các phân hệ
+| Giao diện | Bên cung cấp | Bên sử dụng | Đầu vào/kết quả |
 |---|---|---|---|
-| MOD-01 | `/auth` `/users` `/roles` `/permissions` `/master-data` `/audit` | `auth_` `org_` `sys_` | `auth.` |
-| MOD-02 | `/<resource>` | `<pfx>_` | `<module>.` |
+| CurrentReader.resolve() | identity | Mọi dịch vụ | ReaderContext(readerId,mode) từ cấu hình/phiên tin cậy |
+| AccessPolicy.require(action,reader) | core/identity | API nghiệp vụ | Quyền theo RD-00, từ chối thao tác thiếu quyền |
+| LibraryReadService.requireReadable(reader,bookId) | library | navigation/readingdata | BookReadDescriptor nếu đúng chủ, READY và chưa xóa; nếu không trả 404 |
+| StoragePort | Hạ tầng library | Nhập/đọc tệp | put/openRange/delete/stat, khóa lưu trữ không lộ đường dẫn |
+| ReaderAdapter | Bộ đọc trình duyệt | Điều hướng/tiến độ | Vị trí có kiểu, sự kiện ready/location/error |
+| OfflineRepository | Lưu trữ trình duyệt | Các tính năng đọc | Lưu nguyên tử theo phân vùng, cùng hàng đợi thay đổi |
+Tầng dữ liệu không đọc bảng phân hệ khác để lấy nghiệp vụ. Khóa ngoại ghép bảo vệ tính toàn vẹn, không thay giao diện tích hợp. Không phụ thuộc vòng library→readingdata; xóa dùng đánh dấu và đối soát.
 
-A module creates nothing outside its allocation. This is what makes a table's owner readable from
-its name.
+## 6. Chuẩn API
+OpenAPI sinh từ máy chủ ứng dụng; tạo mã gọi API TypeScript tự động, không sửa tay mã sinh.
+UUID dạng chuỗi; JSON camelCase; tiền tố /api/v1. PATCH chỉ áp dụng trường có mặt, phân biệt null với không gửi.
+GET chi tiết trả ETag chứa số phiên bản trong dấu nháy. Sửa dữ liệu đã có bắt buộc If-Match: thiếu trả 428, cũ trả 409. Tạo tiến độ dùng If-Match "0"; GET mục lục rỗng trả treeVersion=0.
+Tạo trả 201; xóa trả 204; nhập URL trả 202. Lỗi dùng RFC9457 application/problem+json có code,detail,traceId, không lộ dấu vết ngăn xếp/đường dẫn/bí mật.
+Danh sách mặc định limit=25, tối đa 100; phân trang theo khóa gồm giá trị sắp xếp+id, gắn bộ lọc và chủ sở hữu. Con trỏ sai trả 400. Chỉ cho titleAsc/createdDesc; kiểm cách so sánh chuỗi và thoát truy vấn tìm kiếm trên SQL Server.
+Idempotency-Key UUID bắt buộc cho nhập sách, tạo đánh dấu, lưu tiến độ và đồng bộ cây mục lục. Lưu mã băm yêu cầu và kết quả cùng giao dịch; yêu cầu lặp cùng nội dung trả lại kết quả, khác nội dung trả 409. PUT mục lục cũng dùng khóa để mất phản hồi không gây xung đột giả.
+Không ghi nhãn hoàn tất cho tác vụ còn chạy.
 
----
+## 7. Giao diện
+Đề xuất TanStack Query quản lý dữ liệu máy chủ; thiết lập cục bộ/ngữ cảnh cho trạng thái hiển thị, chưa cần Zustand. Hàng đợi IndexedDB phải bền vững, không thay bằng bộ nhớ tạm.
+Dùng giá trị thiết kế tập trung và danh mục chuỗi tiếng Việt. API trình duyệt chỉ dùng ở bộ chuyển tiếp/tính năng thích hợp; không kết xuất bộ đọc phía máy chủ.
 
-## 4. Layering
+## 8. Màn hình
+BD-SCREEN-INDEX xác định tuyến/cách mở. Mỗi màn hình có đang tải, trống, lỗi có thử lại, không có quyền/không tìm thấy. Chờ đồng bộ/xung đột ngoại tuyến là trạng thái riêng.
 
-```
-router      HTTP only: parse, authorize, serialize.  NO business logic.
-  └── service       Business rules, orchestration, transactions, events.  Framework-agnostic.
-       └── repository    Data access.  ALL SQL lives here.
-            └── model         ORM entities.
-```
+## 9. Cơ sở dữ liệu
+BD-02 là nguồn cấu trúc: uniqueidentifier,nvarchar,datetime2 UTC,bigint @Version. Không dùng kiểu/chức năng riêng PostgreSQL. Không sửa bước cập nhật đã áp dụng; cấu hình ddl-auto=validate ngoài kiểm thử, không tự đổi cấu trúc.
 
----
+## 10. Kiểm chứng
+Dùng Maven Wrapper chạy verify phía máy chủ; npm run check và npm run build phía giao diện, tạo các lệnh ở P0.
+Tích hợp SQL Server thật, khởi động tiến trình và gọi HTTP kiểm sức khỏe/tuyến nghiệp vụ qua máy chủ trung gian; kiểm bố cục trong trình duyệt. Makefile cũ chưa là bước kiểm chứng hợp lệ. Chưa chạy phải ghi chưa chạy.
 
-## 5. Cross-module integration
-
-5.1 **One shared core.** A cross-module call is a function call into the owning module's *published*
-service functions, with a documented signature. Never a query against another module's tables.
-
-5.2 A module that other modules read from publishes a small, typed **downstream read service**. That
-is the contract; its tables are not.
-
----
-
-## 6. API standards
-
-| Topic | Standard |
-|---|---|
-| Versioning | `/api/v1` |
-| Updates | `PATCH`, with `If-Match` and 409 on version mismatch |
-| Pagination | keyset (`?limit=&cursor=`), default 25, cap 200 |
-| Errors | RFC 9457 `application/problem+json` with a stable machine-readable `code` |
-| Filtering | explicit typed query parameters; no generic query language |
-| Sorting | whitelisted columns only |
-| Long operations | `202` + job handle |
-| Dates | ISO 8601, UTC |
-
----
-
-## 7. Frontend standards
-
-7.1 Routes: `app/(auth)/` unauthenticated, `app/(app)/<module>/` authenticated,
-`app/share/[token]/` public links.
-
-7.2 Four mandatory states on every list and detail screen: loading skeleton, empty, error with
-retry, permission-denied.
-
-7.3 Server Components by default. Server state through TanStack Query, UI state through Zustand,
-never mixed.
-
-7.4 Design tokens only. No hard-coded colour, spacing, radius, shadow, font size or duration.
-
-7.5 Every user-facing string in the i18n layer, in **all** catalogues, in the same change.
-
----
-
-## 8. Screen archetypes
-
-| Archetype | Contents |
-|---|---|
-| List | filter bar, data table, pagination, row actions, the four states |
-| Detail | header with status and actions, tabbed panels, audit trail |
-| Form | sections, inline validation, unsaved-changes guard |
-| Dashboard | KPI row, charts, drill-through |
-| Wizard | stepper, per-step validation, resumable draft |
-
----
-
-## 9. Database standards
-
-See the module BD template §3. Money `numeric(18,2)` + `currency char(3)`. Effort `numeric(8,2)`.
-Timestamps `timestamptz`. JSONB only for genuinely schemaless payloads — never for anything
-filtered, sorted, aggregated or reported on.
-
----
-
-## 10. Test standards
-
-See `source code/.claude/rules/testing.md`. The module BD's §13 states what *this* module needs
-beyond the baseline.
+## 11. Đối chiếu quy tắc chung
+| Quy tắc RD-00 | Thiết kế | Tên kiểm thử dự kiến |
+|---|---|---|
+| GBR-01 | §5; BD-03 §1 | test_GBR_01_owner_scope |
+| GBR-02 | BD-M02 §4; BD-02 §2 | test_GBR_02_revision_locator |
+| GBR-03 | BD-M04 §3/§6 | test_GBR_03_reload_outbox |
+| GBR-04 | BD-M03 §6 | test_GBR_04_immutable_checksum |
+| GBR-05 | BD-M04 §3 | test_GBR_05_device_availability |
+| GBR-06 | BD-02 §1 | test_GBR_06_utc_roundtrip |
+| GBR-07 | BD-M01 §6; BD-M04 §5 | test_GBR_07_honest_status |
+| GBR-08 | BD-03 §4 | test_GBR_08_untrusted_content |
+NFR-00-01..08 đo theo RD-00 §8, đính kết quả vào bước kiểm chứng giai đoạn. Các kiểm thử trên mới dự kiến, chưa viết/chạy.

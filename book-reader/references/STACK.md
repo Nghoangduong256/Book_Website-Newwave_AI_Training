@@ -1,71 +1,18 @@
-# Verified Stack
+# Tình trạng bộ công nghệ
 
-> **Fill this in at kickoff by checking each version, not by recalling it.** A guessed version number
-> is discovered to be wrong at the worst possible moment — usually during a build, usually at the end
-> of a day. Record the date it was verified, and re-verify at each major phase.
->
-> Versions are pinned in lockfiles. This file is the human-readable record of *why* each pin exists.
+Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
 
-**Last verified:** YYYY-MM-DD by <name>
 
----
-
-## Backend
-
-| Component | Version | Verified | Note |
-|---|---|---|---|
-| Python | | | |
-| FastAPI | | | |
-| Pydantic | | | |
-| SQLAlchemy | | | 2.x style, typed |
-| Alembic | | | |
-| Celery | | | |
-| psycopg | | | 3.x |
-| pytest | | | |
-| ruff | | | lint + format, one tool |
-| mypy | | | |
-
-## Frontend
-
-| Component | Version | Verified | Note |
-|---|---|---|---|
-| Node | | | LTS |
-| Next.js | | | App Router |
-| TypeScript | | | |
-| TanStack Query | | | server state |
-| Zustand | | | UI state only |
-| Tailwind CSS | | | |
-| React Hook Form + Zod | | | schemas derived from generated types |
-| Vitest | | | |
-| Playwright | | | |
-
-## Infrastructure
-
-| Component | Version | Verified | Note |
-|---|---|---|---|
-| PostgreSQL | | | `uuidv7()` is native from 18 |
-| Valkey / Redis | | | broker + cache |
-| nginx | | | |
-| Docker Compose | | | the `version:` key is obsolete |
-| MinIO / S3 | | | same API both sides |
-
-## AI
-
-| Component | Value | Verified | Note |
-|---|---|---|---|
-| Primary model | `claude-opus-5` | | judgement-heavy tasks |
-| Cheap model | `claude-haiku-4-5-20251001` | | classification, labelling, narration |
-| SDK | | | |
-| Embedding model | | | **dimensions are recorded with every stored vector** |
-| Vector store | | | only if retrieval is in scope |
-
-> Model ids are **configuration, never literals in business code.** A silently-updated model is an
-> unannounced behaviour change, and it will be noticed first as an output-quality complaint.
-
-## Upgrade policy
-
-1. An upgrade is its own change, with its own ADR when behaviour could differ.
-2. Re-verify the version is current at the moment of the upgrade.
-3. Security patches are not deferred to a convenient phase.
-4. Record the date each pin was last verified in this table — a pin nobody has looked at for a year
-   is a pin nobody can defend.
+Đã xác nhận React/TypeScript/Vite, Java/Spring Boot/JPA và SQL Server. Đợt tài liệu chưa chốt phiên bản hoặc kiểm chứng thư viện chạy trong bản mới.
+| Thành phần | Khai báo cũ/lựa chọn đề xuất | Cần kiểm chứng |
+|---|---|---|
+| React/Vite/TypeScript | ^19.2.0 / ^7.2.4 / ~5.9.3 | Khóa phiên bản, cài và biên dịch; không coi khoảng phiên bản là bản đã kiểm |
+| Spring Boot/Java | 4.0.2 /17 | Tương thích, bảo mật, hỗ trợ, khởi động/tích hợp |
+| SQL Server/JDBC/JPA | Giữ công nghệ hiện tại | Phiên bản/giấy phép/kiến trúc máy và trình điều khiển |
+| PDF | react-pdf/PDF.js | Tiến trình nền, mục lục, khoảng dữ liệu, văn bản |
+| EPUB | Đề xuất epub.js | Vùng cách ly, CFI, màu, iOS; chọn phiên bản sau thử nghiệm |
+| Cập nhật cấu trúc | Đề xuất Flyway | Hỗ trợ SQL Server và giấy phép phiên bản chọn |
+| OpenAPI/mã gọi API | Công cụ sinh mã đề xuất | Tương thích Spring và sinh đúng giao diện |
+| Ngoại tuyến | IndexedDB + service worker | Trình duyệt, hạn mức và việc xóa dữ liệu |
+| Kiểm thử giao diện | Đề xuất Vitest/Playwright | Chốt phiên bản, ghép CI |
+Chưa xác nhận bản mới nhất hoặc mô hình AI; AI ngoài phạm vi bản đầu.

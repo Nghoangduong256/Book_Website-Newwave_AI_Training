@@ -1,46 +1,13 @@
-# FINDINGS — defects found while doing something else
+# Các vấn đề phát hiện
 
-**Purpose: to stop a task growing while it is being verified.**
+Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
 
-A one-hour task becomes a four-hour one the same way every time. One red test leads to a real
-defect, which leads to a missing component, which leads to a new test case, which leads to a fix
-that breaks something unrelated. Every individual step is defensible. The **sequence** was never
-agreed with anybody, and the person who asked for the first thing never got the chance to say
-"record that one, do it next week".
 
-## The rule
-
-A defect noticed while verifying something else goes **here**, in one line, and the work continues.
-
-It is fixed inline **only if it blocks the thing being verified** — a red test standing between the
-current change and its gate qualifies; a truncated id on a screen nobody asked about does not.
-
-At the end of the task, the register is reported with the result. The requester prioritises. That is
-the whole mechanism.
-
-## How to write a row
-
-`| id | date | where | what | blocks the current task? | est |`
-
-Keep `what` to one sentence a reader can act on, and be honest in `blocks`: **"no" is the answer
-that saves the time.**
-
-Ids are `F-Pn-m` — phase, then a number that never gets reused.
-
----
-
-## Open
-
-| id | date | where | what | blocks? | est |
-|---|---|---|---|---|---|
-| F-P0-1 | YYYY-MM-DD | `path/to/file` | TBD | no | 30m |
-
-## Fixed
-
-| id | date found | date fixed | where | what | fixed in |
-|---|---|---|---|---|---|
-
-## Won't fix
-
-| id | what | why not |
-|---|---|---|
+| Mã | Phát hiện | Bằng chứng | Xử lý |
+|---|---|---|---|
+| F-P0-01 | Dự án cũ thiếu pdfStore nhưng còn nhập mô-đun | Test-Path trả False; ReaderPage/ManageBooksPage | Không sửa bản cũ; thiết kế lưu trữ mới |
+| F-P0-02 | Chưa ưu tiên đọc ngoại tuyến đầy đủ | ReaderPage gọi booksApi trước dữ liệu cục bộ | BD-M02/M04 |
+| F-P0-03 | Hướng dẫn/cấu hình mẫu vẫn Python/Next/Postgres | Dockerfiles/CLAUDE/skills/STACK | Chuyển đồng bộ trước P0; chưa xong |
+| F-P0-04 | Lệnh cập nhật dữ liệu cũ và mô hình Java chưa khớp | Có cột tiến độ trong SQL nhưng chưa có trong Book | Không chạy lệnh cũ vào cơ sở dữ liệu mới; dùng BD-02 |
+| F-P0-05 | Lệnh khởi động mẫu chỉ gọi hàm tạo | source code/Makefile | Phải chạy tiến trình và gọi HTTP; BD-05 |
+Chưa có lỗi nào được coi là đã tái hiện lúc chạy hay đã sửa bằng mã nguồn.
