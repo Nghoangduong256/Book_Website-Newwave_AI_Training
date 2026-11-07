@@ -1,6 +1,7 @@
 # BD-00 — Kiến trúc và chuẩn chung
 
-Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
+Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
 
 ## 1. Kiến trúc
@@ -31,11 +32,11 @@ Controller không gọi Repository. Service dùng AccessPolicy và CurrentReader
 |---|---|---|---|
 | CurrentReader.resolve() | identity | Mọi dịch vụ | ReaderContext(readerId,mode) từ cấu hình/phiên tin cậy |
 | AccessPolicy.require(action,reader) | core/identity | API nghiệp vụ | Quyền theo RD-00, từ chối thao tác thiếu quyền |
-| LibraryReadService.requireReadable(reader,bookId) | library | navigation/readingdata | BookReadDescriptor nếu đúng chủ, READY và chưa xóa; nếu không trả 404 |
+| LibraryReadService.requireReadable(reader,bookId) | library | navigation/readingdata | BookReadDescriptor nếu đúng chủ, tệp đọc được và chưa xóa; nếu không trả 404 |
 | StoragePort | Hạ tầng library | Nhập/đọc tệp | put/openRange/delete/stat, khóa lưu trữ không lộ đường dẫn |
 | ReaderAdapter | Bộ đọc trình duyệt | Điều hướng/tiến độ | Vị trí có kiểu, sự kiện ready/location/error |
 | OfflineRepository | Lưu trữ trình duyệt | Các tính năng đọc | Lưu nguyên tử theo phân vùng, cùng hàng đợi thay đổi |
-Tầng dữ liệu không đọc bảng phân hệ khác để lấy nghiệp vụ. Khóa ngoại ghép bảo vệ tính toàn vẹn, không thay giao diện tích hợp. Không phụ thuộc vòng library→readingdata; xóa dùng đánh dấu và đối soát.
+Tầng dữ liệu không đọc bảng phân hệ khác để lấy nghiệp vụ. Khóa ngoại ghép bảo vệ tính toàn vẹn, không thay giao diện tích hợp. LibraryReadService.requireOwned cho phép lấy metadata và dữ liệu đọc của sách chưa xóa kể cả tệp UNREADABLE; requireReadable kiểm thêm khả năng đọc bytes. Không phụ thuộc vòng library→readingdata; xóa dùng đánh dấu và đối soát.
 
 ## 6. Chuẩn API
 OpenAPI sinh từ máy chủ ứng dụng; tạo mã gọi API TypeScript tự động, không sửa tay mã sinh.
@@ -43,11 +44,13 @@ UUID dạng chuỗi; JSON camelCase; tiền tố /api/v1. PATCH chỉ áp dụng
 GET chi tiết trả ETag chứa số phiên bản trong dấu nháy. Sửa dữ liệu đã có bắt buộc If-Match: thiếu trả 428, cũ trả 409. Tạo tiến độ dùng If-Match "0"; GET mục lục rỗng trả treeVersion=0.
 Tạo trả 201; xóa trả 204; nhập URL trả 202. Lỗi dùng RFC9457 application/problem+json có code,detail,traceId, không lộ dấu vết ngăn xếp/đường dẫn/bí mật.
 Danh sách mặc định limit=25, tối đa 100; phân trang theo khóa gồm giá trị sắp xếp+id, gắn bộ lọc và chủ sở hữu. Con trỏ sai trả 400. Chỉ cho titleAsc/createdDesc; kiểm cách so sánh chuỗi và thoát truy vấn tìm kiếm trên SQL Server.
-Idempotency-Key UUID bắt buộc cho nhập sách, tạo đánh dấu, lưu tiến độ và đồng bộ cây mục lục. Lưu mã băm yêu cầu và kết quả cùng giao dịch; yêu cầu lặp cùng nội dung trả lại kết quả, khác nội dung trả 409. PUT mục lục cũng dùng khóa để mất phản hồi không gây xung đột giả.
+Idempotency-Key UUID bắt buộc cho nhập/lựa chọn trùng/xóa sách, tạo/sửa/xóa đánh dấu, lưu/đặt lại tiến độ và ghi cây mục lục. Lưu mã băm yêu cầu và kết quả cùng giao dịch; yêu cầu lặp cùng nội dung trả lại kết quả, khác nội dung trả 409. PUT mục lục cũng dùng khóa để mất phản hồi không gây xung đột giả.
 Không ghi nhãn hoàn tất cho tác vụ còn chạy.
 
+Xem BD-06_API_CONTRACT.md để biết trường/kiểu/mặc định, ngoại lệ, snapshot và ví dụ; đây là nguồn triển khai OpenAPI.
+
 ## 7. Giao diện
-Đề xuất TanStack Query quản lý dữ liệu máy chủ; thiết lập cục bộ/ngữ cảnh cho trạng thái hiển thị, chưa cần Zustand. Hàng đợi IndexedDB phải bền vững, không thay bằng bộ nhớ tạm.
+Dùng TanStack Query quản lý dữ liệu máy chủ; thiết lập cục bộ/ngữ cảnh cho trạng thái hiển thị, chưa cần Zustand. Hàng đợi IndexedDB phải bền vững, không thay bằng bộ nhớ tạm.
 Dùng giá trị thiết kế tập trung và danh mục chuỗi tiếng Việt. API trình duyệt chỉ dùng ở bộ chuyển tiếp/tính năng thích hợp; không kết xuất bộ đọc phía máy chủ.
 
 ## 8. Màn hình

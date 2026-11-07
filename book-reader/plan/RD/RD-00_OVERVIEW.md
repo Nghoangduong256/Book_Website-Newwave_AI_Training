@@ -1,6 +1,7 @@
 # RD-00 — Tổng quan và quy tắc chung
 
-Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
+Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
 
 ## 1. Mục tiêu nghiệp vụ
@@ -13,10 +14,12 @@ Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa c
 | BO-05 | Chuẩn bị thêm tài khoản, không gắn dữ liệu vào một người toàn cục |
 
 ## 2. Phạm vi
-Theo STRATEGY §2. RD nói hành vi; BD nói cơ chế. Giá trị ghi Đề xuất chưa coi là chuẩn đã duyệt.
+Theo STRATEGY §2. RD nói hành vi; BD nói cơ chế. Giá trị bản1.0 đã được duyệt làm mục tiêu thiết kế; số đo kiểm chứng chưa có.
 
-## 3. Người sử dụng
-Người đọc cá nhân có toàn quyền thư viện của mình, chưa có đăng nhập bản đầu. Thiết bị giữ bản ngoại tuyến, không phải danh tính. Người dùng có tài khoản và người vận hành thuộc MOD-05 tương lai. Chế độ cá nhân chỉ dùng môi trường riêng tư, cụ thể theo #1.
+## 3. Người sử dụng và môi trường
+Một người đọc cá nhân dùng PC/điện thoại trong mạng nội bộ nhà, cùng máy chủ đang chạy; chưa có đăng nhập. Thiết bị là nơi giữ bản ngoại tuyến, không phải danh tính.
+PC có thể dùng dây mạng, điện thoại dùng Wi-Fi nếu cùng mạng và được phép kết nối. 4G/5G, Wi-Fi ngoài nhà không truy cập trực tiếp máy chủ ở bản đầu; sách tải đủ vẫn đọc ngoại tuyến.
+Chỉ cho thiết bị tin cậy kết nối. Chế độ cá nhân chưa xác thực không phân biệt người khác cùng mạng. Internet/Cloud/AWS ghi nhận ở STRATEGY §10, chưa triển khai.
 
 ## 4. Quy tắc chung
 | Mã | Quy tắc |
@@ -47,11 +50,24 @@ AccessPolicy giới hạn dữ liệu của người hiện tại. Chế độ c
 | offline | manage: quản lý bản trên thiết bị, không thay quyền đọc tệp máy chủ |
 API kiểm tiến trình còn hoạt động được công khai có chủ đích; API nghiệp vụ đều kiểm chính sách. Chưa có phạm vi nhóm/toàn bộ/quản trị ở bản đầu.
 
-## 7. Trạng thái và giới hạn
-Chỉ đưa sách vào thư viện sau nhập thành công. Sách lỗi không giả READY. Xóa cần xác nhận; thiết bị khác vô hiệu bản đệm khi nối máy chủ lần tới, không thu hồi bản đã tải khi còn mất mạng. Giới hạn nhập theo #3.
+## 7. Trạng thái, xóa và bảo toàn dữ liệu
+### 7.1 Nhập và khả năng đọc
+Chỉ tạo sách sau nhập thành công. Tác vụ nhập có Chờ xử lý/Đang xử lý/Hoàn tất/Thất bại; tác vụ thất bại không tạo sách trong thư viện.
+Sách đã có chỉ hiện Sẵn sàng khi đọc được tệp, hoặc Không thể đọc khi tệp thiếu/hỏng. Không thể đọc không đồng nghĩa sách đã xóa; giữ metadata, tiến độ, mục lục/đánh dấu và cho thử lại/liên hệ kiểm tra lưu trữ. Bản đầu chưa thay tệp vào sách cũ.
+### 7.2 Ba thao tác khác nhau
+| Thao tác | Xóa gì | Giữ gì | Điều kiện và hành vi |
+|---|---|---|---|
+| Xóa bản tải về | Tệp nhị phân trên thiết bị hiện tại và cờ đã tải | Sách máy chủ, tiến độ, mục lục, đánh dấu, hàng đợi, thông tin cần đối soát | Báo dữ liệu chưa gửi; xác nhận chỉ bỏ tệp, không tự bỏ hàng đợi |
+| Xóa sách khỏi thư viện | Đánh dấu xóa trên máy chủ, ngừng mở trực tuyến; thu hồi bản tải khi thiết bị kết nối lại | Dữ liệu đọc theo thời hạn giữ; bản cục bộ chưa gửi được cách ly | Xác nhận rõ phạm vi; có thay đổi chưa gửi thì chọn đồng bộ trước hoặc lưu cách ly rồi xóa; thất bại không giả đã xóa |
+| Đặt lại tiến độ | Thay vị trí bằng trạng thái Chưa bắt đầu | Sách, tệp đã tải, mục lục và đánh dấu | Xác nhận; là thay đổi đồng bộ có phiên bản, không xóa vật lý bản ghi tiến độ |
+Chọn hủy thì không thay đổi gì. Chưa hỗ trợ khôi phục sách đã xóa qua giao diện; thời hạn lưu phục vụ đối soát/xử lý vận hành, không ngầm cam kết có Thùng rác.
+Thiết bị mất mạng không bị thu hồi tức thời. Khi biết sách đã xóa, không cho mở tiếp; cách ly và cho sao chép/xuất dữ liệu cá nhân chưa gửi hoặc chủ động bỏ. Không tự tạo lại sách.
+Xuất này chỉ là bản cứu dữ liệu cá nhân (JSON/văn bản), không phải xuất sách sửa mục lục; thuộc phạm vi P3.
+### 7.3 Giới hạn
+Dung lượng và thời hạn theo #3/#5 đã duyệt.
 
-## 8. Yêu cầu phi chức năng và nghiệm thu đề xuất
-| Mã | Mục tiêu nháp | Điều kiện và cách đo |
+## 8. Yêu cầu phi chức năng và nghiệm thu đã chốt
+| Mã | Mục tiêu đã chốt | Điều kiện và cách đo |
 |---|---|---|
 | NFR-00-01 | Khung không tràn ngang ở 375/768/1280px | Kiểm trình duyệt; vùng cuộn PDF sau phóng to là ngoại lệ có chủ đích |
 | NFR-00-02 | Dùng Tab, tiêu điểm rõ, nhãn đầy đủ, đóng bảng trượt bằng Escape, tương phản AA | Axe và kiểm tay; không cam kết sửa nội dung sách |
@@ -61,10 +77,13 @@ Chỉ đưa sách vào thư viện sau nhập thành công. Sách lỗi không g
 | NFR-00-06 | Phục hồi cơ sở dữ liệu và tệp thành công, đúng mã kiểm toàn vẹn | Diễn tập trước phát hành; chưa cam kết RPO/RTO, xem #5 |
 | NFR-00-07 | Cách ly dữ liệu và an toàn tệp/URL | Hai danh tính kiểm thử, URL/ZIP độc hại mẫu |
 | NFR-00-08 | Không mất hàng đợi sau tải lại trang, không âm thầm ghi đè xung đột | Kiểm hai thiết bị, lỗi dung lượng/cơ sở dữ liệu |
-Đây là đề xuất, chưa phải kết quả đo. Ghi rõ phiên bản trình duyệt/thiết bị khi nghiệm thu.
+Đây là mục tiêu đã duyệt, chưa phải kết quả đo. Ghi rõ phiên bản trình duyệt/thiết bị khi nghiệm thu.
 
 ## 9. AI, báo cáo và ngôn ngữ
-Không có AI, báo cáo kinh doanh hay xuất tệp chỉnh sửa ở bản đầu. Tiếng Việt theo đề xuất #4, chuỗi đi qua danh mục ngôn ngữ; chưa yêu cầu thêm ngôn ngữ khác.
+Không có AI, báo cáo kinh doanh hay xuất tệp chỉnh sửa ở bản đầu. Tiếng Việt theo #4 đã duyệt, chuỗi đi qua danh mục ngôn ngữ; chưa yêu cầu thêm ngôn ngữ khác.
 
 ## 10. Quyết định mở
 management/OPEN-DECISIONS.md là nguồn duy nhất. Đã chốt nhiều người dùng thuộc tương lai, không hỏi lại.
+
+## 11. Ma trận định dạng đã chốt
+PDF thường và PDF quét ảnh đọc được; bản quét không hứa tìm chữ/OCR. EPUB2/3 tự dàn nội dung không DRM được hỗ trợ. PDF mật khẩu, EPUB có DRM và EPUB bố cục cố định bị từ chối với thông báo chưa hỗ trợ; dữ liệu điều hướng tệp gốc không bị sửa.

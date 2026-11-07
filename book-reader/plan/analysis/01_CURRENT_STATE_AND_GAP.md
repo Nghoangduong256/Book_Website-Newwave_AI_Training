@@ -1,6 +1,7 @@
 # Phân tích hiện trạng và hướng xây dựng lại
 
-Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
+Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
 
 ## 1. Kết luận
@@ -37,7 +38,7 @@ Nhập URL có rủi ro truy cập mạng nội bộ (SSRF), cần kiểm DNS/IP
 
 ## 5. Phương án
 Giữ công nghệ để tập trung bộ đọc. Một ứng dụng chia phân hệ giảm vận hành. Giao diện lưu trữ cho phép đổi S3 sau; URL dùng tác vụ bền vững trong cơ sở dữ liệu với số thực thi giới hạn, chưa cần môi giới riêng.
-Ổ đĩa máy chủ/môi trường riêng tư là đề xuất cần xác nhận trước triển khai.
+Đã duyệt ổ đĩa máy chủ và mạng nhà, xác minh kỹ thuật ở P0.
 
 ## 6. Thử nghiệm trước triển khai
 Kiểm PDF: tiến trình nền/văn bản/mục lục/khoảng dữ liệu; EPUB: vùng cách ly/CFI/màu/sách tiếng Việt; IndexedDB/PWA trên Safari iOS; TLS trên điện thoại; tải URL chống SSRF; Spring/JPA/trình điều khiển/cập nhật cấu trúc trên SQL Server thật.
@@ -49,3 +50,7 @@ Chốt phiên bản trong STACK sau thử nghiệm, không coi khai báo cũ là
 - [Hạn mức và xóa dữ liệu trình duyệt](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria): dung lượng, thu hồi và lưu bền vững.
 - [API lưu trữ trình duyệt](https://developer.mozilla.org/en-US/docs/Web/API/Storage_API): ngữ cảnh an toàn, ước lượng và lưu bền vững.
 - [rowversion của SQL Server](https://learn.microsoft.com/en-us/sql/t-sql/data-types/rowversion-transact-sql): mã kiểm soát thay đổi, không phải thời gian; thiết kế dùng bigint @Version.
+
+## 8. Quyết định sau rà soát ngày 2026-11-07
+Đã chốt phạm vi định dạng, mạng nội bộ nhà, đồng bộ hai chiều và ba thao tác xóa/reset. Các đề xuất cũ ở §4–§6 là bối cảnh phân tích; trạng thái hiện hành xem STRATEGY D4..D9 và OPEN-DECISIONS.
+Internet/Cloud/AWS là hướng sau, chưa chọn dịch vụ. Review đã chỉ ra thiếu chiều nhận đồng bộ, quy tắc xóa chưa thống nhất, FR-03-06/P2 phụ thuộc P3, trạng thái sách/API/AC còn sơ lược; bản0.3 giải quyết trong RD/BD, chưa có bằng chứng runtime.

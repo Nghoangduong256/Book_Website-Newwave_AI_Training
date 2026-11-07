@@ -15,3 +15,9 @@ Không sửa Project_ngan hoặc template-ai khi điều chỉnh bản dự án 
 ## Ngôn ngữ tài liệu
 
 Ưu tiên tiếng Việt cho tiêu đề, nội dung và bảng. Giữ nguyên tên công nghệ, tên trường/hàm, đường dẫn, API, lệnh và mã yêu cầu. Thuật ngữ khó giải thích tiếng Việt, có thể ghi tên gốc trong ngoặc ở lần đầu. Không trộn tiếng Anh vào câu khi đã có cách diễn đạt tiếng Việt rõ ràng. Dùng references/GLOSSARY.md để thống nhất thuật ngữ.
+
+## Quyết định ngày 2026-11-07
+Bản đầu chỉ mạng nội bộ nhà; Internet/Cloud/AWS là định hướng sau, chưa chọn dịch vụ. D4..D9 trong STRATEGY đã được chủ dự án đồng ý; không hỏi lại. Cập nhật đồng bộ RD/BD theo quy tắc hai chiều/xóa/trạng thái/nghiệm thu. Bộ tài liệu đã được duyệt chuẩn1.0 ngày2026-11-07; xem management/BASELINE-REGISTER.md. Chưa triển khai mã hay tự mua hạ tầng.
+
+## Mốc chuẩn1.0
+Chủ dự án đã duyệt toàn bộ đề xuất hiện tại và các mục #2/#3/#4/#5. Không hỏi lại. Giới hạn100MiB/tệp, lưu ổ đĩa, tiếng Việt, không tự chuyển dữ liệu cũ, sao lưu ngày/7bản và dấu xóa30ngày đã chốt. Thay đổi hành vi/phạm vi sau mốc qua CR; xác minh kỹ thuật không phải đã kiểm đạt. Mẫu tham khảo/mã nguồn cũ không được coi đã hoàn thiện chỉ vì tài liệu được duyệt.

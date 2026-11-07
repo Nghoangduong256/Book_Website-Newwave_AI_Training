@@ -1,6 +1,7 @@
 # BD-01 — Quy chuẩn giao diện
 
-Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
+Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
 
 ## 1. Giá trị thiết kế dùng chung
@@ -24,4 +25,11 @@ PDF có vừa khung/chọn trang/phóng to, giới hạn số trang nhập. EPUB
 Đổi sáng/tối giữ vị trí. Tách mục lục gốc/cá nhân; không ghi mục cá nhân là đã nhúng vào tệp.
 
 ## 6. Khả năng tiếp cận và ngôn ngữ
-Theo RD-00 §8. Đề xuất danh mục tiếng Việt ở bản đầu, có dự phòng rõ ràng; không hiện khóa chuỗi thô. Kiểm nhãn/tiêu điểm/bàn phím/tương phản cả sáng/tối. Không coi chất lượng giao diện là cam kết khắc phục khả năng tiếp cận của PDF quét ảnh.
+Theo RD-00 §8. Dùng danh mục tiếng Việt ở bản đầu, có dự phòng rõ ràng; không hiện khóa chuỗi thô. Kiểm nhãn/tiêu điểm/bàn phím/tương phản cả sáng/tối. Không coi chất lượng giao diện là cam kết khắc phục khả năng tiếp cận của PDF quét ảnh.
+
+## 7. Xác nhận và lựa chọn đã chốt
+Sách trùng: nêu tên sách đã có, các nút Mở sách đã có/Vẫn nhập/Hủy; không mặc định tự tạo hay gộp.
+Xóa sách: thông báo ngừng mở trên các thiết bị sau đồng bộ, tách khỏi Xóa bản tải về. Có pending thì Đồng bộ rồi xóa/Lưu dữ liệu riêng rồi xóa/Hủy; phần lưu riêng chỉ có P3. Lỗi giữ nội dung và chưa chuyển màn hình như đã xóa.
+Reset: thông báo chỉ đặt lại vị trí, giữ sách/mục lục/đánh dấu; Hủy/Đặt lại.
+Conflict: hiển thị tên sách và hai vị trí/nội dung, không chỉ số version; có Dùng thiết bị/Dùng máy chủ/Để sau. Khi một bản là xóa/reset phải thể hiện rõ. Chọn bản máy chủ xác nhận bỏ local liên quan.
+Dữ liệu cách ly có danh sách theo sách, ngày lưu, xem chi tiết, sao chép/xuất JSON và bỏ sau xác nhận. Màn hình chưa có dữ liệu có giải thích; không gọi đây là khôi phục sách.

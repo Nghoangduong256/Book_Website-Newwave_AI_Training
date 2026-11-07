@@ -1,6 +1,7 @@
 # BD-M05 — Giao diện tích hợp tài khoản tương lai
 
-Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
+Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
 
 Nguồn yêu cầu: RD-05_account-access.md. Chưa triển khai; không phải thiết kế tài khoản hoàn chỉnh.

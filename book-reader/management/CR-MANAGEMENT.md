@@ -62,17 +62,10 @@ for incidents, not for convenience.
 - **Scope creep laundering.** Three small CRs that each look cheap can cost more than the one big
   one somebody would have refused. §7 exists to make that visible.
 
-## 5. Baselining
-
-A document becomes 🟢 Baselined when: its open items are closed or explicitly deferred with an
-owner, the status line is changed with a date, and the version is bumped. **After that, every change
-is a CR.** Before it, edits are free — which is why baselining too early is as expensive as
-baselining too late.
-
-| Document | Baselined on | Version | Open CRs |
-|---|---|---|---|
-| `plan/STRATEGY.md` | — | 0.1 | — |
-| `plan/RD/RD-00_OVERVIEW.md` | — | 0.1 | — |
+## 5. Chốt tài liệu
+Ngày2026-11-07 chủ dự án duyệt BASELINE-1.0. Danh sách và phiên bản nguồn nằm trong [BASELINE-REGISTER](BASELINE-REGISTER.md); không dùng bảng mẫu0.1 trước đây.
+Không còn quyết định sản phẩm mở. Xác minh công cụ/triển khai được hoãn có chủ đích với phụ trách và thời hạn ở sổ mốc chuẩn, không được ghi là đã hoàn thành.
+Đổi nội dung hành vi sau mốc này dùng CR; sửa lỗi chữ/Markdown không đổi nghĩa có thể sửa trực tiếp. Việc chốt ban đầu theo yêu cầu người dùng không cần tạo CR hồi tố.
 
 ## 6. Register
 

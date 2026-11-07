@@ -1,22 +1,24 @@
 # BD-03 — Bảo mật và chế độ cá nhân
 
-Phiên bản: 0.2 · Ngày: 2026-11-03 · Trạng thái: Bản nháp — chưa chốt làm chuẩn.
+Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
 
-## 1. Ranh giới danh tính
-Bộ cung cấp CurrentReader ở chế độ cá nhân dùng người đọc cố định trong cấu hình máy chủ, không lấy từ nội dung/tiêu đề/tham số yêu cầu. AccessPolicy dùng danh mục RD-00.
-Mọi truy vấn tầng dữ liệu lọc chủ sở hữu/người đọc; mã không được thấy trả 404, thiếu quyền thao tác trả 403. Dùng hai danh tính giả lập khi kiểm thử, không mở tiêu đề chọn danh tính thử nghiệm trong sản phẩm.
-Chế độ cá nhân chưa xác thực: người truy cập được máy chủ có thể thao tác toàn thư viện. Mặc định chỉ lắng nghe loopback; điện thoại cần HTTPS riêng tư hoặc đường hầm có kiểm soát truy cập theo quyết định #1. Không công khai Internet khi chưa xác thực; lọc chủ sở hữu chưa ngăn được truy cập trái phép qua mạng.
+## 1. Ranh giới danh tính và mạng nội bộ
+CurrentReader chế độ cá nhân lấy người đọc cố định từ cấu hình, không lấy từ body/header/query. AccessPolicy dùng danh mục RD-00; truy vấn lọc chủ sở hữu. Không thấy bản ghi trả404; thiếu quyền thao tác trả403.
+Chỉ triển khai mạng nhà theo BD-05 §1. Không có đăng nhập; ai được kết nối tới ứng dụng có thể thao tác thư viện. Giới hạn thiết bị tin cậy bằng mạng/tường lửa; HTTPS nội bộ bảo vệ đường truyền, không tạo danh tính người dùng.
+Spring/SQL Server không mở trực tiếp ra LAN; chỉ nginx nhận HTTPS từ thiết bị được phép. Không cấu hình router chuyển tiếp cổng hoặc public tunnel. Mạng khách có thể bị cách ly và không được coi là cùng mạng được phép.
+Kiểm thử hai reader bằng bộ cung cấp thử nghiệm, không cho header chọn danh tính trong sản phẩm. Trước Internet phải có thiết kế xác thực/kiểm soát truy cập riêng.
 
 ## 2. Tải lên và trả nội dung tệp
 Chỉ nhận PDF/EPUB qua kiểm dữ liệu/cấu trúc; truyền theo luồng giới hạn. Tên gốc chỉ là thông tin mô tả. Khóa lưu ngẫu nhiên, đường dẫn chuẩn hóa phải trong vùng lưu; không đi theo liên kết tượng trưng ra ngoài.
-Kiểm gói EPUB: vượt đường dẫn, đường dẫn tuyệt đối, liên kết tượng trưng, số mục, dung lượng sau giải nén, tỷ lệ nén. Giới hạn đề xuất ở #3.
+Kiểm gói EPUB: vượt đường dẫn, đường dẫn tuyệt đối, liên kết tượng trưng, số mục, dung lượng sau giải nén, tỷ lệ nén. Giới hạn đã duyệt theo #3.
 Tệp ngoài vùng công khai; API kiểm quyền trước cả HEAD/yêu cầu khoảng dữ liệu, không lộ đường dẫn.
 Trả tệp qua API là điều chỉnh có chủ đích so với mẫu dùng URL ký sẵn: dễ chạy một máy chủ và kiểm quyền thống nhất. Khi đổi S3, StoragePort có thể trả URL ký thời hạn ngắn; ghi quyết định kiến trúc về thời hạn/CORS/khoảng dữ liệu lúc triển khai.
 Dùng Cache-Control: private. service worker không tự lưu đệm API/tệp; tải ngoại tuyến là thao tác riêng.
 
 ## 3. Nhập URL
-Đề xuất chỉ HTTPS; cấm thông tin đăng nhập trong URL, giao thức khác và cổng ngoài danh sách 443.
+Chỉ HTTPS; cấm thông tin đăng nhập trong URL, giao thức khác và cổng ngoài danh sách 443.
 Phân giải toàn bộ A/AAAA; chặn loopback, mạng riêng, link-local, multicast, địa chỉ dành riêng và dịch vụ metadata, kể cả dạng IPv4 ánh xạ.
 Kiểm lại mỗi lần chuyển hướng, tối đa ba lần. Chống đổi DNS sau kiểm bằng kết nối đúng IP đã xét, vẫn giữ tên máy cho TLS/SNI. Không chỉ kiểm tên rồi cho thư viện tự phân giải lại.
 Giới hạn dữ liệu thật kể cả thiếu Content-Length, giải nén và thời gian kết nối/đọc/toàn thao tác; bỏ cookie/thông tin xác thực. Không tải HTML hoặc thu thập trang. Nếu thư viện HTTP không cố định IP an toàn thì chưa phát hành nhập URL.
