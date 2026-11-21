@@ -1,0 +1,357 @@
+<div id="br-design">
+  <div class="bd-preview-controls" aria-label="Chọn bản thiết kế">
+    <div class="bd-preview-title"><strong>Book Reader</strong><span>Đề xuất giao diện · dữ liệu minh họa</span></div>
+    <div class="bd-device" aria-label="Thiết bị">
+      <button type="button" data-device="pc" aria-pressed="true">PC</button>
+      <button type="button" data-device="mobile" aria-pressed="false">Mobile</button>
+    </div>
+    <label class="bd-screen-select">Màn hình
+      <select id="bd-screen">
+        <option value="library">Thư viện</option>
+        <option value="import">Nhập sách</option>
+        <option value="detail">Chi tiết / sửa sách</option>
+        <option value="reader">Bộ đọc PDF / EPUB</option>
+        <option value="toc">Mục lục / đánh dấu</option>
+        <option value="settings">Thiết lập / ngoại tuyến</option>
+        <option value="conflict">Xung đột đồng bộ</option>
+        <option value="pending">Dữ liệu chờ gửi cách ly</option>
+      </select>
+    </label>
+  </div>
+  <div class="bd-caption"><span id="bd-screen-code">SC-01-01 · P1</span><span id="bd-device-label">PC · thanh điều hướng bên trái</span></div>
+  <div class="bd-stage"><div id="bd-app" aria-label="Bản phác thảo Book Reader"></div></div>
+  <div id="bd-notice" class="bd-notice" aria-live="polite"></div>
+</div>
+<style>
+  #br-design { --br-bg:light-dark(#f5f6f4,#171d1b); --br-paper:light-dark(#fff,#222b27); --br-ink:light-dark(#23362e,#e5eee8); --br-muted:light-dark(#596c62,#adbbb2); --br-line:light-dark(#dce3dd,#3b4941); --br-green:light-dark(#285a43,#9ad6ae); --br-on-green:light-dark(#fff,#13271b); --br-soft:light-dark(#e7eee8,#2b3c31); --br-warm:light-dark(#f1e6cf,#473b24); --br-warm-ink:light-dark(#715326,#f1d69d); --br-red:light-dark(#a33838,#ffb2aa); --br-radius:12px; color:var(--br-ink); font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  #br-design * { box-sizing:border-box; }
+  #br-design [hidden] { display:none!important; }
+  #br-design button,#br-design input,#br-design select,#br-design textarea { font:inherit; }
+  #br-design button { min-height:38px; border:1px solid var(--br-line); border-radius:8px; color:var(--br-ink); background:var(--br-paper); padding:8px 13px; display:inline-flex; align-items:center; justify-content:center; gap:7px; }
+  #br-design button:hover { background:var(--br-soft); }
+  #br-design button:disabled { opacity:.55; cursor:not-allowed; }
+  #br-design button.bd-primary { background:var(--br-green); color:var(--br-on-green); border-color:var(--br-green); }
+  #br-design button.bd-selected,#br-design button[aria-pressed="true"] { background:var(--br-soft); color:var(--br-green); border-color:var(--br-green); }
+  #br-design button.bd-plain { background:transparent; border-color:transparent; padding:7px 8px; }
+  #br-design button.bd-danger { color:var(--br-red); }
+  #br-design input,#br-design select,#br-design textarea { min-height:40px; padding:9px 11px; border:1px solid var(--br-line); border-radius:8px; color:var(--br-ink); background:var(--br-paper); width:100%; min-width:0; }
+  #br-design textarea { min-height:92px; resize:vertical; }
+  #br-design label { display:grid; gap:6px; color:var(--br-muted); }
+  #br-design h1,#br-design h2,#br-design h3,#br-design p { margin:0; }
+  #br-design h1 { font-size:27px; line-height:1.2; font-weight:600; letter-spacing:-.7px; }
+  #br-design h2 { font-size:20px; line-height:1.3; font-weight:600; letter-spacing:-.3px; }
+  #br-design h3 { font-size:16px; line-height:1.4; font-weight:600; }
+  #br-design strong { font-weight:600; }
+  #br-design svg { flex-shrink:0; width:18px; height:18px; }
+  #br-design .bd-preview-controls { display:flex; align-items:end; flex-wrap:wrap; gap:18px; padding:0 90px 14px 0; }
+  #br-design .bd-preview-title { display:grid; gap:3px; margin-right:auto; }
+  #br-design .bd-preview-title strong { font-size:20px; }
+  #br-design .bd-preview-title span,#br-design .bd-caption { color:var(--br-muted); font-size:12px; }
+  #br-design .bd-device { display:flex; gap:5px; }
+  #br-design .bd-screen-select { width:242px; font-size:12px; }
+  #br-design .bd-screen-select select { font-size:14px; }
+  #br-design .bd-caption { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:9px; }
+  #br-design .bd-stage { width:100%; }
+  #bd-app { --br-space:26px; background:var(--br-bg); color:var(--br-ink); border:1px solid var(--br-line); border-radius:var(--br-radius); min-height:650px; overflow:clip; position:relative; container-type:inline-size; }
+  #bd-app.bd-mobile { width:min(390px,100%); margin:auto; --br-space:18px; min-height:740px; border-radius:24px; }
+  #br-design .bd-shell { display:grid; grid-template-columns:169px minmax(0,1fr); min-height:650px; }
+  #br-design .bd-sidebar { background:var(--br-paper); border-right:1px solid var(--br-line); padding:27px 15px; display:flex; flex-direction:column; gap:32px; }
+  #br-design .bd-brand { display:flex; align-items:center; gap:9px; font-weight:600; color:var(--br-green); font-size:16px; }
+  #br-design .bd-brand-mark { background:var(--br-green); color:var(--br-on-green); padding:9px; border-radius:10px; display:flex; }
+  #br-design .bd-nav { display:grid; gap:6px; }
+  #br-design .bd-nav button { justify-content:flex-start; }
+  #br-design .bd-home-note { margin-top:auto; font-size:12px; color:var(--br-muted); display:flex; gap:7px; }
+  #br-design .bd-main { min-width:0; }
+  #br-design .bd-top { border-bottom:1px solid var(--br-line); background:var(--br-paper); min-height:65px; padding:13px var(--br-space); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  #br-design .bd-status { display:inline-flex; align-items:center; gap:6px; color:var(--br-muted); font-size:12px; }
+  #br-design .bd-dot { width:7px; height:7px; border-radius:50%; background:var(--br-green); }
+  #br-design .bd-content { padding:var(--br-space); display:grid; gap:24px; }
+  #br-design .bd-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+  #br-design .bd-between { justify-content:space-between; }
+  #br-design .bd-stack { display:grid; gap:12px; }
+  #br-design .bd-subtitle { margin-top:6px; color:var(--br-muted); }
+  #br-design .bd-small { color:var(--br-muted); font-size:12px; }
+  #br-design .bd-search { display:grid; grid-template-columns:minmax(0,1fr) 130px 143px; gap:10px; }
+  #br-design .bd-field-icon { position:relative; }
+  #br-design .bd-field-icon input { padding-left:37px; }
+  #br-design .bd-field-icon>i,#br-design .bd-field-icon>svg { position:absolute; left:12px; top:12px; color:var(--br-muted); }
+  #br-design .bd-continue { background:var(--br-soft); border-radius:var(--br-radius); padding:20px; display:grid; grid-template-columns:72px minmax(0,1fr) auto; gap:18px; align-items:center; }
+  #br-design .bd-kicker { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--br-green); margin-bottom:7px; font-weight:600; }
+  #br-design .bd-books { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+  #br-design .bd-book { min-width:0; display:grid; align-content:start; gap:9px; }
+  #br-design .bd-cover { aspect-ratio:3/4; position:relative; background:var(--br-warm); color:var(--br-warm-ink); border-radius:4px 9px 9px 4px; padding:18px; display:flex; flex-direction:column; justify-content:space-between; border-left:5px solid color-mix(in srgb,currentColor 25%,transparent); overflow:hidden; }
+  #br-design .bd-cover::after { content:""; width:145px; height:145px; border:1px solid currentColor; border-radius:50%; position:absolute; right:-55px; bottom:-45px; opacity:.3; }
+  #br-design .bd-cover.bd-cover-green { background:var(--br-soft); color:var(--br-green); }
+  #br-design .bd-cover.bd-cover-neutral { background:var(--br-line); color:var(--br-ink); }
+  #br-design .bd-cover-title { font:500 24px/1.25 Georgia,"Times New Roman",serif; z-index:1; }
+  #br-design .bd-cover-author { font-size:11px; letter-spacing:1px; text-transform:uppercase; z-index:1; }
+  #br-design .bd-cover.bd-mini { padding:9px; width:72px; }
+  #br-design .bd-mini .bd-cover-title { font-size:13px; }
+  #br-design .bd-mini .bd-cover-author { font-size:8px; }
+  #br-design .bd-tag { display:inline-flex; width:fit-content; gap:5px; align-items:center; padding:3px 7px; border-radius:5px; background:var(--br-soft); color:var(--br-green); font-size:11px; }
+  #br-design .bd-book-actions { display:flex; gap:6px; }
+  #br-design .bd-book-actions button { padding:6px 9px; min-height:35px; }
+  #br-design .bd-bottom-nav { display:none; background:var(--br-paper); border-top:1px solid var(--br-line); padding:8px; gap:10px; justify-content:space-around; }
+  #br-design .bd-mobile .bd-shell { display:block; min-height:0; }
+  #br-design .bd-mobile .bd-sidebar { display:none; }
+  #br-design .bd-mobile .bd-bottom-nav { display:flex; }
+  #br-design .bd-mobile .bd-top { padding:15px 18px; }
+  #br-design .bd-mobile h1 { font-size:25px; }
+  #br-design .bd-mobile .bd-content { gap:21px; }
+  #br-design .bd-mobile .bd-search { grid-template-columns:1fr 1fr; }
+  #br-design .bd-mobile .bd-search .bd-field-icon { grid-column:1/-1; }
+  #br-design .bd-mobile .bd-books { grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 14px; }
+  #br-design .bd-mobile .bd-cover { padding:13px; }
+  #br-design .bd-mobile .bd-cover-title { font-size:21px; }
+  #br-design .bd-mobile .bd-continue { grid-template-columns:56px minmax(0,1fr); padding:15px; gap:12px; }
+  #br-design .bd-mobile .bd-continue>button { grid-column:2; justify-self:start; }
+  #br-design .bd-mobile .bd-mini { width:56px; padding:6px; }
+  #br-design .bd-mobile .bd-mini .bd-cover-title { font-size:11px; }
+  #br-design .bd-mobile .bd-mini .bd-cover-author { display:none; }
+  #br-design .bd-tabs { display:flex; gap:7px; flex-wrap:wrap; }
+  #br-design .bd-box { background:var(--br-paper); border:1px solid var(--br-line); padding:20px; border-radius:var(--br-radius); display:grid; gap:17px; min-width:0; }
+  #br-design .bd-drop { border:1px dashed var(--br-line); border-radius:var(--br-radius); display:grid; justify-items:center; gap:11px; padding:28px 16px; text-align:center; background:var(--br-bg); }
+  #br-design .bd-drop svg { width:28px; height:28px; color:var(--br-green); }
+  #br-design .bd-file { display:flex; align-items:center; gap:12px; padding:14px; background:var(--br-soft); border-radius:8px; }
+  #br-design .bd-two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  #br-design .bd-divider { border:0; border-top:1px solid var(--br-line); width:100%; margin:0; }
+  #br-design .bd-detail { display:grid; grid-template-columns:154px minmax(0,1fr); gap:25px; }
+  #br-design .bd-note { color:var(--br-muted); background:var(--br-soft); padding:12px 14px; border-radius:8px; font-size:13px; }
+  #br-design .bd-warn { background:var(--br-warm); color:var(--br-warm-ink); }
+  #br-design .bd-setting-row { display:flex; align-items:center; flex-wrap:wrap; justify-content:space-between; gap:12px; padding:15px 0; border-bottom:1px solid var(--br-line); }
+  #br-design .bd-setting-row:last-child { border:0; padding-bottom:0; }
+  #br-design .bd-mobile .bd-two-col,#br-design .bd-mobile .bd-detail { grid-template-columns:1fr; }
+  #br-design .bd-mobile .bd-detail>.bd-cover { width:118px; margin:auto; }
+  #br-design .bd-mobile .bd-box { padding:17px; }
+  #br-design .bd-reader { min-height:650px; display:flex; flex-direction:column; }
+  #br-design .bd-reader-top { display:flex; flex-wrap:wrap; align-items:center; gap:8px; background:var(--br-paper); border-bottom:1px solid var(--br-line); padding:12px 16px; }
+  #br-design .bd-reader-name { flex:1; min-width:135px; }
+  #br-design .bd-reader-name strong { display:block; }
+  #br-design .bd-reader-actions { display:flex; gap:5px; flex-wrap:wrap; }
+  #br-design .bd-reader-body { display:grid; grid-template-columns:minmax(0,1fr); flex:1; position:relative; }
+  #br-design .bd-reader-body.bd-has-toc { grid-template-columns:245px minmax(0,1fr); }
+  #br-design .bd-toc { background:var(--br-paper); border-right:1px solid var(--br-line); padding:19px 15px; display:grid; align-content:start; gap:17px; }
+  #br-design .bd-toc .bd-tabs button { font-size:12px; padding:7px 9px; }
+  #br-design .bd-toc-item { justify-content:space-between; text-align:left; width:100%; border-color:transparent; }
+  #br-design .bd-toc-child { padding-left:22px; }
+  #br-design .bd-reader-canvas { padding:25px 28px; min-width:0; display:flex; align-items:flex-start; justify-content:center; background:var(--br-line); }
+  #br-design .bd-page { background:var(--br-paper); color:var(--br-ink); padding:36px 40px; width:min(100%,490px); min-height:475px; box-shadow:0 3px 15px color-mix(in srgb,var(--br-ink) 8%,transparent); display:grid; align-content:start; gap:20px; }
+  #br-design .bd-page.bd-pdf { background:#fffdf8; color:#28302a; }
+  #br-design .bd-page.bd-pdf.bd-pdf-night { background:#242a25; color:#e1e5dc; }
+  #br-design .bd-page h2 { font-family:Georgia,"Times New Roman",serif; font-size:28px; font-weight:400; }
+  #br-design .bd-page p { font-family:Georgia,"Times New Roman",serif; line-height:1.85; font-size:17px; }
+  #br-design .bd-page .bd-page-num { text-align:center; margin-top:10px; font:12px system-ui; opacity:.65; }
+  #br-design .bd-reading-bar { background:var(--br-paper); padding:10px 15px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; border-top:1px solid var(--br-line); }
+  #br-design .bd-reading-bar input[type="number"] { width:65px; padding:7px; min-height:36px; }
+  #br-design .bd-reading-bar select { width:auto; }
+  #br-design .bd-options { padding:17px; border-bottom:1px solid var(--br-line); background:var(--br-paper); display:grid; gap:14px; }
+  #br-design .bd-option-fields { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  #br-design .bd-mobile .bd-reader { min-height:740px; }
+  #br-design .bd-mobile .bd-reader-top { padding:12px; gap:7px; }
+  #br-design .bd-mobile .bd-reader-actions { width:100%; justify-content:space-between; }
+  #br-design .bd-mobile .bd-reader-actions button { flex:1; padding:7px; font-size:12px; }
+  #br-design .bd-mobile .bd-reader-canvas { padding:18px 12px; }
+  #br-design .bd-mobile .bd-page { min-height:430px; padding:28px 22px; gap:17px; }
+  #br-design .bd-mobile .bd-page p { font-size:16px; }
+  #br-design .bd-mobile .bd-reader-body.bd-has-toc { display:block; }
+  #br-design .bd-mobile .bd-toc { position:relative; width:100%; border:0; border-bottom:1px solid var(--br-line); padding:20px; box-shadow:0 8px 18px color-mix(in srgb,var(--br-ink) 8%,transparent); }
+  #br-design .bd-mobile .bd-toc+.bd-reader-canvas { display:none; }
+  #br-design .bd-mobile .bd-option-fields { grid-template-columns:1fr; }
+  #br-design .bd-mobile .bd-reading-bar { padding:10px; gap:8px; }
+  #br-design .bd-mobile .bd-reading-bar>.bd-status { width:100%; justify-content:center; }
+  #br-design .bd-modal-backdrop { position:absolute; inset:0; background:color-mix(in srgb,var(--br-ink) 32%,transparent); padding:28px; display:flex; align-items:center; justify-content:center; z-index:3; }
+  #br-design .bd-modal { background:var(--br-paper); color:var(--br-ink); border-radius:16px; padding:25px; width:min(100%,540px); display:grid; gap:18px; box-shadow:0 20px 50px color-mix(in srgb,var(--br-ink) 15%,transparent); }
+  #br-design .bd-compare { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  #br-design .bd-compare>div { border:1px solid var(--br-line); border-radius:10px; padding:15px; display:grid; gap:8px; }
+  #br-design .bd-position { font-size:23px; font-weight:600; }
+  #br-design .bd-mobile .bd-modal-backdrop { padding:12px; align-items:flex-end; }
+  #br-design .bd-mobile .bd-modal { padding:20px; }
+  #br-design .bd-mobile .bd-compare { grid-template-columns:1fr; }
+  #br-design .bd-notice { min-height:22px; color:var(--br-muted); font-size:12px; padding-top:8px; }
+  #br-design .bd-json { white-space:pre-wrap; overflow-wrap:anywhere; font:12px/1.6 monospace; background:var(--br-bg); padding:12px; border-radius:8px; }
+  @container (max-width:620px) {
+    #br-design .bd-shell { display:block; }
+    #br-design .bd-sidebar { display:none; }
+    #br-design .bd-bottom-nav { display:flex; }
+    #br-design .bd-search { grid-template-columns:1fr 1fr; }
+    #br-design .bd-search .bd-field-icon { grid-column:1/-1; }
+    #br-design .bd-books { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    #br-design .bd-detail,#br-design .bd-two-col { grid-template-columns:1fr; }
+    #br-design .bd-detail>.bd-cover { width:118px; margin:auto; }
+    #br-design .bd-continue { grid-template-columns:56px minmax(0,1fr); }
+    #br-design .bd-continue>button { grid-column:2; justify-self:start; }
+    #br-design .bd-reader-body.bd-has-toc { grid-template-columns:1fr; }
+    #br-design .bd-has-toc .bd-reader-canvas { display:none; }
+    #br-design .bd-option-fields,#br-design .bd-compare { grid-template-columns:1fr; }
+  }
+  @media (max-width:450px) {
+    #br-design .bd-preview-controls { padding-right:0; gap:13px; }
+    #br-design .bd-preview-title { width:100%; padding-right:70px; }
+    #br-design .bd-screen-select { flex:1; width:auto; min-width:150px; }
+    #bd-app { --br-space:16px; }
+    #br-design .bd-cover { padding:11px; }
+    #br-design .bd-cover-title { font-size:20px; }
+    #br-design .bd-book-actions { flex-wrap:wrap; }
+    #br-design .bd-reader-canvas { padding:14px 10px; }
+    #br-design .bd-page { padding:25px 20px; }
+    #br-design .bd-modal-backdrop { padding:12px; }
+  }
+  @media (pointer:coarse) { #br-design button { min-height:44px; } #br-design input,#br-design select,#br-design textarea { font-size:16px; } }
+</style>
+<script>
+(() => {
+  const root = document.getElementById('br-design');
+  const app = root.querySelector('#bd-app');
+  const picker = root.querySelector('#bd-screen');
+  const notice = root.querySelector('#bd-notice');
+  const codes = {library:'SC-01-01 · P1',import:'SC-01-02 · P1 / P2',detail:'SC-01-03 · P1',reader:'SC-02-01 · P1 / P2',toc:'SC-03-01 · P2',settings:'SC-04-01 · P3',conflict:'SC-04-02 · P3',pending:'SC-04-03 · P3'};
+  const state = {device:'pc',screen:'library',format:'PDF',theme:'system',tocTab:'original',importTab:'file',page:42,options:false,pdfNight:false,bookmarked:false,query:'',filter:'all',sort:'created',modal:null,addedToc:'',pendingOpen:false,pendingRemoved:false};
+  const design = {radius:12,compact:false};
+  const books = [
+    {name:'Những ngày đọc chậm',author:'An Nhiên',format:'PDF',style:'',offline:true,progress:'Trang 42 / 216'},
+    {name:'Một khu vườn nhỏ',author:'Minh An',format:'EPUB',style:'bd-cover-green',offline:true,progress:'Chương 2 · 18%'},
+    {name:'Ghi chép cuối tuần',author:'Hoài Thu',format:'PDF',style:'bd-cover-neutral',offline:false,progress:'Chưa bắt đầu'}
+  ];
+  const esc = x => String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const icon = name => `<i data-lucide="${name}" aria-hidden="true"></i>`;
+  const button = (text,action,cls='',extra='') => `<button type="button" class="${cls} cursor-interaction" data-action="${action}" ${extra}>${text}</button>`;
+  const cover = (book,mini=false) => `<div class="bd-cover ${book.style} ${mini?'bd-mini':''}" aria-label="Bìa minh họa: ${book.name}"><span class="bd-cover-title">${book.name}</span><span class="bd-cover-author">${book.author}</span></div>`;
+  const themes = () => `<div class="bd-tabs" aria-label="Chế độ màu">${[['system','Theo máy'],['light','Sáng'],['dark','Tối']].map(([v,t])=>button(t,'theme','',`data-value="${v}" aria-pressed="${state.theme===v}"`)).join('')}</div>`;
+  function shell(content,title) {
+    const current = ['settings','pending'].includes(state.screen)?'settings':'library';
+    const nav = `<div class="bd-nav">${button(icon('library')+'Thư viện','go-library',current==='library'?'bd-selected':'bd-plain')}${button(icon('settings-2')+'Thiết lập','go-settings',current==='settings'?'bd-selected':'bd-plain')}</div>`;
+    return `<div class="bd-shell"><aside class="bd-sidebar"><div class="bd-brand"><span class="bd-brand-mark">${icon('book-open')}</span>Book Reader</div>${nav}<div class="bd-home-note">${icon('house')}<span>Thư viện cá nhân<br>Trong mạng nhà</span></div></aside><div class="bd-main"><header class="bd-top"><strong>${state.device==='mobile'?'Book Reader':title}</strong><span class="bd-status"><span class="bd-dot"></span>Đã kết nối máy chủ</span></header><main class="bd-content">${content}</main><nav class="bd-bottom-nav" aria-label="Điều hướng chính">${button(icon('library')+'Thư viện','go-library',current==='library'?'bd-selected':'bd-plain')}${button(icon('settings-2')+'Thiết lập','go-settings',current==='settings'?'bd-selected':'bd-plain')}</nav></div></div>`;
+  }
+  function library() {
+    return shell(`<div class="bd-row bd-between"><div><div class="bd-kicker">Không gian đọc của bạn</div><h1>Thư viện</h1><p class="bd-subtitle">Một cuốn sách, một khoảng lặng.</p></div>${button(icon('plus')+'Thêm sách','go-import','bd-primary')}</div>
+      <div class="bd-continue">${cover(books[0],true)}<div><div class="bd-kicker">Tiếp tục đọc</div><h3>Những ngày đọc chậm</h3><p class="bd-small">An Nhiên · Trang ${state.page} / 216</p><span class="bd-tag">${icon('check')}Đã tải trên thiết bị</span></div>${button('Đọc tiếp '+icon('arrow-right'),'go-reader','bd-primary')}</div>
+      <div class="bd-stack"><div class="bd-row bd-between"><h2>Tất cả sách</h2><span class="bd-small" id="bd-book-count">3 cuốn</span></div><div class="bd-search"><label class="bd-field-icon"><span hidden>Tìm theo tên sách hoặc tác giả</span>${icon('search')}<input id="bd-search" type="search" placeholder="Tên sách hoặc tác giả" value="${esc(state.query)}"></label><label><span hidden>Loại sách</span><select id="bd-filter"><option value="all">Mọi định dạng</option><option value="PDF">PDF</option><option value="EPUB">EPUB</option></select></label><label><span hidden>Sắp xếp sách</span><select id="bd-sort"><option value="created">Mới thêm trước</option><option value="title">Tên sách A → Z</option></select></label></div><div class="bd-books" id="bd-books"></div></div>`, 'Thư viện cá nhân');
+  }
+  function renderBooks() {
+    const list = root.querySelector('#bd-books'); if(!list) return;
+    let filtered=books.filter(b=>(state.filter==='all'||state.filter===b.format)&&`${b.name} ${b.author}`.toLocaleLowerCase('vi').includes(state.query.toLocaleLowerCase('vi')));
+    if(state.sort==='title') filtered=[...filtered].sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+    list.innerHTML=filtered.length?filtered.map(b=>`<article class="bd-book">${cover(b)}<div class="bd-row bd-between"><span class="bd-tag">${b.format}</span><span class="bd-small">${b.offline?'Đã tải về':'Chỉ trên máy chủ'}</span></div><div><h3>${b.name}</h3><p class="bd-small">${b.author} · ${b.progress}</p></div><div class="bd-book-actions">${button('Đọc','open-book','bd-primary',`data-format="${b.format}"`)}${button('Chi tiết','go-detail')}</div></article>`).join(''):`<div class="bd-note">Không có sách phù hợp. Hãy đổi từ khóa hoặc định dạng.</div>`;
+    root.querySelector('#bd-book-count').textContent=`${filtered.length} cuốn`;
+    icons();
+  }
+  function importBook() {
+    return shell(`${button(icon('arrow-left')+'Về thư viện','go-library','bd-plain')}<div><h1>Thêm sách</h1><p class="bd-subtitle">Đưa sách PDF hoặc EPUB vào thư viện cá nhân.</p></div><div class="bd-box"><div class="bd-tabs">${button('Từ thiết bị','import-file','',`aria-pressed="${state.importTab==='file'}"`)}${button('Từ đường dẫn','import-url','',`aria-pressed="${state.importTab==='url'}"`)}</div>${state.importTab==='file'?`<div class="bd-drop">${icon('file-up')}<h3>Chọn tệp sách</h3><span class="bd-small">PDF, EPUB · tối đa 100 MiB mỗi tệp</span><label>Tệp trên thiết bị<input type="file" id="bd-file" accept=".pdf,.epub"></label></div><div class="bd-file">${icon('file-text')}<div><strong id="bd-file-name">Nhung-ngay-doc-cham.pdf</strong><p class="bd-small">Tệp minh họa · 18,6 MiB · PDF</p></div></div>`:`<label>Đường dẫn trực tiếp đến tệp<input id="bd-url" type="url" placeholder="https://…/ten-sach.epub"></label><p class="bd-small">Dùng liên kết tải trực tiếp tệp PDF hoặc EPUB.</p>`}<div class="bd-two-col"><label>Tên sách<input value="Những ngày đọc chậm"></label><label>Tác giả<input value="An Nhiên"></label></div><div class="bd-row">${button('Nhập vào thư viện','simulate-import','bd-primary')}${button('Hủy','go-library')}</div><div id="bd-import-result" aria-live="polite"></div></div>`, 'Nhập sách');
+  }
+  function detail() {
+    return shell(`${button(icon('arrow-left')+'Về thư viện','go-library','bd-plain')}<div><h1>Chi tiết sách</h1><p class="bd-subtitle">Thông tin sách và dữ liệu trên thiết bị này.</p></div><div class="bd-detail">${cover(books[0])}<div class="bd-stack"><span class="bd-tag">PDF · 18,6 MiB · 216 trang</span><label>Tên sách<input value="Những ngày đọc chậm"></label><label>Tác giả<input value="An Nhiên"></label><div class="bd-two-col"><label>Năm xuất bản<input value="2025" inputmode="numeric"></label><label>Nhãn<input value="Tản văn, Cá nhân"></label></div><div class="bd-row">${button('Đọc tiếp','go-reader','bd-primary')}${button('Lưu thông tin','save-detail')}</div></div></div><div class="bd-box"><h3>Quản lý sách</h3><div class="bd-setting-row"><div><strong>Bản tải về trên thiết bị này</strong><p class="bd-small">Đã tải đủ · có thể đọc ngoại tuyến</p></div>${button('Xóa bản tải về','delete-download')}</div><div class="bd-setting-row"><div><strong>Xóa khỏi thư viện</strong><p class="bd-small">Thiết bị khác ngừng mở sách sau khi nhận đồng bộ.</p></div>${button('Xóa sách','delete-book','bd-danger')}</div></div>`, 'Chi tiết sách');
+  }
+  function tocPanel() {
+    let body='';
+    if(state.tocTab==='original') body=`<p class="bd-small">Mục lục có sẵn · chỉ xem</p>${button('Lời mở đầu <span>1</span>','jump','bd-toc-item','data-page="1"')}${button('1. Bắt đầu từ một trang sách <span>12</span>','jump','bd-toc-item','data-page="12"')}${button('2. Những khoảng lặng <span>42</span>','jump','bd-toc-item bd-selected','data-page="42"')}${button('Một buổi sáng yên tĩnh <span>48</span>','jump','bd-toc-item bd-toc-child','data-page="48"')}${button('3. Giữ lại điều giản dị <span>76</span>','jump','bd-toc-item','data-page="76"')}`;
+    if(state.tocTab==='personal') body=`<p class="bd-small">Lưu riêng cho bạn, không sửa tệp gốc.</p>${button('Phần muốn đọc lại <span>42</span>','jump','bd-toc-item','data-page="42"')}${state.addedToc?button(esc(state.addedToc)+' <span>'+state.page+'</span>','jump','bd-toc-item',`data-page="${state.page}"`):''}<label>Tên mục mới<input id="bd-new-toc" placeholder="Nhập tên mục"></label>${button(icon('plus')+'Thêm tại vị trí hiện tại','add-toc')}<div class="bd-row">${button('↑ Lên','reorder')}${button('↓ Xuống','reorder')}</div>`;
+    if(state.tocTab==='bookmarks') body=`<p class="bd-small">Những vị trí bạn muốn quay lại.</p>${button('Một đoạn yêu thích <span>28</span>','jump','bd-toc-item','data-page="28"')}${state.bookmarked?button('Vừa đánh dấu <span>'+state.page+'</span>','jump','bd-toc-item',`data-page="${state.page}"`):''}${button(icon('bookmark-plus')+'Đánh dấu vị trí hiện tại','bookmark')}`;
+    return `<aside class="bd-toc" aria-label="Mục lục và đánh dấu"><div class="bd-row bd-between"><h3>Điều hướng sách</h3>${button(icon('x'),'close-toc','bd-plain','aria-label="Đóng mục lục"')}</div><div class="bd-tabs">${[['original','Có sẵn'],['personal','Cá nhân'],['bookmarks','Đánh dấu']].map(([v,t])=>button(t,'toc-tab','',`data-value="${v}" aria-pressed="${state.tocTab===v}"`)).join('')}</div><div class="bd-stack">${body}</div></aside>`;
+  }
+  function options() {
+    return `<section class="bd-options" aria-label="Tùy chọn đọc"><div class="bd-row bd-between"><h3>Tùy chọn đọc</h3>${button('Đóng','options','bd-plain')}</div>${themes()}${state.format==='EPUB'?`<div class="bd-option-fields"><label>Cỡ chữ<select id="bd-font"><option value="17">17 px</option><option value="19">19 px</option><option value="21">21 px</option></select></label><label>Giãn dòng<select id="bd-leading"><option value="1.85">Thoáng</option><option value="1.5">Vừa</option><option value="2.1">Rộng</option></select></label><label>Lề trang<select id="bd-margin"><option value="40">Vừa</option><option value="24">Hẹp</option><option value="52">Rộng</option></select></label></div>`:`<div class="bd-row">${button('Bộ lọc PDF đọc đêm','pdf-night','',`aria-pressed="${state.pdfNight}"`)}<span class="bd-small">Tùy chọn riêng · có thể đổi màu ảnh trong PDF.</span></div>`}${button('Đặt lại tiến độ đọc','reset-progress','bd-danger')}</section>`;
+  }
+  function reader() {
+    const epub=state.format==='EPUB', toc=state.screen==='toc';
+    return `<div class="bd-reader"><header class="bd-reader-top">${button(icon('arrow-left'),'go-library','bd-plain','aria-label="Về thư viện"')}<div class="bd-reader-name"><strong>${epub?'Một khu vườn nhỏ':'Những ngày đọc chậm'}</strong><span class="bd-small">${epub?'Minh An':'An Nhiên'} · ${state.format}</span></div><div class="bd-reader-actions">${button(icon('list')+'Mục lục','go-toc',toc?'bd-selected':'')}${button(icon(state.bookmarked?'bookmark-check':'bookmark')+'Đánh dấu','bookmark','',`aria-pressed="${state.bookmarked}"`)}${button(icon('sliders-horizontal')+'Tùy chọn','options',state.options?'bd-selected':'')}</div></header>${state.options?options():''}<div class="bd-reader-body ${toc?'bd-has-toc':''}">${toc?tocPanel():''}<main class="bd-reader-canvas"><article class="bd-page ${epub?'':'bd-pdf'} ${state.pdfNight?'bd-pdf-night':''}"><div class="bd-kicker">${epub?'Một khu vườn nhỏ':'Những ngày đọc chậm'}</div><h2>${epub?'Một mầm xanh mới':'Những khoảng lặng'}</h2><p>Buổi sáng bắt đầu bằng một khoảng trời dịu nhẹ. Tôi mở cuốn sách đang đọc dở, để những dòng chữ dẫn mình đi chậm lại.</p><p>${epub?'Ngoài hiên, chiếc lá nhỏ đón nắng. Mỗi ngày chăm một chút, khu vườn lớn lên cùng những điều bình dị.':'Có những điều chỉ hiện ra khi ta dành đủ thời gian để lắng nghe. Một trang sách, một tách trà, một khoảnh khắc không vội vã.'}</p><p>Đọc không phải để đi cho thật xa, mà đôi khi để hiểu rõ hơn nơi mình đang đứng.</p><div class="bd-page-num">${epub?'Chương 2 · 18%':state.page}</div></article></main></div><footer class="bd-reading-bar"><div class="bd-row">${button(icon('chevron-left'),'prev','','aria-label="Trang trước"')}${epub?'<span>Chương 2 · 18%</span>':`<label class="bd-row">Trang <input id="bd-page-input" type="number" min="1" max="216" value="${state.page}"> / 216</label>`}${button(icon('chevron-right'),'next','','aria-label="Trang sau"')}</div>${!epub?`<label><span hidden>Tỷ lệ xem PDF</span><select id="bd-zoom"><option value="fit">Vừa chiều rộng</option><option value="100">100%</option><option value="125">125%</option></select></label>`:''}<label><span hidden>Định dạng minh họa</span><select id="bd-format"><option${!epub?' selected':''}>PDF</option><option${epub?' selected':''}>EPUB</option></select></label><span class="bd-status">${icon('check-check')}Đã đồng bộ</span></footer></div>`;
+  }
+  function settings() {
+    return shell(`<div><div class="bd-kicker">Theo cách bạn đọc</div><h1>Thiết lập</h1><p class="bd-subtitle">Giao diện và sách trên thiết bị này.</p></div><div class="bd-box"><h3>Giao diện</h3>${themes()}<p class="bd-small">PDF giữ màu trang gốc. Bộ lọc đọc đêm bật riêng trong bộ đọc.</p></div><div class="bd-box"><h3>Sách ngoại tuyến</h3><p class="bd-small">Đọc ngoài mạng nhà sau khi đã tải đầy đủ trên chính thiết bị này.</p><div class="bd-setting-row"><div><strong>Những ngày đọc chậm</strong><p class="bd-small">PDF · 18,6 MiB · Đã tải đủ</p></div>${button('Xóa bản tải về','delete-download')}</div><div class="bd-setting-row"><div><strong>Ghi chép cuối tuần</strong><p class="bd-small">PDF · Chỉ trên máy chủ</p></div>${button(icon('download')+'Tải để đọc','download')}</div></div><div class="bd-box"><h3>Đồng bộ</h3><span class="bd-status"><span class="bd-dot"></span>Đã kết nối máy chủ trong mạng nhà</span><p class="bd-small">Kết nối lại máy chủ để gửi các thay đổi đã lưu trên thiết bị.</p><div class="bd-row">${button('Đồng bộ ngay','sync')}${button('Xem dữ liệu chờ gửi riêng','go-pending')}</div></div>`, 'Thiết lập / ngoại tuyến');
+  }
+  function pending() {
+    return shell(`${button(icon('arrow-left')+'Về thiết lập','go-settings','bd-plain')}<div><h1>Dữ liệu chờ gửi riêng</h1><p class="bd-subtitle">Các thay đổi được giữ lại khi sách đã bị xóa.</p></div><p class="bd-note bd-warn">Dữ liệu này không khôi phục sách và không được tự gửi lên máy chủ.</p>${state.pendingRemoved?'<div class="bd-box"><h3>Không còn dữ liệu chờ gửi riêng</h3><p class="bd-small">Các mục mới, nếu có, sẽ xuất hiện tại đây.</p></div>':`<div class="bd-box"><div><h3>Những ngày đọc chậm</h3><p class="bd-small">Lưu ngày 22/11/2026 · Thiết bị này</p></div><div class="bd-row"><span class="bd-tag">1 vị trí đọc</span><span class="bd-tag">2 đánh dấu</span><span class="bd-tag">Mục lục cá nhân</span></div>${button(state.pendingOpen?'Ẩn chi tiết':'Xem chi tiết','pending-open')}${state.pendingOpen?`<div class="bd-stack"><p>Vị trí đọc: trang 42. Đánh dấu: trang 28, 42.</p><pre class="bd-json">${esc(JSON.stringify({book:'Những ngày đọc chậm',position:{page:42},bookmarks:[28,42],personalToc:[{title:'Phần muốn đọc lại',page:42}]},null,2))}</pre></div>`:''}<div class="bd-row">${button('Sao chép dữ liệu JSON','copy-pending')}${button('Xuất JSON','export-pending')}${button('Bỏ dữ liệu','discard-pending','bd-danger')}</div></div>`}`, 'Dữ liệu chờ gửi cách ly');
+  }
+  function modal() {
+    if(state.screen==='conflict'&&!state.modal) return `<div class="bd-modal-backdrop"><section class="bd-modal" role="dialog" aria-modal="true" aria-labelledby="bd-modal-title"><div><div class="bd-kicker">Cần bạn lựa chọn</div><h2 id="bd-modal-title">Bạn muốn tiếp tục từ đâu?</h2><p class="bd-subtitle">Những ngày đọc chậm</p></div><p>Vị trí đọc đã thay đổi trên hai thiết bị. Chọn vị trí bạn muốn giữ.</p><div class="bd-compare"><div><span class="bd-small">Trên thiết bị này</span><span class="bd-position">Trang 42</span><span class="bd-small">22/11 · 09:12</span>${button('Dùng thiết bị này','choose-local','bd-primary')}</div><div><span class="bd-small">Trên máy chủ</span><span class="bd-position">Trang 68</span><span class="bd-small">22/11 · 09:05</span>${button('Dùng máy chủ','choose-server')}</div></div><p class="bd-small">Không tự chọn trang lớn hơn. Chọn máy chủ sẽ thay vị trí đang lưu trên thiết bị.</p>${button('Để sau','defer-conflict')}</section></div>`;
+    if(!state.modal) return '';
+    const messages={download:['Xóa bản tải về?','Chỉ bỏ tệp trên thiết bị này. Sách trên máy chủ, tiến độ, mục lục và đánh dấu vẫn được giữ.','Xóa bản tải về'],book:['Xóa sách khỏi thư viện?','Sách sẽ ngừng mở trên các thiết bị sau khi nhận đồng bộ. Hiện không có thay đổi chờ gửi trong ví dụ này.','Xóa sách'],reset:['Đặt lại tiến độ đọc?','Đưa vị trí về Chưa bắt đầu. Sách, mục lục và đánh dấu vẫn được giữ.','Đặt lại'],discard:['Bỏ dữ liệu đã giữ riêng?','Tiến độ, đánh dấu và mục lục trong mục dữ liệu này sẽ bị bỏ. Thao tác này không khôi phục sách.','Bỏ dữ liệu'],server:['Dùng vị trí trên máy chủ?','Vị trí trang 42 đang lưu trên thiết bị sẽ được thay bằng trang 68 của máy chủ.','Dùng trang 68']};
+    const [title,text,label]=messages[state.modal];
+    return `<div class="bd-modal-backdrop"><section class="bd-modal" role="dialog" aria-modal="true" aria-labelledby="bd-modal-title"><h2 id="bd-modal-title">${title}</h2><p>${text}</p><div class="bd-row">${button('Hủy','cancel-modal')}${button(label,'confirm-modal','bd-danger')}</div></section></div>`;
+  }
+  function icons() { if(globalThis.lucide) globalThis.lucide.createIcons({attrs:{width:18,height:18}}); }
+  function render() {
+    picker.value=state.screen;
+    app.className=state.device==='mobile'?'bd-mobile':'';
+    app.style.colorScheme=state.theme==='system'?'light dark':state.theme;
+    app.style.setProperty('--br-radius',design.radius+'px');
+    app.style.setProperty('--br-space',(design.compact?18:state.device==='mobile'?18:26)+'px');
+    root.querySelectorAll('[data-device]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.device===state.device)));
+    root.querySelector('#bd-screen-code').textContent=codes[state.screen];
+    root.querySelector('#bd-device-label').textContent=state.device==='mobile'?'Mobile · một cột, điều khiển gọn':'PC · thanh bên và vùng nội dung rộng';
+    app.innerHTML=({library,import:importBook,detail,reader,toc:reader,settings,conflict:reader,pending}[state.screen])()+modal();
+    if(state.screen==='library') {root.querySelector('#bd-filter').value=state.filter;root.querySelector('#bd-sort').value=state.sort;renderBooks();}
+    root.querySelectorAll('button').forEach(b=>b.classList.add('cursor-interaction'));
+    icons();
+    const dialog=app.querySelector('[role="dialog"]');
+    if(dialog) {const background=app.firstElementChild;if(background&&!background.classList.contains('bd-modal-backdrop')) background.inert=true;dialog.querySelector('button')?.focus();}
+  }
+  function say(text) {notice.textContent=text;}
+  function save() {
+    if(window.openai?.setWidgetState) window.openai.setWidgetState({modelContent:{screen:state.screen,device:state.device,theme:state.theme,format:state.format},privateContent:{page:state.page,tocTab:state.tocTab}}).catch(()=>{});
+  }
+  function restore(saved) {
+    if(!saved) return;
+    const data={...(saved.modelContent||{}),...(saved.privateContent||{})};
+    if(codes[data.screen]) state.screen=data.screen;
+    if(['pc','mobile'].includes(data.device)) state.device=data.device;
+    if(['light','dark','system'].includes(data.theme)) state.theme=data.theme;
+    if(['PDF','EPUB'].includes(data.format)) state.format=data.format;
+    if(Number.isInteger(data.page)&&data.page>=1&&data.page<=216) state.page=data.page;
+    if(['original','personal','bookmarks'].includes(data.tocTab)) state.tocTab=data.tocTab;
+  }
+  root.addEventListener('click',e=>{
+    const b=e.target.closest('button');if(!b||!root.contains(b)) return;
+    if(b.dataset.device) {state.device=b.dataset.device;render();save();return;}
+    const a=b.dataset.action;if(!a) return;
+    if(a.startsWith('go-')) {state.screen=a.slice(3);state.options=false;state.modal=null;}
+    else if(a==='theme') state.theme=b.dataset.value;
+    else if(a==='open-book') {state.format=b.dataset.format;state.screen='reader';}
+    else if(a==='import-file'||a==='import-url') state.importTab=a==='import-file'?'file':'url';
+    else if(a==='simulate-import') {root.querySelector('#bd-import-result').innerHTML='<div class="bd-note">Minh họa trạng thái: Chờ xử lý → Đang xử lý → Hoàn tất. Sách đã có trong thư viện mẫu.</div>';say('Đây là bản phác thảo; chưa tải tệp hoặc gọi máy chủ.');return;}
+    else if(a==='save-detail') {say('Minh họa lưu thông tin. Không thay đổi dữ liệu dự án.');return;}
+    else if(a==='options') state.options=!state.options;
+    else if(a==='pdf-night') state.pdfNight=!state.pdfNight;
+    else if(a==='bookmark') {state.bookmarked=!state.bookmarked;say(state.bookmarked?'Đã thêm đánh dấu trong bản mẫu.':'Đã bỏ đánh dấu trong bản mẫu.');}
+    else if(a==='toc-tab') state.tocTab=b.dataset.value;
+    else if(a==='close-toc') state.screen='reader';
+    else if(a==='jump') {state.page=Number(b.dataset.page);state.screen='reader';}
+    else if(a==='next'||a==='prev') {state.page=Math.max(1,Math.min(216,state.page+(a==='next'?1:-1)));say(state.format==='EPUB'?'Minh họa chuyển vị trí EPUB; không dùng số trang PDF cố định.':'');}
+    else if(a==='add-toc') {state.addedToc=root.querySelector('#bd-new-toc').value.trim()||'Mục mới của tôi';say('Đã thêm mục minh họa tại vị trí hiện tại.');}
+    else if(a==='reorder') {say('Khi triển khai: dùng nút Lên / Xuống để đổi thứ tự mục, hỗ trợ bàn phím.');return;}
+    else if(a==='choose-local') {state.screen='reader';say('Minh họa: đã chọn vị trí trên thiết bị.');}
+    else if(a==='choose-server') state.modal='server';
+    else if(a==='defer-conflict') {state.screen='reader';say('Xung đột được giữ lại để xử lý sau trong ứng dụng thực tế.');}
+    else if(a==='delete-download') state.modal='download';
+    else if(a==='delete-book') state.modal='book';
+    else if(a==='reset-progress') state.modal='reset';
+    else if(a==='discard-pending') state.modal='discard';
+    else if(a==='cancel-modal') state.modal=null;
+    else if(a==='confirm-modal') {if(state.modal==='reset') state.page=1;if(state.modal==='discard') state.pendingRemoved=true;if(state.modal==='server'){state.page=68;state.screen='reader';}state.modal=null;say('Đã xác nhận thao tác trong bản minh họa. Dữ liệu thật không bị thay đổi.');}
+    else if(a==='pending-open') state.pendingOpen=!state.pendingOpen;
+    else if(a==='copy-pending'||a==='export-pending') {state.pendingOpen=true;say('Bản phác thảo hiển thị JSON để xem trước; chưa sao chép hoặc xuất tệp.');}
+    else if(a==='download'||a==='sync') {say('Minh họa thao tác '+(a==='download'?'tải sách trên thiết bị.':'đồng bộ với máy chủ trong mạng nhà.'));return;}
+    render();save();
+  });
+  root.addEventListener('change',e=>{
+    const el=e.target;
+    if(el===picker) {state.screen=picker.value;state.modal=null;state.options=false;render();save();return;}
+    if(el.id==='bd-filter'||el.id==='bd-sort') {state[el.id==='bd-filter'?'filter':'sort']=el.value;renderBooks();return;}
+    if(el.id==='bd-format') {state.format=el.value;render();save();return;}
+    if(el.id==='bd-page-input') {state.page=Math.max(1,Math.min(216,Number(el.value)||1));render();save();return;}
+    if(el.id==='bd-file') {const file=el.files?.[0];if(file) root.querySelector('#bd-file-name').textContent=file.name;say('Chỉ hiển thị tên tệp; không đọc hoặc tải tệp.');}
+    if(el.id==='bd-font') root.querySelectorAll('.bd-page p').forEach(p=>p.style.fontSize=el.value+'px');
+    if(el.id==='bd-leading') root.querySelectorAll('.bd-page p').forEach(p=>p.style.lineHeight=el.value);
+    if(el.id==='bd-margin') root.querySelector('.bd-page').style.paddingInline=el.value+'px';
+    if(el.id==='bd-zoom') say('Bản mẫu giữ trang vừa khung để xem bố cục. Phóng to và kéo trang sẽ được triển khai trong bộ đọc PDF.');
+  });
+  root.addEventListener('input',e=>{if(e.target.id==='bd-search'){state.query=e.target.value;renderBooks();}});
+  root.addEventListener('keydown',e=>{if(e.key==='Escape'){state.modal=null;if(state.screen==='conflict'||state.screen==='toc')state.screen='reader';state.options=false;render();app.querySelector('[data-action="go-toc"],[data-action="go-reader"],button')?.focus();}if(e.key==='Tab'){const dialog=app.querySelector('[role="dialog"]');if(!dialog)return;const items=dialog.querySelectorAll('button:not(:disabled),input,select,textarea');const first=items[0],last=items[items.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
+  restore(window.openai?.widgetState);render();
+  window.addEventListener('openai:set_globals',event=>{const saved=event.detail?.globals?.widgetState;if(saved){restore(saved);render();}});
+  if(globalThis.Tweak) {
+    const tweak=new globalThis.Tweak({container:app,onChange:()=>{app.style.setProperty('--br-radius',design.radius+'px');app.style.setProperty('--br-space',(design.compact?18:26)+'px');}});
+    tweak.addSlider(design,'radius',{label:'Bo góc bề mặt',min:4,max:20,unit:'px',reference:'--br-radius'});
+    tweak.addToggle(design,'compact',{label:'Thu gọn khoảng cách'});
+  }
+})();
+</script>
