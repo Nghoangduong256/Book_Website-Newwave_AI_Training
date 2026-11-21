@@ -2,12 +2,15 @@
 
 Phiên bản: 1.0 · Ngày: 2026-11-07 · Trạng thái: Đã xác nhận bởi chủ dự án.
 
-
 ## 1. Mốc chuẩn
-Mã BASELINE-1.0, chốt2026-11-07 bởi chủ dự án qua hội thoại: chấp nhận năm phần còn mở và bộ tài liệu đã rà soát. Ghi nhận bao gồm sửa định dạng bảng AC ở RD-01..04; không phải xác nhận mã đã triển khai/kiểm thử đạt.
-Tài liệu trong bảng được nâng1.0 cùng ngày; đây là danh sách nguồn cho CR-MANAGEMENT.
+
+- Mã BASELINE-1.0, chốt2026-11-07 bởi chủ dự án qua hội thoại: chấp nhận năm phần còn mở và bộ tài liệu đã rà soát.
+- Ghi nhận bao gồm sửa định dạng bảng AC ở RD-01..04; không phải xác nhận mã đã triển khai/kiểm thử đạt.
+- Tài liệu trong bảng được nâng1.0 cùng ngày;
+- đây là danh sách nguồn cho CR-MANAGEMENT.
 
 ## 2. Danh sách
+
 | Tài liệu | Phiên bản | Phạm vi được duyệt |
 |---|---|---|
 | [plan/STRATEGY.md](../plan/STRATEGY.md) | 1.0 | Nội dung tài liệu hiện hành |
@@ -36,6 +39,7 @@ Tài liệu trong bảng được nâng1.0 cùng ngày; đây là danh sách ngu
 | [references/STACK.md](../references/STACK.md) | 1.0 | Lựa chọn công nghệ và danh sách xác minh; chưa pin/kiểm chứng phiên bản |
 
 ## 3. Hoãn có chủ đích và việc phải thực hiện
+
 | Việc | Phụ trách | Hạn thực hiện | Điều kiện |
 |---|---|---|---|
 | Pin/kiểm phiên bản Java/Spring/JDBC/Flyway/frontend, giấy phép công cụ | Kỹ thuật | P0 trước triển khai thành phần | Ghi kết quả STACK; đổi công nghệ/hành vi cần CR/ADR |
@@ -46,5 +50,9 @@ Tài liệu trong bảng được nâng1.0 cùng ngày; đây là danh sách ngu
 | Tài khoản và Internet/Cloud/AWS | Chủ dự án và kỹ thuật | Giai đoạn tương lai chưa lên lịch | Chỉ ranh giới/lộ trình được duyệt, chưa chọn nhà cung cấp/ngân sách |
 
 ## 4. Quản lý sau mốc
-Đổi phạm vi, nghiệp vụ, API/schema/hành vi hoặc mục tiêu đã duyệt: CR theo [quy trình](CR-MANAGEMENT.md); ADR nếu đổi kiến trúc. Sửa lỗi chữ/Markdown không đổi nghĩa được chỉnh trực tiếp, ghi lịch sử thích hợp.
-Mẫu *TEMPLATE.md, Px-EXIT-GATE, ví dụ kỹ thuật kế thừa chưa chuyển và mã ứng dụng không nằm trong bảng phê duyệt. Hồ sơ tiến độ/phát hiện/quyết định là bản ghi sống, cập nhật bằng kết quả thật.
+
+- Đổi phạm vi, nghiệp vụ, API/schema/hành vi hoặc mục tiêu đã duyệt: CR theo [quy trình](CR-MANAGEMENT.md);
+- ADR nếu đổi kiến trúc.
+- Sửa lỗi chữ/Markdown không đổi nghĩa được chỉnh trực tiếp, ghi lịch sử thích hợp.
+- Mẫu *TEMPLATE.md, Px-EXIT-GATE, ví dụ kỹ thuật kế thừa chưa chuyển và mã ứng dụng không nằm trong bảng phê duyệt.
+- Hồ sơ tiến độ/phát hiện/quyết định là bản ghi sống, cập nhật bằng kết quả thật.

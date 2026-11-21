@@ -1,38 +1,63 @@
 # RD-04 — Tiến độ, thiết lập và ngoại tuyến
 
-Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
-Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
+- Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+- Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07.
+- Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
-Yêu cầu/thiết kế đã được chủ dự án duyệt; chưa phải tính năng đã triển khai. Lịch sử quyết định xem management/OPEN-DECISIONS.md.
+- Yêu cầu/thiết kế đã được chủ dự án duyệt; chưa phải tính năng đã triển khai.
+- Lịch sử quyết định xem management/OPEN-DECISIONS.md.
 
 Phân hệ: MOD-04 · Giai đoạn: P1/P3 · Mục tiêu: BO-03, BO-04, BO-05
 
 ## 1. Mục đích và phạm vi
-Lưu vị trí và thiết lập, tải bản ngoại tuyến trên thiết bị, hàng đợi thay đổi và giải quyết xung đột.
-Ngoài phạm vi: STRATEGY §2; không thêm tính năng AI. Phụ thuộc RD-00, các phân hệ qua giao diện tích hợp BD-00.
+
+- Lưu vị trí và thiết lập, tải bản ngoại tuyến trên thiết bị, hàng đợi thay đổi và giải quyết xung đột.
+- Ngoài phạm vi: STRATEGY §2; không thêm tính năng AI.
+- Phụ thuộc RD-00, các phân hệ qua giao diện tích hợp BD-00.
 
 ### 1.1 Phân bổ nghiệm thu
-P1 lưu/đặt lại tiến độ PDF trực tuyến; P2 thêm EPUB/thiết lập và nhận dữ liệu đọc trực tuyến; P3 ngoại tuyến và xung đột đầy đủ.
-Giai đoạn của từng kịch bản tại §13; ghi P1/P2 nghĩa cùng hành vi cần nghiệm thu cho PDF ở P1 và EPUB ở P2, không phải được tùy chọn bỏ một.
+
+- P1 lưu/đặt lại tiến độ PDF trực tuyến;
+- P2 thêm EPUB/thiết lập và nhận dữ liệu đọc trực tuyến;
+- P3 ngoại tuyến và xung đột đầy đủ.
+- Giai đoạn của từng kịch bản tại §13; ghi P1/P2 nghĩa cùng hành vi cần nghiệm thu cho PDF ở P1 và EPUB ở P2, không phải được tùy chọn bỏ một.
 
 ## 2. Người sử dụng và quyền
-Người đọc cá nhân, chỉ truy cập dữ liệu của mình theo RD-00 §6. Chưa triển khai nhiều tài khoản; không nhận chủ sở hữu do người gọi tự chọn.
+
+- Người đọc cá nhân, chỉ truy cập dữ liệu của mình theo RD-00 §6.
+- Chưa triển khai nhiều tài khoản; không nhận chủ sở hữu do người gọi tự chọn.
 
 ## 3. Thuật ngữ
-Sách là mục thư viện; phiên bản tệp là nội dung bất biến; định danh vị trí trỏ vào nội dung của phiên bản đó; bản ngoại tuyến nằm trên thiết bị. Thuật ngữ xem references/GLOSSARY.md.
+
+- Sách là mục thư viện; phiên bản tệp là nội dung bất biến;
+- định danh vị trí trỏ vào nội dung của phiên bản đó; bản ngoại tuyến nằm trên thiết bị.
+- Thuật ngữ xem references/GLOSSARY.md.
 
 ## 4. Tình huống sử dụng
+
 ### UC-04-01 — Đọc tiếp giữa các lần và thiết bị
-Mở/quay lại ứng dụng → nếu online nhận dữ liệu máy chủ → không có local pending thì dùng bản mới; có pending thì so với bản gốc và xử lý conflict → đọc và lưu.
-P1/P2 còn online, P3 hỗ trợ lưu bền vững ngoại tuyến. Lỗi lưu không báo thành công. Không có tiến độ thì Chưa bắt đầu.
+
+- Mở/quay lại ứng dụng → nếu online nhận dữ liệu máy chủ → không có local pending thì dùng bản mới; có pending thì so với bản gốc và xử lý conflict → đọc và lưu.
+- P1/P2 còn online, P3 hỗ trợ lưu bền vững ngoại tuyến.
+- Lỗi lưu không báo thành công.
+- Không có tiến độ thì Chưa bắt đầu.
+
 ### UC-04-02 — Ngoại tuyến và nối lại
-Chủ động tải sách đủ → mất mạng/ra ngoài nhà → mở lại và đọc/sửa điều hướng → nối mạng nhà → nhận đủ dữ liệu mới/xóa → gửi thay đổi hợp lệ → xác nhận đã đồng bộ.
-Mất ACK thử lại không nhân đôi; lỗi/quota giữ dữ liệu nếu đã lưu thành công. Sách đã xóa thì cách ly pending, chặn phát lại; cho sao chép/xuất bản cứu hoặc bỏ. Xung đột cho chọn thiết bị/máy chủ/Để sau và giữ hai bản qua tải lại.
+
+- Chủ động tải sách đủ → mất mạng/ra ngoài nhà → mở lại và đọc/sửa điều hướng → nối mạng nhà → nhận đủ dữ liệu mới/xóa → gửi thay đổi hợp lệ → xác nhận đã đồng bộ.
+- Mất ACK thử lại không nhân đôi; lỗi/quota giữ dữ liệu nếu đã lưu thành công.
+- Sách đã xóa thì cách ly pending, chặn phát lại; cho sao chép/xuất bản cứu hoặc bỏ.
+- Xung đột cho chọn thiết bị/máy chủ/Để sau và giữ hai bản qua tải lại.
+
 ### UC-04-03 — Đặt lại tiến độ
-Chọn Đặt lại tiến độ → thông báo chỉ xóa vị trí → xác nhận → Chưa bắt đầu; sách/tệp/mục lục/đánh dấu nguyên vẹn. Hủy giữ tất cả.
-P3 offline cũng lưu thao tác; khi bên kia đồng thời đọc, xem Đã đặt lại và vị trí mới như hai bản xung đột. Không lấy trang lớn nhất tự thắng.
+
+- Chọn Đặt lại tiến độ → thông báo chỉ xóa vị trí → xác nhận → Chưa bắt đầu; sách/tệp/mục lục/đánh dấu nguyên vẹn.
+- Hủy giữ tất cả.
+- P3 offline cũng lưu thao tác; khi bên kia đồng thời đọc, xem Đã đặt lại và vị trí mới như hai bản xung đột.
+- Không lấy trang lớn nhất tự thắng.
 
 ## 5. Yêu cầu chức năng
+
 | ID | Yêu cầu bắt buộc | Tình huống sử dụng |
 |---|---|---|
 | FR-04-01 | Lưu vị trí PDF/EPUB và khôi phục khi mở lại sách. | UC-04-01 |
@@ -45,6 +70,7 @@ P3 offline cũng lưu thao tác; khi bên kia đồng thời đọc, xem Đã đ
 | FR-04-06 | Phát hiện xung đột từ hai thiết bị và cho chọn vị trí giữ lại; không âm thầm lấy trang lớn nhất. | UC-04-02 |
 
 ## 6. Quy tắc nghiệp vụ
+
 | ID | Quy tắc |
 |---|---|
 | BR-04-01 | Khả năng đọc ngoại tuyến là trạng thái theo thiết bị; không dùng cờ toàn cục hasLocalFile. |
@@ -53,10 +79,12 @@ P3 offline cũng lưu thao tác; khi bên kia đồng thời đọc, xem Đã đ
 | BR-04-04 | Xóa bộ nhớ đệm phải cảnh báo khi có thay đổi chưa đồng bộ; không xóa hàng đợi thay đổi chờ gửi âm thầm. |
 
 ## 7. Dữ liệu nghiệp vụ
-Vị trí và dữ liệu cá nhân phải gắn người đọc, sách và phiên bản tệp.
-Thời hạn lưu giữ và xóa theo BD-02 và quyết định #5; trạng thái ngoại tuyến theo thiết bị, không đồng nhất với máy chủ.
+
+- Vị trí và dữ liệu cá nhân phải gắn người đọc, sách và phiên bản tệp.
+- Thời hạn lưu giữ và xóa theo BD-02 và quyết định #5; trạng thái ngoại tuyến theo thiết bị, không đồng nhất với máy chủ.
 
 ## 8. Màn hình
+
 | ID | Màn hình | Tuyến dự kiến | Cách mở |
 |---|---|---|---|
 | SC-04-01 | Cài đặt đọc/offline | /settings | Trình đơn Cài đặt |
@@ -64,19 +92,29 @@ Thời hạn lưu giữ và xóa theo BD-02 và quyết định #5; trạng thá
 | SC-04-02 | Xung đột đồng bộ | /reader/:bookId (hộp thoại) | Thông báo xung đột → Xử lý |
 
 ## 9. Báo cáo và xuất dữ liệu
-Không báo cáo kinh doanh hoặc xuất tệp sách đã sửa; P3 có sao chép/xuất bản cứu dữ liệu cá nhân chưa đồng bộ khi sách bị xóa, không chứa file sách.
+
+- Không báo cáo kinh doanh hoặc xuất tệp sách đã sửa;
+- P3 có sao chép/xuất bản cứu dữ liệu cá nhân chưa đồng bộ khi sách bị xóa, không chứa file sách.
 
 ## 10. Tích hợp
-Dùng chung cơ chế xác định người đọc và quyền sở hữu; các phân hệ trao đổi qua giao diện dịch vụ tại BD-00 §5. Đọc ngoại tuyến và thử lại phải giữ trạng thái rõ ràng cho người đọc.
+
+- Dùng chung cơ chế xác định người đọc và quyền sở hữu; các phân hệ trao đổi qua giao diện dịch vụ tại BD-00 §5.
+- Đọc ngoại tuyến và thử lại phải giữ trạng thái rõ ràng cho người đọc.
 
 ## 11. AI
+
 Không có; không gửi nội dung sách tới mô hình hay nhà cung cấp ngoài.
 
 ## 12. NFR
-Áp dụng RD-00 §8; phép đo và dữ liệu mẫu tại BD-M04 §13. Kiểm thử mô phỏng đạt chưa chứng minh tương thích thiết bị thật.
+
+- Áp dụng RD-00 §8; phép đo và dữ liệu mẫu tại BD-M04 §13.
+- Kiểm thử mô phỏng đạt chưa chứng minh tương thích thiết bị thật.
 
 ## 13. Tiêu chí nghiệm thu
-Mỗi dòng là tình huống riêng; chưa chạy. Các mã AC cũ01..06 được giữ và làm rõ; mã bổ sung không tái sử dụng. Điều kiện chung: đúng người đọc, đúng phiên bản tệp, nguồn hợp lệ, trừ khi dòng nêu ngoại lệ.
+
+- Mỗi dòng là tình huống riêng; chưa chạy.
+- Các mã AC cũ01..06 được giữ và làm rõ; mã bổ sung không tái sử dụng.
+- Điều kiện chung: đúng người đọc, đúng phiên bản tệp, nguồn hợp lệ, trừ khi dòng nêu ngoại lệ.
 
 | Mã | Yêu cầu | Cho trước | Khi | Kết quả mong đợi | Giai đoạn |
 |---|---|---|---|---|---|
@@ -98,4 +136,7 @@ Mỗi dòng là tình huống riêng; chưa chạy. Các mã AC cũ01..06 đư�
 | AC-04-16 | FR-04-05 | Có xung đột chưa chọn | Chọn Để sau rồi reload | Hai bản còn nguyên, không tự phát lại đè server | P3 |
 
 ## 14. Vấn đề cần quyết định
-Không còn quyết định sản phẩm mở. Lịch sử duyệt tại management/OPEN-DECISIONS.md; thay đổi sau chốt theo CR-MANAGEMENT. Chưa xác nhận yêu cầu nào đã triển khai.
+
+- Không còn quyết định sản phẩm mở.
+- Lịch sử duyệt tại management/OPEN-DECISIONS.md; thay đổi sau chốt theo CR-MANAGEMENT.
+- Chưa xác nhận yêu cầu nào đã triển khai.

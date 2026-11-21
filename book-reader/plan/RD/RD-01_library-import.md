@@ -1,39 +1,61 @@
 # RD-01 — Thư viện và nhập sách
 
-Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
-Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
+- Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+- Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07.
+- Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
-Yêu cầu/thiết kế đã được chủ dự án duyệt; chưa phải tính năng đã triển khai. Lịch sử quyết định xem management/OPEN-DECISIONS.md.
+- Yêu cầu/thiết kế đã được chủ dự án duyệt; chưa phải tính năng đã triển khai.
+- Lịch sử quyết định xem management/OPEN-DECISIONS.md.
 
-Phân hệ: MOD-01 · Giai đoạn: P1 PDF; P2 EPUB · Mục tiêu: BO-01, BO-05
+- Phân hệ: MOD-01 · Giai đoạn: P1 PDF;
+- P2 EPUB · Mục tiêu: BO-01, BO-05
 
 ## 1. Mục đích và phạm vi
-Quản lý thông tin mô tả và nhập một bản PDF/EPUB từ tệp hoặc URL trực tiếp; một sách có một phiên bản tệp bất biến ở v1.
-Ngoài phạm vi: STRATEGY §2; không thêm tính năng AI. Phụ thuộc RD-00, các phân hệ qua giao diện tích hợp BD-00.
+
+- Quản lý thông tin mô tả và nhập một bản PDF/EPUB từ tệp hoặc URL trực tiếp; một sách có một phiên bản tệp bất biến ở v1.
+- Ngoài phạm vi: STRATEGY §2; không thêm tính năng AI.
+- Phụ thuộc RD-00, các phân hệ qua giao diện tích hợp BD-00.
 
 ### 1.1 Phân bổ nghiệm thu
-P1 áp dụng PDF và luồng nhập/thư viện; P2 áp dụng cùng yêu cầu với EPUB.
-Giai đoạn của từng kịch bản tại §13; ghi P1/P2 nghĩa cùng hành vi cần nghiệm thu cho PDF ở P1 và EPUB ở P2, không phải được tùy chọn bỏ một.
+
+- P1 áp dụng PDF và luồng nhập/thư viện;
+- P2 áp dụng cùng yêu cầu với EPUB.
+- Giai đoạn của từng kịch bản tại §13; ghi P1/P2 nghĩa cùng hành vi cần nghiệm thu cho PDF ở P1 và EPUB ở P2, không phải được tùy chọn bỏ một.
 
 ## 2. Người sử dụng và quyền
-Người đọc cá nhân, chỉ truy cập dữ liệu của mình theo RD-00 §6. Chưa triển khai nhiều tài khoản; không nhận chủ sở hữu do người gọi tự chọn.
+
+- Người đọc cá nhân, chỉ truy cập dữ liệu của mình theo RD-00 §6.
+- Chưa triển khai nhiều tài khoản; không nhận chủ sở hữu do người gọi tự chọn.
 
 ## 3. Thuật ngữ
-Sách là mục thư viện; phiên bản tệp là nội dung bất biến; định danh vị trí trỏ vào nội dung của phiên bản đó; bản ngoại tuyến nằm trên thiết bị. Thuật ngữ xem references/GLOSSARY.md.
+
+- Sách là mục thư viện; phiên bản tệp là nội dung bất biến;
+- định danh vị trí trỏ vào nội dung của phiên bản đó; bản ngoại tuyến nằm trên thiết bị.
+- Thuật ngữ xem references/GLOSSARY.md.
 
 ## 4. Tình huống sử dụng
+
 ### UC-01-01 — Nhập sách
-Điều kiện: máy chủ truy cập được trong mạng nhà; người đọc có quyền và tệp/URL phù hợp.
-Luồng chính: chọn nguồn → nhập thông tin tùy chọn → gửi → xem trạng thái → thành công thấy sách trong thư viện và mở đọc.
-Ngoại lệ: tệp sai/hỏng/quá dung lượng/mật khẩu/DRM bị từ chối, không tạo sách; URL lỗi ghi thất bại, cho thử lại; trùng nội dung cho Mở cũ/Vẫn nhập/Hủy; mất phản hồi kiểm trạng thái hoặc gửi lại cùng thao tác, không tự tạo sách đôi.
-Đóng màn hình URL không tự hủy tác vụ. Chờ lựa chọn trùng có thời hạn hiển thị, hết hạn báo thử lại; không tạo âm thầm.
-Kết quả: sách mới hoàn chỉnh hoặc sách cũ được mở; thất bại/hủy không thay thư viện.
+
+- Điều kiện: máy chủ truy cập được trong mạng nhà; người đọc có quyền và tệp/URL phù hợp.
+- Luồng chính: chọn nguồn → nhập thông tin tùy chọn → gửi → xem trạng thái → thành công thấy sách trong thư viện và mở đọc.
+- Ngoại lệ: tệp sai/hỏng/quá dung lượng/mật khẩu/DRM bị từ chối, không tạo sách;
+- URL lỗi ghi thất bại, cho thử lại; trùng nội dung cho Mở cũ/Vẫn nhập/Hủy; mất phản hồi kiểm trạng thái hoặc gửi lại cùng thao tác, không tự tạo sách đôi.
+- Đóng màn hình URL không tự hủy tác vụ.
+- Chờ lựa chọn trùng có thời hạn hiển thị, hết hạn báo thử lại; không tạo âm thầm.
+- Kết quả: sách mới hoàn chỉnh hoặc sách cũ được mở; thất bại/hủy không thay thư viện.
+
 ### UC-01-02 — Quản lý thư viện
-Tìm/lọc/sắp xếp → mở chi tiết → sửa → lưu; dữ liệu sai giữ biểu mẫu và chỉ trường cần sửa. Sách thiếu/hỏng tệp vẫn có thông tin/dữ liệu đọc, báo Không thể đọc và cho thử lại.
-Xóa: xem phạm vi → nếu có dữ liệu chưa gửi chọn đồng bộ trước/cách ly trước/hủy → xác nhận → sách rời thư viện. Nhánh đồng bộ thất bại không xóa. Lần xóa nhận ACK mất kiểm lại trạng thái, không báo thất bại giả.
-Quy tắc xóa nguồn RD-00 §7; chuyển tệp gốc mới vào sách cũ chưa hỗ trợ.
+
+- Tìm/lọc/sắp xếp → mở chi tiết → sửa → lưu; dữ liệu sai giữ biểu mẫu và chỉ trường cần sửa.
+- Sách thiếu/hỏng tệp vẫn có thông tin/dữ liệu đọc, báo Không thể đọc và cho thử lại.
+- Xóa: xem phạm vi → nếu có dữ liệu chưa gửi chọn đồng bộ trước/cách ly trước/hủy → xác nhận → sách rời thư viện.
+- Nhánh đồng bộ thất bại không xóa.
+- Lần xóa nhận ACK mất kiểm lại trạng thái, không báo thất bại giả.
+- Quy tắc xóa nguồn RD-00 §7; chuyển tệp gốc mới vào sách cũ chưa hỗ trợ.
 
 ## 5. Yêu cầu chức năng
+
 | ID | Yêu cầu bắt buộc | Tình huống sử dụng |
 |---|---|---|
 | FR-01-01 | Nhập PDF/EPUB từ thiết bị và báo lỗi rõ nếu loại, cấu trúc hoặc dung lượng không hợp lệ. | UC-01-01 |
@@ -45,6 +67,7 @@ Quy tắc xóa nguồn RD-00 §7; chuyển tệp gốc mới vào sách cũ chư
 | FR-01-06 | Mở cùng thư viện cá nhân trên máy tính và điện thoại nối cùng máy chủ. | UC-01-02 |
 
 ## 6. Quy tắc nghiệp vụ
+
 | ID | Quy tắc |
 |---|---|
 | BR-01-01 | Chỉ sách nhập hoàn chỉnh mới xuất hiện ở trạng thái sẵn sàng. |
@@ -54,10 +77,12 @@ Quy tắc xóa nguồn RD-00 §7; chuyển tệp gốc mới vào sách cũ chư
 | BR-01-04 | Nhập thất bại không để lại sách đọc được hoặc tệp rác tồn tại vô hạn. |
 
 ## 7. Dữ liệu nghiệp vụ
-Sách, bản tệp, kết quả nhập; sách thiếu tệp không được coi là sẵn sàng.
-Thời hạn lưu giữ và xóa theo BD-02 và quyết định #5; trạng thái ngoại tuyến theo thiết bị, không đồng nhất với máy chủ.
+
+- Sách, bản tệp, kết quả nhập; sách thiếu tệp không được coi là sẵn sàng.
+- Thời hạn lưu giữ và xóa theo BD-02 và quyết định #5; trạng thái ngoại tuyến theo thiết bị, không đồng nhất với máy chủ.
 
 ## 8. Màn hình
+
 | ID | Màn hình | Tuyến dự kiến | Cách mở |
 |---|---|---|---|
 | SC-01-01 | Thư viện | / | Trình đơn Thư viện |
@@ -65,19 +90,29 @@ Thời hạn lưu giữ và xóa theo BD-02 và quyết định #5; trạng thá
 | SC-01-03 | Chi tiết/sửa sách | /books/:id | Thẻ sách → Chi tiết |
 
 ## 9. Báo cáo và xuất dữ liệu
-Không báo cáo kinh doanh hoặc xuất tệp sách đã sửa; P3 có sao chép/xuất bản cứu dữ liệu cá nhân chưa đồng bộ khi sách bị xóa, không chứa file sách.
+
+- Không báo cáo kinh doanh hoặc xuất tệp sách đã sửa;
+- P3 có sao chép/xuất bản cứu dữ liệu cá nhân chưa đồng bộ khi sách bị xóa, không chứa file sách.
 
 ## 10. Tích hợp
-Dùng chung cơ chế xác định người đọc và quyền sở hữu; các phân hệ trao đổi qua giao diện dịch vụ tại BD-00 §5. Đọc ngoại tuyến và thử lại phải giữ trạng thái rõ ràng cho người đọc.
+
+- Dùng chung cơ chế xác định người đọc và quyền sở hữu; các phân hệ trao đổi qua giao diện dịch vụ tại BD-00 §5.
+- Đọc ngoại tuyến và thử lại phải giữ trạng thái rõ ràng cho người đọc.
 
 ## 11. AI
+
 Không có; không gửi nội dung sách tới mô hình hay nhà cung cấp ngoài.
 
 ## 12. NFR
-Áp dụng RD-00 §8; phép đo và dữ liệu mẫu tại BD-M01 §13. Kiểm thử mô phỏng đạt chưa chứng minh tương thích thiết bị thật.
+
+- Áp dụng RD-00 §8; phép đo và dữ liệu mẫu tại BD-M01 §13.
+- Kiểm thử mô phỏng đạt chưa chứng minh tương thích thiết bị thật.
 
 ## 13. Tiêu chí nghiệm thu
-Mỗi dòng là tình huống riêng; chưa chạy. Các mã AC cũ01..06 được giữ và làm rõ; mã bổ sung không tái sử dụng. Điều kiện chung: đúng người đọc, đúng phiên bản tệp, nguồn hợp lệ, trừ khi dòng nêu ngoại lệ.
+
+- Mỗi dòng là tình huống riêng; chưa chạy.
+- Các mã AC cũ01..06 được giữ và làm rõ; mã bổ sung không tái sử dụng.
+- Điều kiện chung: đúng người đọc, đúng phiên bản tệp, nguồn hợp lệ, trừ khi dòng nêu ngoại lệ.
 
 | Mã | Yêu cầu | Cho trước | Khi | Kết quả mong đợi | Giai đoạn |
 |---|---|---|---|---|---|
@@ -98,4 +133,7 @@ Mỗi dòng là tình huống riêng; chưa chạy. Các mã AC cũ01..06 đư�
 | AC-01-15 | FR-01-02 | Job URL chờ lựa chọn sách trùng | Đóng màn hình rồi mở lại hoặc hết hạn lựa chọn | Không tự tạo; xem lại lựa chọn, hết hạn báo thất bại/nhập lại | P1 |
 
 ## 14. Vấn đề cần quyết định
-Không còn quyết định sản phẩm mở. Lịch sử duyệt tại management/OPEN-DECISIONS.md; thay đổi sau chốt theo CR-MANAGEMENT. Chưa xác nhận yêu cầu nào đã triển khai.
+
+- Không còn quyết định sản phẩm mở.
+- Lịch sử duyệt tại management/OPEN-DECISIONS.md; thay đổi sau chốt theo CR-MANAGEMENT.
+- Chưa xác nhận yêu cầu nào đã triển khai.

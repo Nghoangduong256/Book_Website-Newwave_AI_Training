@@ -1,22 +1,24 @@
-# references/
+# Tài liệu tham chiếu
 
-Material a project needs to look things up, and external material it depends on.
+Dùng thư mục này để tra cứu thuật ngữ, công nghệ và quy ước của dự án.
 
-| File | What it is |
-|---|---|
-| `STACK.md` | The pinned, **verified** version of everything. Filled at kickoff by checking, not recalling |
-| `GLOSSARY.md` | Domain terms, with the definition the whole project uses |
-| `CONVENTIONS-CHEATSHEET.md` | The one-page version of the rules, for a reviewer who needs an answer now |
-| `AI-ENGINEERING-PLAYBOOK.md` | How AI features are built here, and the failure modes they have |
+## Tài liệu chính
 
-## Also keep here
+| Tệp | Nội dung | Lưu ý |
+|---|---|---|
+| [STACK.md](STACK.md) | Công nghệ đã chọn và danh sách cần xác minh | Chưa coi phiên bản là đã kiểm chứng nếu chưa chạy kiểm tra |
+| [GLOSSARY.md](GLOSSARY.md) | Thuật ngữ thống nhất trong dự án | Ưu tiên dùng cách diễn đạt tiếng Việt |
+| [CONVENTIONS-CHEATSHEET.md](CONVENTIONS-CHEATSHEET.md) | Bản tóm tắt quy ước | Còn nội dung kế thừa, cần điều chỉnh ở P0 |
+| [AI-ENGINEERING-PLAYBOOK.md](AI-ENGINEERING-PLAYBOOK.md) | Hướng dẫn kỹ thuật AI từ mẫu | AI ngoài phạm vi bản đầu |
 
-- **Brand assets** — logo, fonts, colour values — so the design system has a source.
-- **Customer-supplied material** that the design must satisfy: RFPs, specifications, regulatory
-  texts, existing-system documentation.
-- **Sample data and fixtures** that are realistic but contain no real customer or employee data.
+## Có thể lưu thêm
 
-## What does **not** go here
+- Tài nguyên thương hiệu: biểu trưng, phông chữ và màu sắc.
+- Tài liệu do chủ dự án cung cấp hoặc tài liệu hệ thống cũ.
+- Dữ liệu mẫu hợp pháp, không chứa thông tin cá nhân thật.
 
-Anything that is a decision (`plan/`), a record (`management/`), or code (`source code/`). This
-directory is for material that is **referred to**, not produced.
+## Nơi lưu các loại tài liệu khác
+
+- Quyết định và thiết kế: `plan/`.
+- Tiến độ, phát hiện và hồ sơ quản lý: `management/`.
+- Mã nguồn và cấu hình: `source code/`.

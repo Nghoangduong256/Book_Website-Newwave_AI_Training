@@ -1,35 +1,58 @@
 # RD-02 — Trình đọc PDF và EPUB
 
-Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
-Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
+- Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+- Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07.
+- Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
-Yêu cầu/thiết kế đã được chủ dự án duyệt; chưa phải tính năng đã triển khai. Lịch sử quyết định xem management/OPEN-DECISIONS.md.
+- Yêu cầu/thiết kế đã được chủ dự án duyệt; chưa phải tính năng đã triển khai.
+- Lịch sử quyết định xem management/OPEN-DECISIONS.md.
 
 Phân hệ: MOD-02 · Giai đoạn: P1/P2 · Mục tiêu: BO-02, BO-03
 
 ## 1. Mục đích và phạm vi
-Khung đọc chung, PDF và EPUB tự dàn lại nội dung; hiển thị sáng/tối, điều chỉnh cách đọc và tiếp tục từ định danh vị trí.
-Ngoài phạm vi: STRATEGY §2; không thêm tính năng AI. Phụ thuộc RD-00, các phân hệ qua giao diện tích hợp BD-00.
+
+- Khung đọc chung, PDF và EPUB tự dàn lại nội dung; hiển thị sáng/tối, điều chỉnh cách đọc và tiếp tục từ định danh vị trí.
+- Ngoài phạm vi: STRATEGY §2; không thêm tính năng AI.
+- Phụ thuộc RD-00, các phân hệ qua giao diện tích hợp BD-00.
 
 ### 1.1 Phân bổ nghiệm thu
-P1 phần PDF; P2 phần EPUB; P3 các tình huống nhận xóa/ngoại tuyến.
-Giai đoạn của từng kịch bản tại §13; ghi P1/P2 nghĩa cùng hành vi cần nghiệm thu cho PDF ở P1 và EPUB ở P2, không phải được tùy chọn bỏ một.
+
+- P1 phần PDF;
+- P2 phần EPUB;
+- P3 các tình huống nhận xóa/ngoại tuyến.
+- Giai đoạn của từng kịch bản tại §13; ghi P1/P2 nghĩa cùng hành vi cần nghiệm thu cho PDF ở P1 và EPUB ở P2, không phải được tùy chọn bỏ một.
 
 ## 2. Người sử dụng và quyền
-Người đọc cá nhân, chỉ truy cập dữ liệu của mình theo RD-00 §6. Chưa triển khai nhiều tài khoản; không nhận chủ sở hữu do người gọi tự chọn.
+
+- Người đọc cá nhân, chỉ truy cập dữ liệu của mình theo RD-00 §6.
+- Chưa triển khai nhiều tài khoản; không nhận chủ sở hữu do người gọi tự chọn.
 
 ## 3. Thuật ngữ
-Sách là mục thư viện; phiên bản tệp là nội dung bất biến; định danh vị trí trỏ vào nội dung của phiên bản đó; bản ngoại tuyến nằm trên thiết bị. Thuật ngữ xem references/GLOSSARY.md.
+
+- Sách là mục thư viện; phiên bản tệp là nội dung bất biến;
+- định danh vị trí trỏ vào nội dung của phiên bản đó; bản ngoại tuyến nằm trên thiết bị.
+- Thuật ngữ xem references/GLOSSARY.md.
 
 ## 4. Tình huống sử dụng
+
 ### UC-02-01 — Mở và điều hướng
-Chọn Đọc từ sách hợp lệ. Nếu online nhận vị trí mới theo quy tắc đồng bộ; offline dùng tệp tải đủ và vị trí local. Mở đúng vị trí/đầu sách nếu Chưa bắt đầu → chuyển trang/nội dung → lưu tiến độ.
-Vị trí lỗi không ghi đè vị trí cũ; cho chọn về đầu hoặc chương khác. Tệp thiếu/hỏng/mật khẩu/DRM báo rõ và có nút về thư viện. Sách bị xóa trong lúc đọc thì dừng khi nhận biết và xử lý thay đổi chưa gửi theo RD-00.
+
+- Chọn Đọc từ sách hợp lệ.
+- Nếu online nhận vị trí mới theo quy tắc đồng bộ; offline dùng tệp tải đủ và vị trí local.
+- Mở đúng vị trí/đầu sách nếu Chưa bắt đầu → chuyển trang/nội dung → lưu tiến độ.
+- Vị trí lỗi không ghi đè vị trí cũ; cho chọn về đầu hoặc chương khác.
+- Tệp thiếu/hỏng/mật khẩu/DRM báo rõ và có nút về thư viện.
+- Sách bị xóa trong lúc đọc thì dừng khi nhận biết và xử lý thay đổi chưa gửi theo RD-00.
+
 ### UC-02-02 — Điều chỉnh hiển thị
-Mở thiết lập → đổi sáng/tối/cỡ chữ/giãn dòng/lề hoặc zoom → giữ nội dung đang đọc. Điều khiển phù hợp định dạng; không cho kỳ vọng PDF đổi cỡ chữ như EPUB.
-Trên điện thoại, mở/đóng bảng công cụ và trở về đúng tiêu điểm; trên máy tính dùng chuột/bàn phím. Nếu đổi kích thước thất bại giữ vị trí trước, không tự ghi trang1.
+
+- Mở thiết lập → đổi sáng/tối/cỡ chữ/giãn dòng/lề hoặc zoom → giữ nội dung đang đọc.
+- Điều khiển phù hợp định dạng; không cho kỳ vọng PDF đổi cỡ chữ như EPUB.
+- Trên điện thoại, mở/đóng bảng công cụ và trở về đúng tiêu điểm; trên máy tính dùng chuột/bàn phím.
+- Nếu đổi kích thước thất bại giữ vị trí trước, không tự ghi trang1.
 
 ## 5. Yêu cầu chức năng
+
 | ID | Yêu cầu bắt buộc | Tình huống sử dụng |
 |---|---|---|
 | FR-02-01 | Đọc PDF theo trang, chuyển trước/sau, đến trang và vừa chiều rộng; cho phóng to và di chuyển vùng xem. | UC-02-01 |
@@ -40,6 +63,7 @@ Trên điện thoại, mở/đóng bảng công cụ và trở về đúng tiêu
 | FR-02-06 | Mở lại vị trí đã lưu và gửi thay đổi vị trí sang phần lưu tiến độ. | UC-02-01 |
 
 ## 6. Quy tắc nghiệp vụ
+
 | ID | Quy tắc |
 |---|---|
 | BR-02-01 | PDF giữ bố cục gốc; không hứa tự dàn lại nội dung hoặc tìm chữ trong bản quét ảnh. |
@@ -48,28 +72,40 @@ Trên điện thoại, mở/đóng bảng công cụ và trở về đúng tiêu
 | BR-02-04 | Nội dung EPUB không được chạy mã lệnh hoặc tự tải tài nguyên mạng ngoài. |
 
 ## 7. Dữ liệu nghiệp vụ
-Vị trí và dữ liệu cá nhân phải gắn người đọc, sách và phiên bản tệp.
-Thời hạn lưu giữ và xóa theo BD-02 và quyết định #5; trạng thái ngoại tuyến theo thiết bị, không đồng nhất với máy chủ.
+
+- Vị trí và dữ liệu cá nhân phải gắn người đọc, sách và phiên bản tệp.
+- Thời hạn lưu giữ và xóa theo BD-02 và quyết định #5; trạng thái ngoại tuyến theo thiết bị, không đồng nhất với máy chủ.
 
 ## 8. Màn hình
+
 | ID | Màn hình | Tuyến dự kiến | Cách mở |
 |---|---|---|---|
 | SC-02-01 | Bộ đọc | /reader/:bookId | Thẻ sách → Đọc |
 
 ## 9. Báo cáo và xuất dữ liệu
-Không báo cáo kinh doanh hoặc xuất tệp sách đã sửa; P3 có sao chép/xuất bản cứu dữ liệu cá nhân chưa đồng bộ khi sách bị xóa, không chứa file sách.
+
+- Không báo cáo kinh doanh hoặc xuất tệp sách đã sửa;
+- P3 có sao chép/xuất bản cứu dữ liệu cá nhân chưa đồng bộ khi sách bị xóa, không chứa file sách.
 
 ## 10. Tích hợp
-Dùng chung cơ chế xác định người đọc và quyền sở hữu; các phân hệ trao đổi qua giao diện dịch vụ tại BD-00 §5. Đọc ngoại tuyến và thử lại phải giữ trạng thái rõ ràng cho người đọc.
+
+- Dùng chung cơ chế xác định người đọc và quyền sở hữu; các phân hệ trao đổi qua giao diện dịch vụ tại BD-00 §5.
+- Đọc ngoại tuyến và thử lại phải giữ trạng thái rõ ràng cho người đọc.
 
 ## 11. AI
+
 Không có; không gửi nội dung sách tới mô hình hay nhà cung cấp ngoài.
 
 ## 12. NFR
-Áp dụng RD-00 §8; phép đo và dữ liệu mẫu tại BD-M02 §13. Kiểm thử mô phỏng đạt chưa chứng minh tương thích thiết bị thật.
+
+- Áp dụng RD-00 §8; phép đo và dữ liệu mẫu tại BD-M02 §13.
+- Kiểm thử mô phỏng đạt chưa chứng minh tương thích thiết bị thật.
 
 ## 13. Tiêu chí nghiệm thu
-Mỗi dòng là tình huống riêng; chưa chạy. Các mã AC cũ01..06 được giữ và làm rõ; mã bổ sung không tái sử dụng. Điều kiện chung: đúng người đọc, đúng phiên bản tệp, nguồn hợp lệ, trừ khi dòng nêu ngoại lệ.
+
+- Mỗi dòng là tình huống riêng; chưa chạy.
+- Các mã AC cũ01..06 được giữ và làm rõ; mã bổ sung không tái sử dụng.
+- Điều kiện chung: đúng người đọc, đúng phiên bản tệp, nguồn hợp lệ, trừ khi dòng nêu ngoại lệ.
 
 | Mã | Yêu cầu | Cho trước | Khi | Kết quả mong đợi | Giai đoạn |
 |---|---|---|---|---|---|
@@ -89,4 +125,7 @@ Mỗi dòng là tình huống riêng; chưa chạy. Các mã AC cũ01..06 đư�
 | AC-02-14 | FR-02-06 | Đang đọc sách, thiết bị nhận dấu xóa server | Tiếp tục thao tác đọc | Dừng mở sau biết xóa; xử lý pending rồi về thư viện | P3 |
 
 ## 14. Vấn đề cần quyết định
-Không còn quyết định sản phẩm mở. Lịch sử duyệt tại management/OPEN-DECISIONS.md; thay đổi sau chốt theo CR-MANAGEMENT. Chưa xác nhận yêu cầu nào đã triển khai.
+
+- Không còn quyết định sản phẩm mở.
+- Lịch sử duyệt tại management/OPEN-DECISIONS.md; thay đổi sau chốt theo CR-MANAGEMENT.
+- Chưa xác nhận yêu cầu nào đã triển khai.

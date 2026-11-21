@@ -2,11 +2,14 @@
 
 Phiên bản: 1.0 · Ngày: 2026-11-07 · Trạng thái: Đã xác nhận bởi chủ dự án.
 
-
 ## 1. Còn mở
-Không còn quyết định sản phẩm đang mở tại mốc1.0. Các mục #2..#5 được chủ dự án chấp nhận theo đề xuất ngày2026-11-07. Số mục được giữ để truy vết, không đánh lại số.
+
+- Không còn quyết định sản phẩm đang mở tại mốc1.0.
+- Các mục #2..#5 được chủ dự án chấp nhận theo đề xuất ngày2026-11-07.
+- Số mục được giữ để truy vết, không đánh lại số.
 
 ## 2. Đã trả lời
+
 | # | Nội dung | Quyết định | Người xác nhận/ngày |
 |---|---|---|---|
 | 1 | Môi trường | Chỉ mạng nhà; Internet/Cloud/AWS xem xét sau, chưa chọn dịch vụ | Chủ dự án,2026-11-07 |
@@ -22,5 +25,8 @@ Không còn quyết định sản phẩm đang mở tại mốc1.0. Các mục #
 | 11 | Chốt tài liệu | Chủ dự án đã rà soát và duyệt bộ hiện hành thành chuẩn1.0 | Chủ dự án,2026-11-07 |
 
 ## 3. Công việc triển khai, không phải quyết định mở
-Đường dẫn ổ sách, vị trí sao lưu khác ổ gốc, chứng chỉ HTTPS nội bộ, phiên bản công cụ và số đo được chọn/kiểm trong P0 hoặc trước phát hành theo [sổ mốc chuẩn](BASELINE-REGISTER.md). Không ghi đã kiểm chứng khi chưa chạy.
-Nếu kết quả đo đòi thay phạm vi/hành vi/giới hạn đã duyệt, tạo CR và ADR khi cần; không tự mở lại câu hỏi đã chốt. Không tự mua hạ tầng Cloud.
+
+- Đường dẫn ổ sách, vị trí sao lưu khác ổ gốc, chứng chỉ HTTPS nội bộ, phiên bản công cụ và số đo được chọn/kiểm trong P0 hoặc trước phát hành theo [sổ mốc chuẩn](BASELINE-REGISTER.md).
+- Không ghi đã kiểm chứng khi chưa chạy.
+- Nếu kết quả đo đòi thay phạm vi/hành vi/giới hạn đã duyệt, tạo CR và ADR khi cần; không tự mở lại câu hỏi đã chốt.
+- Không tự mua hạ tầng Cloud.

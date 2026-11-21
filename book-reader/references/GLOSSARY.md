@@ -1,8 +1,8 @@
 # Bảng thuật ngữ
 
-Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
-Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
-
+- Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+- Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07.
+- Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
 | Thuật ngữ dùng trong tài liệu | Tên kỹ thuật khi cần đối chiếu | Giải thích |
 |---|---|---|
@@ -21,4 +21,6 @@ Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07
 | Bộ chuyển tiếp | Adapter | Thành phần nối giao diện chung với thư viện/cách triển khai cụ thể |
 | Chống thực hiện lặp | Idempotency | Gửi lại cùng thao tác không tạo thêm tác dụng |
 | Ứng dụng web có thể cài đặt | PWA | Web hỗ trợ cài đặt và chức năng ngoại tuyến theo trình duyệt |
-Tên công nghệ, mã yêu cầu, tên trường/hàm, đường dẫn và lệnh giữ nguyên. Phần giải thích ưu tiên tiếng Việt; lần đầu gặp thuật ngữ khó có thể thêm tên gốc trong ngoặc.
+
+- Tên công nghệ, mã yêu cầu, tên trường/hàm, đường dẫn và lệnh giữ nguyên.
+- Phần giải thích ưu tiên tiếng Việt; lần đầu gặp thuật ngữ khó có thể thêm tên gốc trong ngoặc.

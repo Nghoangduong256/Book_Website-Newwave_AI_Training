@@ -1,8 +1,8 @@
 # Danh mục tài liệu yêu cầu (RD)
 
-Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
-Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07. Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
-
+- Phiên bản: 1.0 · Ngày chốt: 2026-11-07 · Trạng thái: Đã chốt làm chuẩn (Baselined).
+- Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07.
+- Duyệt tài liệu không có nghĩa đã triển khai hoặc kiểm thử đạt.
 
 | Mã | Phân hệ | Giai đoạn | Tài liệu | Trạng thái |
 |---|---|---|---|---|
@@ -12,4 +12,6 @@ Người duyệt: Chủ dự án, xác nhận qua hội thoại ngày 2026-11-07
 | RD-03 | Điều hướng | P2/P3 | [Mục lục/đánh dấu](RD-03_navigation.md) | Đã chốt 1.0 |
 | RD-04 | Tiến độ/ngoại tuyến | P1/P3 | [Dữ liệu đọc](RD-04_reading-state-offline.md) | Đã chốt 1.0 |
 | RD-05 | Tài khoản/truy cập | Tương lai | [Ranh giới tài khoản](RD-05_account-access.md) | Đã chốt ranh giới; triển khai tương lai |
-RD-TEMPLATE là mẫu tham khảo, không phải yêu cầu đã chốt. Quyết định mở ở ../../management/OPEN-DECISIONS.md.
+
+- RD-TEMPLATE là mẫu tham khảo, không phải yêu cầu đã chốt.
+- Quyết định mở ở ../../management/OPEN-DECISIONS.md.
