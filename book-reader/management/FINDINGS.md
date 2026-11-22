@@ -31,3 +31,14 @@ Chưa có lỗi nào được coi là đã tái hiện lúc chạy hay đã sử
 
 - Bộ đặc tả đã được chủ dự án duyệt1.0, quyết định #2..#5 đã đóng.
 - Các việc chuyển cấu hình và kiểm chứng runtime vẫn mở tới khi thực hiện; không tự đóng lỗi kỹ thuật chỉ vì tài liệu được duyệt.
+
+## Kiểm tra bảo mật môi trường ngày 23/11/2026
+
+| Mã | Phát hiện | Xử lý và giới hạn |
+|---|---|---|
+| F-SEC-01 | Java trên PATH là Oracle 24.0.2; JVM nhận AVX-512 VBMI và bật tăng tốc Base64 | Cài JDK 17 đã vá riêng cho Book Reader, thêm lệnh kích hoạt; chưa tuyên bố toàn bộ JDK/IDE trên máy đã được vá |
+| F-SEC-02 | Compose mẫu trỏ tới `nginx:1.27-alpine` | Khóa 1.30.7 và digest, chỉ công bố cổng proxy tại loopback; kiểm chữ ký và cú pháp bằng nginx Windows; chưa chạy container |
+| F-SEC-03 | nginx mẫu bỏ tiền tố `/api/` khi chuyển tiếp | Đã giữ nguyên đường dẫn theo BD-05; kết nối API nghiệp vụ phải kiểm lại khi có backend P0 |
+
+Bằng chứng và trạng thái cuối: [báo cáo Java/nginx](SECURITY-UPDATE-2026-11-23.md).
+F-P0-03 vẫn mở vì các thành phần mẫu khác chưa được chuyển đồng bộ; P0 chưa hoàn tất.

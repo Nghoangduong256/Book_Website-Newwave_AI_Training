@@ -1,14 +1,16 @@
 # Tiến độ dự án
 
-Cập nhật: 21/11/2026. Mốc tài liệu hiện hành: **1.0 đã duyệt**.
+Cập nhật: 23/11/2026. Mốc tài liệu hiện hành: **1.0 đã duyệt**.
 
 ## Tình trạng hiện tại
 
-- **Giai đoạn:** hoàn tất phân tích và RD/BD; chuẩn bị triển khai P0.
-- **Nhánh:** `chore/book-reader-baseline`.
-- **Commit tài liệu gần nhất:** `e9cf8ca` — đã push ngày 07/11/2026.
+- **Giai đoạn:** đã cập nhật môi trường Java/nginx theo yêu cầu riêng; lập trình P0 vẫn tạm dừng.
+- **Nhánh:** `feat/book-reader-p0`, tách từ `chore/book-reader-baseline`.
+- **Commit tài liệu gần nhất:** `c7cd433` — kế hoạch triển khai, sơ đồ và thiết kế PC/Mobile, đã push.
 - **Quyết định sản phẩm:** đã chốt, không còn câu hỏi mở.
-- **Ứng dụng mới:** chưa lập trình, chưa chạy kiểm thử hoặc cập nhật cơ sở dữ liệu.
+- **Ứng dụng mới:** chưa lập trình, chưa chạy kiểm thử nghiệp vụ hoặc migration V001.
+- **DB thử:** đã tạo `book_reader_p0_test`, bật `ALLOW_SNAPSHOT_ISOLATION` sau khi được chủ dự án cho phép.
+- **Môi trường:** xem [báo cáo Java/nginx ngày 23/11](SECURITY-UPDATE-2026-11-23.md); không coi cập nhật công cụ là đã hoàn thành P0.
 
 ## Đã hoàn thành
 
@@ -20,10 +22,10 @@ Cập nhật: 21/11/2026. Mốc tài liệu hiện hành: **1.0 đã duyệt**.
 
 ## Việc tiếp theo
 
-1. Viết kế hoạch triển khai P0.
-2. Chuyển hướng dẫn và cấu hình mẫu sang Java/Spring Boot, React/Vite và SQL Server.
-3. Xác minh, chốt phiên bản công cụ và kiểm tra các rủi ro kỹ thuật.
-4. Khởi tạo ứng dụng, kết nối dữ liệu và kiểm chứng khởi động thực tế.
+1. Sử dụng JDK dự án theo báo cáo Java/nginx; chọn đúng JDK khi chạy từ IDE.
+2. Chờ chủ dự án yêu cầu tiếp tục lập trình P0 theo kế hoạch đã có.
+3. Chuyển đồng bộ hướng dẫn/cấu hình mẫu sang Spring Boot, React/Vite và SQL Server.
+4. Khởi tạo ứng dụng, kiểm thử và kiểm chứng kết nối/khởi động thực tế.
 
 Chi tiết trách nhiệm và thời điểm: [Sổ mốc chuẩn](BASELINE-REGISTER.md).
 

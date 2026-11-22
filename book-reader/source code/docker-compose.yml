@@ -1,4 +1,6 @@
-# <PROJECT> — local development stack
+# Book Reader — cấu hình kế thừa đang chuyển đổi, CHƯA SẴN SÀNG CHẠY.
+# Đợt 2026-11-23 chỉ cập nhật nginx; các dịch vụ còn lại chưa chuyển sang stack đã chốt.
+# Chỉ chạy toàn bộ sau khi P0 thay Dockerfiles, biến môi trường và kiểm chứng tích hợp.
 #
 # Docker Compose v2+ — the `version:` key is obsolete and intentionally omitted.
 #
@@ -11,7 +13,7 @@
 # its own /healthz without touching an upstream, and will report healthy while returning 502 for
 # every route. Read the logs, and assert a changed value from *inside* the running process.
 
-name: <project>
+name: book-reader
 
 networks:
   internal:
@@ -167,11 +169,13 @@ services:
     networks: [internal]
 
   proxy:
-    image: nginx:1.27-alpine
+    # Bản vá NGINX2Root; khóa cả phiên bản và nội dung image.
+    image: nginx:1.30.7-alpine@sha256:caf4e1e032a20f9c3c5e28fc7f25ffd768ad8677b4975c54193075997b3a97e3
     restart: unless-stopped
     volumes:
       - ./infra/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./infra/nginx/upstreams.conf:/etc/nginx/conf.d/00-upstreams.conf:ro
     ports:
-      - "${PROXY_PORT:-8080}:80"
+      - "127.0.0.1:${PROXY_PORT:-8080}:80"
     depends_on: [api, frontend]
     networks: [internal]

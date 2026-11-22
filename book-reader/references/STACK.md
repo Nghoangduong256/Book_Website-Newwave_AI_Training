@@ -27,3 +27,18 @@
 - Chuẩn1.0 duyệt lựa chọn và kế hoạch kiểm chứng, không duyệt các phiên bản range cũ thành phiên bản đã pin.
 - Kỹ thuật xác minh/cập nhật số phiên bản ở P0 trước triển khai; giữ mục tiêu hành vi đã duyệt, nếu thay công nghệ/kiến trúc thì ADR/CR.
 - Không còn câu hỏi sản phẩm mở, xem BASELINE-REGISTER.
+
+## Xác minh môi trường ngày 23/11/2026
+
+Đây là cập nhật kỹ thuật theo phạm vi P0 đã duyệt, không thay bộ công nghệ hoặc trạng thái nghiệm thu ứng dụng.
+
+| Thành phần | Phiên bản được khóa | Phạm vi bằng chứng |
+|---|---|---|
+| JDK Windows x64 | Eclipse Temurin 17.0.21.1+2 | Đã cài, khớp SHA-256, chạy Java/javac/Maven và biên dịch/chạy kiểm nhanh thành công |
+| nginx stable | 1.30.7 | Gói Windows đã kiểm chữ ký và `nginx -t`; image Alpine đã đối chiếu digest với Docker Hub |
+| Maven trên máy | 3.9.16 | Có sẵn; phải chạy sau kích hoạt JDK dự án |
+
+- Nguồn tải, mã SHA-256 và digest được khóa tại `source code/ops/toolchain.json`.
+- JDK cũ toàn máy chưa được gỡ; từng cửa sổ/IDE cần chọn đúng JDK dự án.
+- Spring Boot, JDBC/Flyway và mã nguồn mới chưa được kiểm chứng khởi động/tích hợp.
+- [Báo cáo cập nhật và giới hạn](../management/SECURITY-UPDATE-2026-11-23.md).

@@ -36,3 +36,4 @@ Thumbs.db
 # local artifacts
 /tmp/
 /scratch/
+/.runtime/

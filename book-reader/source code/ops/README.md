@@ -1,4 +1,42 @@
-# ops/
+# Công cụ vận hành Book Reader
+
+## Công cụ đã tạo ngày 23/11/2026
+
+Chạy từ `source code/` bằng PowerShell:
+
+```powershell
+& './ops/Install-ProjectJava.ps1'
+java -version
+javac -version
+mvn --version
+```
+
+- Phiên bản và SHA-256 được khóa trong `toolchain.json`; kiểm mã trước khi giải nén.
+- JDK và gói tải nằm trong `.runtime/`, được Git bỏ qua.
+- Nếu tải dở, chạy lại để tiếp tục; mã kiểm sai sẽ dừng cài đặt.
+- Không ghi đè Java đã cài hoặc sửa biến môi trường của Windows.
+
+Mỗi cửa sổ PowerShell mới cần kích hoạt trước khi chạy Maven/backend:
+
+```powershell
+& './ops/Use-ProjectJava.ps1'
+```
+
+Trong IDE, chọn Project SDK và Maven JDK trỏ tới thư mục JDK trong `toolchain.json`.
+Đóng cửa sổ PowerShell để kết thúc môi trường đã kích hoạt.
+
+Kiểm cấu hình nginx Windows đã được xác minh chữ ký:
+
+```powershell
+& './ops/Test-NginxConfig.ps1'
+```
+
+Lệnh chạy `nginx -t` với nguyên tệp server đã sửa và upstream loopback trong vỏ kiểm thử.
+Không mở cổng; chưa kiểm Docker, backend/frontend hoặc HTTPS.
+
+Chi tiết: [báo cáo cập nhật bảo mật](../../management/SECURITY-UPDATE-2026-11-23.md).
+
+## Danh mục từ mẫu, chưa triển khai
 
 Operational scripts. Everything here is something a person or CI **runs**, and whose output is
 **read** — these are the commands the rules refer to.
