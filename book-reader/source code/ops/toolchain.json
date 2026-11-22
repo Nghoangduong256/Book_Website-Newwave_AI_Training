@@ -1,0 +1,18 @@
+{
+  "verifiedOn": "2026-11-23",
+  "java": {
+    "vendor": "Eclipse Temurin",
+    "runtimeVersion": "17.0.21.1+2",
+    "directory": ".runtime/jdk-17.0.21.1+2",
+    "windowsX64Url": "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.21.1%2B2/OpenJDK17U-jdk_x64_windows_hotspot_17.0.21.1_2.zip",
+    "sha256": "eafba0944f777abdc74d5aad16049c9b5a1275b6ce99e2939ba9f7f3e6f08c87"
+  },
+  "nginx": {
+    "version": "1.30.7",
+    "image": "nginx:1.30.7-alpine@sha256:caf4e1e032a20f9c3c5e28fc7f25ffd768ad8677b4975c54193075997b3a97e3",
+    "windowsUrl": "https://nginx.org/download/nginx-1.30.7.zip",
+    "signatureUrl": "https://nginx.org/download/nginx-1.30.7.zip.asc",
+    "windowsSha256": "204bb1685b777d7124e9afba2a1dc51edb0eccdfb366262186eb55803a382e02",
+    "signerFingerprint": "D6786CE303D9A9022998DC6CC8464D549AF75C0A"
+  }
+}
